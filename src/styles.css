@@ -315,12 +315,13 @@
 }
 
 .exp-hanging-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(10, 14, 22, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 16px;
   padding: 24px;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(16px);
   max-width: 380px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
 /* ── Weather particle animations ──────────────────────────── */
@@ -341,3 +342,34 @@
   80%  { opacity: 0.7; }
   100% { transform: translateY(110vh) translateX(-4px); opacity: 0; }
 }
+
+/* ── Navigation lights & Engine Shimmer Animations ── */
+@keyframes nav-light-pulse {
+  0%   { opacity: 0.35; }
+  100% { opacity: 1; }
+}
+
+@keyframes engine-shimmer {
+  0%   { transform: scale(0.96) translateX(-0.5px); opacity: 0.12; }
+  100% { transform: scale(1.04) translateX(0.5px); opacity: 0.28; }
+}
+
+/* ── Scroll cue chevron bounce ── */
+@keyframes scroll-cue-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.35; }
+  50%      { transform: translateY(6px); opacity: 0.75; }
+}
+
+/* ── Birds Animation ── */
+@keyframes bird-fly {
+  0%   { transform: translate(10vw, 5vh) scale(0.8); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translate(-120vw, -15vh) scale(1.2); opacity: 0; }
+}
+
+@keyframes bird-flap {
+  0%, 100% { transform: scaleY(1); }
+  50%      { transform: scaleY(-0.4); }
+}
+

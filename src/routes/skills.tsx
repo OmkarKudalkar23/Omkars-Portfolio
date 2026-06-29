@@ -3,8 +3,11 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as d3 from 'd3';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { X, ExternalLink } from 'lucide-react';
 import { PageShell } from '@/components/layout/PageShell';
+
+gsap.registerPlugin(ScrollTrigger);
 
 // ─── Data Scaffolding ────────────────────────────────────────────────────────
 
@@ -73,14 +76,29 @@ type ConstellationLink = d3.SimulationLinkDatum<ConstellationNode> & typeof proj
 
 // ─── Skill Constellation Component ────────────────────────────────────────────
 
-function SkillConstellation({ prefersReducedMotion }: { prefersReducedMotion: boolean }) {
+function SkillConstellation({
+  prefersReducedMotion,
+  externalSelectedNodeId,
+  onExternalSelectChange,
+}: {
+  prefersReducedMotion: boolean;
+  externalSelectedNodeId?: string | null;
+  onExternalSelectChange?: (id: string | null) => void;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const wrapperRef = useRef<SVGGElement>(null);
   const navigate = useNavigate();
   
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [selectedNodeId, _setSelectedNodeId] = useState<string | null>(null);
+
+  // Merge external control with internal selection
+  const effectiveSelected = externalSelectedNodeId !== undefined ? externalSelectedNodeId : selectedNodeId;
+  const setSelectedNodeId = (id: string | null) => {
+    _setSelectedNodeId(id);
+    onExternalSelectChange?.(id);
+  };
   
   // GSAP Cinematic Camera State
   const isAnimatingRef = useRef(false);
@@ -309,11 +327,11 @@ function SkillConstellation({ prefersReducedMotion }: { prefersReducedMotion: bo
 
   // Determine opacities based on hover/select state
   const getNodeOpacity = (nodeId: string) => {
-    if (selectedNodeId) {
-      if (nodeId === selectedNodeId) return 1;
+    if (effectiveSelected) {
+      if (nodeId === effectiveSelected) return 1;
       const isConnected = graphData.links.some(l => 
-        ((l.source as ConstellationNode).id === selectedNodeId && (l.target as ConstellationNode).id === nodeId) ||
-        ((l.target as ConstellationNode).id === selectedNodeId && (l.source as ConstellationNode).id === nodeId)
+        ((l.source as ConstellationNode).id === effectiveSelected && (l.target as ConstellationNode).id === nodeId) ||
+        ((l.target as ConstellationNode).id === effectiveSelected && (l.source as ConstellationNode).id === nodeId)
       );
       return isConnected ? 1 : 0.15;
     }
@@ -328,8 +346,8 @@ function SkillConstellation({ prefersReducedMotion }: { prefersReducedMotion: bo
   };
 
   const getLinkOpacity = (link: ConstellationLink) => {
-    if (selectedNodeId) {
-      if ((link.source as ConstellationNode).id === selectedNodeId || (link.target as ConstellationNode).id === selectedNodeId) return 0.6;
+    if (effectiveSelected) {
+      if ((link.source as ConstellationNode).id === effectiveSelected || (link.target as ConstellationNode).id === effectiveSelected) return 0.6;
       return 0.05;
     }
 
@@ -339,16 +357,23 @@ function SkillConstellation({ prefersReducedMotion }: { prefersReducedMotion: bo
   };
 
   // Get connected skills for the selected node
-  const selectedNodeData = useMemo(() => graphData.nodes.find(n => n.id === selectedNodeId), [selectedNodeId, graphData.nodes]);
+  const selectedNodeData = useMemo(() => graphData.nodes.find(n => n.id === effectiveSelected), [effectiveSelected, graphData.nodes]);
   const connectedSkills = useMemo(() => {
-    if (!selectedNodeId) return [];
+    if (!effectiveSelected) return [];
     const connectedIds = new Set<string>();
     graphData.links.forEach(l => {
-      if ((l.source as ConstellationNode).id === selectedNodeId) connectedIds.add((l.target as ConstellationNode).id);
-      if ((l.target as ConstellationNode).id === selectedNodeId) connectedIds.add((l.source as ConstellationNode).id);
+      if ((l.source as ConstellationNode).id === effectiveSelected) connectedIds.add((l.target as ConstellationNode).id);
+      if ((l.target as ConstellationNode).id === effectiveSelected) connectedIds.add((l.source as ConstellationNode).id);
     });
     return graphData.nodes.filter(n => connectedIds.has(n.id) && n.category !== 'dummy'); // Exclude dummy nodes from panel list
-  }, [selectedNodeId, graphData]);
+  }, [effectiveSelected, graphData]);
+
+  // Sync GSAP camera when externalSelectedNodeId changes
+  useEffect(() => {
+    if (externalSelectedNodeId !== undefined) {
+      _setSelectedNodeId(externalSelectedNodeId);
+    }
+  }, [externalSelectedNodeId]);
 
   return (
     <div 
@@ -613,6 +638,12 @@ function SkillConstellation({ prefersReducedMotion }: { prefersReducedMotion: bo
 
 function SkillsPage() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [tourIndex, setTourIndex] = useState(0);
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  // The ordered list of real skill IDs for the scroll tour
+  const tourIds = useMemo(() => skillsData.map(s => s.id), []);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -621,6 +652,39 @@ function SkillsPage() {
     mediaQuery.addEventListener('change', handler);
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
+
+  // Scroll-driven camera tour
+  useEffect(() => {
+    if (prefersReducedMotion || !sectionRef.current) return;
+
+    const steps = tourIds.length;
+
+    const st = ScrollTrigger.create({
+      trigger: sectionRef.current,
+      start: 'top top',
+      end: `+=${steps * 300}`,   // 300px of scroll per skill
+      pin: true,
+      scrub: false,
+      onUpdate: (self) => {
+        const idx = Math.min(steps - 1, Math.floor(self.progress * steps));
+        if (idx !== tourIndex) {
+          setTourIndex(idx);
+          setSelectedNodeId(tourIds[idx]);
+        }
+      },
+      onLeave: () => {
+        // After touring all skills, deselect and let the user scroll away
+        setSelectedNodeId(null);
+      },
+      onLeaveBack: () => {
+        setSelectedNodeId(tourIds[0]);
+        setTourIndex(0);
+      },
+    });
+
+    return () => st.kill();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefersReducedMotion, tourIds]);
 
   const currentlyLearning = [
     'WebGL shaders',
@@ -633,43 +697,76 @@ function SkillsPage() {
 
   return (
     <PageShell path="/skills">
-      {/* Full Screen Graph Layer */}
-      <div style={{ position: 'fixed', inset: 0, zIndex: 0 }}>
-        <SkillConstellation prefersReducedMotion={prefersReducedMotion} />
-      </div>
-
-      {/* Floating Hero Layer */}
-      <div style={{ position: 'relative', zIndex: 10, padding: '80px 64px 48px', maxWidth: 1200, margin: '0 auto', pointerEvents: 'none' }}>
-        <div>
-          <p style={{ fontSize: 11, color: '#505058', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 16, fontFamily: 'Geist Mono, monospace' }}>
-            Technical Stack
-          </p>
-          <h1 style={{ fontSize: 52, fontWeight: 300, color: '#f2f2f3', fontFamily: 'Geist, system-ui, sans-serif', letterSpacing: '-0.03em', lineHeight: 1.15, margin: 0 }}>
-            Full-stack. AI-native.<br />Graph-first.
-          </h1>
-          <p style={{ fontSize: 17, color: '#a0a0a8', maxWidth: 460, marginTop: 16, lineHeight: 1.7 }}>
-            Every skill in production — none in a tutorial repo.
-          </p>
+      <div ref={sectionRef} style={{ position: 'relative', width: '100%', height: '100vh' }}>
+        {/* Full Screen Graph Layer */}
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <SkillConstellation
+            prefersReducedMotion={prefersReducedMotion}
+            externalSelectedNodeId={selectedNodeId}
+            onExternalSelectChange={setSelectedNodeId}
+          />
         </div>
-      </div>
 
-      {/* Floating Marquee Layer at bottom */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 10, paddingBottom: 24, pointerEvents: 'none' }}>
-        <div style={{ padding: '0 64px', maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ fontSize: 11, color: '#505058', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, fontFamily: 'Geist Mono, monospace' }}>
-            Currently going deeper
+        {/* Floating Hero Layer */}
+        <div style={{ position: 'relative', zIndex: 10, padding: '80px 64px 48px', maxWidth: 1200, margin: '0 auto', pointerEvents: 'none' }}>
+          <div>
+            <p style={{ fontSize: 11, color: '#505058', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 16, fontFamily: 'Geist Mono, monospace' }}>
+              Technical Stack
+            </p>
+            <h1 style={{ fontSize: 52, fontWeight: 300, color: '#f2f2f3', fontFamily: 'Geist, system-ui, sans-serif', letterSpacing: '-0.03em', lineHeight: 1.15, margin: 0 }}>
+              Full-stack. AI-native.<br />Graph-first.
+            </h1>
+            <p style={{ fontSize: 17, color: '#a0a0a8', maxWidth: 460, marginTop: 16, lineHeight: 1.7 }}>
+              Every skill in production — none in a tutorial repo.
+            </p>
           </div>
         </div>
-        <div style={{ overflow: 'hidden' }}>
-          <div className="marquee-track" style={{ pointerEvents: 'auto' }}>
-            {[...currentlyLearning, ...currentlyLearning].map((item, i) => (
-              <span
-                key={i}
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(8,8,9,0.5)', backdropFilter: 'blur(12px)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: '6px 16px', fontSize: 13, color: '#505058', whiteSpace: 'nowrap', flexShrink: 0, fontFamily: 'Geist Mono, monospace' }}
-              >
-                → {item}
-              </span>
+
+        {/* Scroll Tour Progress HUD */}
+        {!prefersReducedMotion && selectedNodeId && (
+          <div style={{
+            position: 'absolute', bottom: 90, left: '50%', transform: 'translateX(-50%)',
+            zIndex: 20, display: 'flex', alignItems: 'center', gap: 6, pointerEvents: 'none',
+          }}>
+            {skillsData.map((s, i) => (
+              <div key={s.id} style={{
+                width: i === tourIndex ? 20 : 5, height: 5,
+                borderRadius: 3,
+                background: i === tourIndex ? '#4f8ef7' : 'rgba(255,255,255,0.15)',
+                transition: 'width 0.3s ease, background 0.3s ease',
+              }} />
             ))}
+          </div>
+        )}
+        {!prefersReducedMotion && selectedNodeId && (
+          <div style={{
+            position: 'absolute', bottom: 110, left: '50%', transform: 'translateX(-50%)',
+            zIndex: 20, pointerEvents: 'none',
+            fontSize: 10, color: '#505058', fontFamily: "'Geist Mono', monospace",
+            letterSpacing: '0.1em', textTransform: 'uppercase',
+          }}>
+            {tourIndex + 1} / {skillsData.length} — {skillsData[tourIndex]?.label}
+          </div>
+        )}
+
+        {/* Floating Marquee Layer at bottom */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10, paddingBottom: 24, pointerEvents: 'none' }}>
+          <div style={{ padding: '0 64px', maxWidth: 1200, margin: '0 auto' }}>
+            <div style={{ fontSize: 11, color: '#505058', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, fontFamily: 'Geist Mono, monospace' }}>
+              Currently going deeper
+            </div>
+          </div>
+          <div style={{ overflow: 'hidden' }}>
+            <div className="marquee-track" style={{ pointerEvents: 'auto' }}>
+              {[...currentlyLearning, ...currentlyLearning].map((item, i) => (
+                <span
+                  key={i}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(8,8,9,0.5)', backdropFilter: 'blur(12px)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: '6px 16px', fontSize: 13, color: '#505058', whiteSpace: 'nowrap', flexShrink: 0, fontFamily: 'Geist Mono, monospace' }}
+                >
+                  → {item}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>

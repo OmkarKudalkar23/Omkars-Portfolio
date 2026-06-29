@@ -98,6 +98,15 @@ function AirplaneSVG({ className = '', style = {} }: { className?: string; style
 
       {/* Door outline */}
       <rect x="408" y="62" width="10" height="26" rx="3" fill="none" stroke="#A8ADB8" strokeWidth="0.8" opacity="0.5" />
+
+      {/* Pulsing red navigation light on vertical tail fin */}
+      <circle cx="68" cy="8" r="4" fill="#ff4d4d" style={{ animation: 'nav-light-pulse 1.2s infinite alternate', filter: 'drop-shadow(0 0 4px #ff4d4d)' }} />
+
+      {/* Pulsing green navigation light on main wingtip */}
+      <circle cx="130" cy="188" r="4" fill="#3ecf8e" style={{ animation: 'nav-light-pulse 1.2s infinite alternate 0.6s', filter: 'drop-shadow(0 0 4px #3ecf8e)' }} />
+
+      {/* Engine heat shimmer glow */}
+      <ellipse cx="230" cy="152" rx="10" ry="12" fill="#ffb03a" style={{ opacity: 0.15, filter: 'blur(3px)', animation: 'engine-shimmer 0.15s infinite alternate' }} />
     </svg>
   );
 }
@@ -145,21 +154,144 @@ function CloudShape({ className = '', style = {} }: { className?: string; style?
   );
 }
 
-function CityScenerySVG({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) {
+function AirportHillsScenerySVG({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) {
   return (
     <svg
       className={className}
-      viewBox="0 0 1000 200"
+      viewBox="0 0 1000 120"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       preserveAspectRatio="none"
       aria-hidden="true"
       style={{ width: '100%', height: '100%', ...style }}
     >
-      {/* Background buildings */}
-      <path d="M0,200 L0,120 L40,120 L40,80 L80,80 L80,140 L120,140 L120,60 L180,60 L180,110 L220,110 L220,40 L280,40 L280,130 L320,130 L320,90 L360,90 L360,150 L420,150 L420,70 L480,70 L480,120 L540,120 L540,50 L600,50 L600,140 L660,140 L660,80 L720,80 L720,110 L780,110 L780,30 L840,30 L840,130 L900,130 L900,60 L960,60 L960,150 L1000,150 L1000,200 Z" fill="#0b1324" />
-      {/* Foreground buildings */}
-      <path d="M0,200 L0,150 L30,150 L30,110 L70,110 L70,160 L100,160 L100,90 L150,90 L150,140 L190,140 L190,70 L250,70 L250,150 L290,150 L290,110 L340,110 L340,170 L390,170 L390,100 L440,100 L440,140 L490,140 L490,80 L550,80 L550,160 L610,160 L610,100 L650,100 L650,130 L700,130 L700,60 L760,60 L760,150 L810,150 L810,90 L870,90 L870,160 L930,160 L930,110 L980,110 L980,200 Z" fill="#131d33" opacity="0.9"/>
+      {/* Layer 1: Distant hills (lightest navy tone) */}
+      <path d="M0,120 L0,85 C150,55 250,95 400,65 C550,35 650,75 800,45 C900,30 950,50 1000,35 L1000,120 Z" fill="#1a2744" opacity="0.6" />
+
+      {/* Layer 2: Mid-ground hills (medium navy tone) */}
+      <path d="M0,120 L0,95 C120,75 220,105 350,85 C480,65 580,95 720,70 C850,55 920,80 1000,65 L1000,120 Z" fill="#141f37" opacity="0.8" />
+
+      {/* Layer 3: Near hills (darkest tone, grounding at the bottom runway horizon line) */}
+      <path d="M0,120 L0,108 C100,95 180,115 300,102 C420,89 520,110 650,95 C780,80 880,105 1000,92 L1000,120 Z" fill="#0f1729" />
+    </svg>
+  );
+}
+
+function BirdSVG({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      style={{ width: '100%', height: '100%', overflow: 'visible', ...style }}
+    >
+      <g style={{ transformOrigin: 'center', animation: 'bird-flap 0.6s infinite alternate ease-in-out' }}>
+        <path d="M2,12 Q8,6 12,12 Q16,6 22,12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+    </svg>
+  );
+}
+
+function AirportSceneSVG({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 1400 180"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      preserveAspectRatio="xMidYMax slice"
+      aria-hidden="true"
+      style={{ width: '100%', height: '100%', ...style }}
+    >
+      {/* === DISTANT CITY SKYLINE SILHOUETTE (left side) === */}
+      <g opacity="0.3">
+        <rect x="30" y="60" width="20" height="120" fill="#1a2744" />
+        <rect x="52" y="40" width="16" height="140" fill="#1a2744" />
+        <rect x="70" y="50" width="24" height="130" fill="#1a2744" />
+        <rect x="96" y="25" width="18" height="155" fill="#1a2744" />
+        <rect x="116" y="45" width="14" height="135" fill="#1a2744" />
+        <rect x="132" y="55" width="22" height="125" fill="#1a2744" />
+        <rect x="156" y="70" width="12" height="110" fill="#1a2744" />
+        <rect x="170" y="35" width="20" height="145" fill="#1a2744" />
+        {/* antennas */}
+        <rect x="100" y="15" width="2" height="18" fill="#1a2744" />
+        <rect x="62" y="32" width="2" height="12" fill="#1a2744" />
+        {/* warm lit windows */}
+        <rect x="36" y="80" width="4" height="3" fill="rgba(255,220,100,0.45)" />
+        <rect x="56" y="62" width="4" height="3" fill="rgba(255,220,100,0.4)" />
+        <rect x="99" y="45" width="4" height="3" fill="rgba(100,180,255,0.4)" />
+        <rect x="74" y="68" width="4" height="3" fill="rgba(255,220,100,0.35)" />
+        <rect x="174" y="55" width="4" height="3" fill="rgba(255,220,100,0.4)" />
+      </g>
+
+      {/* === CONTROL TOWER (center-right) === */}
+      {/* Tower shaft */}
+      <rect x="900" y="10" width="22" height="170" rx="2" fill="#0f1c35" />
+      {/* Tower cab (glass box at top) */}
+      <rect x="886" y="4" width="50" height="28" rx="3" fill="#162240" />
+      <rect x="888" y="6" width="46" height="24" rx="2" fill="#1a2e50" stroke="rgba(100,160,255,0.3)" strokeWidth="1" />
+      {/* Glass reflections */}
+      <rect x="890" y="8" width="5" height="20" rx="1" fill="rgba(120,180,255,0.18)" />
+      <rect x="897" y="8" width="3" height="20" rx="1" fill="rgba(120,180,255,0.08)" />
+      {/* Rotating beacon on top */}
+      <circle cx="911" cy="3" r="4" fill="#ffcc00" style={{ animation: 'nav-light-pulse 0.8s infinite alternate', filter: 'drop-shadow(0 0 6px #ffcc00)' }} />
+      {/* Support struts */}
+      <line x1="902" y1="170" x2="895" y2="32" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+      <line x1="918" y1="170" x2="925" y2="32" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+
+      {/* === AIRPORT TERMINAL BUILDING (right side) === */}
+      {/* Main terminal body */}
+      <rect x="970" y="80" width="380" height="100" rx="4" fill="#0d1a30" />
+      {/* Upper glass wall (curtain wall) */}
+      <rect x="975" y="62" width="370" height="28" rx="3" fill="#0f2040" stroke="rgba(100,150,255,0.15)" strokeWidth="1" />
+      {/* Window row - upper level */}
+      {[985, 1010, 1035, 1060, 1085, 1110, 1135, 1160, 1185, 1210, 1235, 1260, 1290, 1315].map((x, i) => (
+        <g key={i}>
+          <rect x={x} y={67} width={14} height={18} rx="2" fill={i % 3 === 0 ? 'rgba(255,220,120,0.4)' : 'rgba(80,130,220,0.22)'} />
+          {i % 3 === 0 && <rect x={x} y={67} width={14} height={18} rx="2" fill="none" stroke="rgba(255,220,100,0.2)" strokeWidth="0.5" />}
+        </g>
+      ))}
+      {/* Lower door/window panels */}
+      {[985, 1015, 1048, 1085, 1125, 1165, 1205, 1248, 1290].map((x, i) => (
+        <rect key={i} x={x} y={100} width={22} height={44} rx="2"
+          fill={i % 2 === 0 ? 'rgba(255,220,120,0.1)' : 'rgba(80,130,220,0.07)'}
+          stroke="rgba(255,255,255,0.06)" strokeWidth="0.5" />
+      ))}
+      {/* Jetbridge arms */}
+      <line x1="1010" y1="180" x2="975" y2="180" stroke="rgba(255,255,255,0.09)" strokeWidth="6" strokeLinecap="round" />
+      <line x1="1080" y1="180" x2="1045" y2="180" stroke="rgba(255,255,255,0.09)" strokeWidth="6" strokeLinecap="round" />
+      {/* Roof cornice */}
+      <rect x="966" y="57" width="388" height="7" rx="2" fill="#0c1628" />
+      {/* Airline stripe */}
+      <rect x="980" y="148" width="360" height="5" rx="2" fill="rgba(79,142,247,0.3)" />
+
+      {/* === PARKED AIRCRAFT SILHOUETTE at gate === */}
+      <g transform="translate(980, 172) scale(0.22)">
+        <path d="M30 40 C30 28 42 20 60 18 L200 18 C220 18 235 26 235 38 L235 52 C235 62 220 68 200 68 L60 68 C42 68 30 58 30 46Z" fill="#1a2540" />
+        <path d="M115 62 L70 92 L84 92 L150 66Z" fill="#141e32" />
+        <path d="M40 18 L24 2 L36 2 L52 18Z" fill="#141e32" />
+        <rect x="36" y="38" width="196" height="3" rx="1" fill="rgba(79,142,247,0.45)" />
+      </g>
+
+      {/* === APPROACH LIGHT TOWERS (left foreground) === */}
+      {[220, 280, 340, 400, 460, 520, 580].map((x, i) => (
+        <g key={i}>
+          <line x1={x} y1="180" x2={x} y2="155" stroke="rgba(255,255,255,0.1)" strokeWidth="1.5" />
+          <circle cx={x} cy={153} r="2.5" fill="rgba(255,255,255,0.65)"
+            style={{ animation: `nav-light-pulse ${0.9 + i * 0.1}s ${i * 0.08}s infinite alternate` }} />
+        </g>
+      ))}
+
+      {/* === TAXIWAY SIGN BOARDS (foreground) === */}
+      <rect x="700" y="155" width="55" height="18" rx="2" fill="#1a0a00" stroke="rgba(255,160,0,0.6)" strokeWidth="1" />
+      <rect x="702" y="157" width="51" height="14" rx="1" fill="rgba(255,140,0,0.1)" />
+      <rect x="706" y="161" width="18" height="2" rx="1" fill="rgba(255,160,0,0.7)" />
+      <rect x="728" y="161" width="14" height="2" rx="1" fill="rgba(255,160,0,0.7)" />
+      <rect x="760" y="155" width="40" height="18" rx="2" fill="#1a0008" stroke="rgba(220,60,60,0.6)" strokeWidth="1" />
+      <rect x="766" y="159" width="12" height="10" rx="1" fill="rgba(220,60,60,0.4)" />
+      <rect x="781" y="159" width="12" height="10" rx="1" fill="rgba(220,60,60,0.4)" />
     </svg>
   );
 }
@@ -195,7 +327,7 @@ const SEASON_SKY = {
     labelColor: '#a8c4e0',
   },
   summer: {
-    top: '#0f2444', mid: '#0a1c38', bot: '#080c18',
+    top: '#4da8da', mid: '#87ceeb', bot: '#fceabb',
     label: 'Summer',
     labelColor: '#f4c26b',
   },
@@ -375,7 +507,7 @@ function HangingExperienceCard({
       {/* Role */}
       <div style={{
         fontSize: 13, fontFamily: "'Geist Mono', monospace",
-        color: '#505058', marginBottom: 6,
+        color: '#b0b0b8', marginBottom: 6,
       }}>
         {exp.role}
       </div>
@@ -396,7 +528,7 @@ function HangingExperienceCard({
 
       {/* WHAT I BUILT */}
       <p style={{
-        fontSize: 10, color: '#505058', textTransform: 'uppercase',
+        fontSize: 10, color: '#909098', textTransform: 'uppercase',
         letterSpacing: '0.08em', marginBottom: 10,
         fontFamily: "'Geist Mono', monospace", margin: '0 0 10px',
       }}>
@@ -411,7 +543,7 @@ function HangingExperienceCard({
               width: 3, height: 3, background: exp.accent,
               borderRadius: 1, flexShrink: 0, marginTop: 7,
             }} />
-            <span style={{ fontSize: 13, color: '#a0a0a8', lineHeight: 1.55 }}>{h}</span>
+            <span style={{ fontSize: 13, color: '#d0d0d8', lineHeight: 1.55 }}>{h}</span>
           </div>
         ))}
       </div>
@@ -421,8 +553,8 @@ function HangingExperienceCard({
         {exp.tech.map((t, ti) => (
           <span key={ti} style={{
             fontSize: 10, fontFamily: "'Geist Mono', monospace",
-            color: '#505058', background: 'rgba(255,255,255,0.04)',
-            border: '0.5px solid rgba(255,255,255,0.08)',
+            color: '#a0a0a8', background: 'rgba(255,255,255,0.06)',
+            border: '0.5px solid rgba(255,255,255,0.12)',
             borderRadius: 4, padding: '2px 6px',
           }}>
             {t}
@@ -496,11 +628,14 @@ function StaticExperienceCard({
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}
       style={{
         cursor: 'pointer',
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.08)',
+        background: 'rgba(10,14,22,0.75)',
+        border: '1px solid rgba(255,255,255,0.1)',
         borderRadius: 16,
-        padding: 28,
-        marginBottom: 20,
+        padding: 24,
+        backdropFilter: 'blur(12px)',
+        boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
+        height: '100%',
+        boxSizing: 'border-box',
       }}
     >
       {/* Header */}
@@ -777,6 +912,92 @@ function SeasonBadge() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// Flight HUD Gauges (Decorative overlays)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+function FlightGauge({
+  label,
+  unit,
+  classNamePrefix,
+  position,
+}: {
+  label: string;
+  unit: string;
+  classNamePrefix: string;
+  position: 'left' | 'right';
+}) {
+  return (
+    <div style={{
+      position: 'absolute',
+      bottom: 32,
+      [position]: 32,
+      width: 110,
+      height: 110,
+      borderRadius: '50%',
+      background: 'rgba(10,10,10,0.6)',
+      backdropFilter: 'blur(6px)',
+      border: '1px solid rgba(79,142,247,0.15)',
+      boxShadow: '0 0 15px rgba(79,142,247,0.1)',
+      zIndex: 15,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }} aria-hidden="true">
+      {/* SVG for dial arc */}
+      <svg width="110" height="110" style={{ position: 'absolute', inset: 0 }}>
+        {/* Background track */}
+        <path d="M 25 85 A 45 45 0 1 1 85 85" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="3" strokeLinecap="round" />
+        {/* Filled arc representing range */}
+        <path d="M 25 85 A 45 45 0 1 1 85 85" fill="none" stroke="rgba(79,142,247,0.3)" strokeWidth="3" strokeLinecap="round" strokeDasharray="212" strokeDashoffset="50" />
+      </svg>
+
+      {/* Needle */}
+      <div className={`${classNamePrefix}-needle`} style={{
+        position: 'absolute',
+        bottom: '50%',
+        left: '50%',
+        width: 2,
+        height: 40,
+        background: '#4f8ef7',
+        transformOrigin: 'bottom center',
+        transform: 'translateX(-50%) rotate(-135deg)', // starting position
+        borderRadius: 2,
+        boxShadow: '0 0 4px #4f8ef7',
+        willChange: 'transform',
+      }} />
+
+      {/* Center dot */}
+      <div style={{
+        position: 'absolute',
+        top: '50%', left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 8, height: 8,
+        borderRadius: '50%',
+        background: '#101010',
+        border: '1.5px solid #4f8ef7'
+      }} />
+
+      {/* Texts */}
+      <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', marginTop: 15 }}>
+        <div style={{
+          fontSize: 8, color: '#505058', textTransform: 'uppercase',
+          letterSpacing: '0.08em', fontFamily: "'Geist Mono', monospace",
+        }}>{label}</div>
+        <div className={`${classNamePrefix}-text`} style={{
+          fontSize: 16, color: '#fff', fontWeight: 600, fontFamily: "'Geist Mono', monospace",
+          lineHeight: 1.1, textShadow: '0 0 8px rgba(255,255,255,0.3)',
+          fontVariantNumeric: 'tabular-nums',
+        }}>0</div>
+        <div style={{
+          fontSize: 9, color: '#4f8ef7', fontFamily: "'Geist Mono', monospace",
+        }}>{unit}</div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // Takeoff Sequence — Scroll-scrubbed GSAP animation
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -804,6 +1025,53 @@ function TakeoffSequence({
       },
     });
 
+    // ── HUD Flight Data Logic ──
+    const flightData = { altitude: 0, speed: 0, altFluc: 0, spdFluc: 0 };
+    
+    const updateGauges = () => {
+      // Calculate actual values with fluctuation, but clamped to avoid negative
+      const actualAlt = Math.max(0, flightData.altitude + (flightData.altitude > 10000 ? flightData.altFluc - 100 : 0));
+      const actualSpd = Math.max(0, flightData.speed + (flightData.speed > 200 ? flightData.spdFluc - 5 : 0));
+
+      const altNeedle = document.querySelector('.alt-needle') as HTMLElement;
+      const altText = document.querySelector('.alt-text') as HTMLElement;
+      if (altNeedle && altText) {
+        const altProgress = Math.min(1, actualAlt / 35000);
+        const altRot = -135 + (altProgress * 270);
+        altNeedle.style.transform = `translateX(-50%) rotate(${altRot}deg)`;
+        altText.innerText = Math.round(actualAlt).toLocaleString();
+      }
+      
+      const spdNeedle = document.querySelector('.speed-needle') as HTMLElement;
+      const spdText = document.querySelector('.speed-text') as HTMLElement;
+      if (spdNeedle && spdText) {
+        const spdProgress = Math.min(1, actualSpd / 560);
+        const spdRot = -135 + (spdProgress * 270);
+        spdNeedle.style.transform = `translateX(-50%) rotate(${spdRot}deg)`;
+        spdText.innerText = Math.round(actualSpd).toString();
+      }
+    };
+
+    // Independent idle fluctuation (runs constantly)
+    gsap.to(flightData, {
+      altFluc: 200,
+      spdFluc: 10,
+      duration: 3,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut',
+      onUpdate: () => {
+        if (flightData.altitude > 1000 || flightData.speed > 100) {
+           updateGauges();
+        }
+      }
+    });
+
+    // Scroll-scrubbed flight metrics
+    tl.to(flightData, { speed: 80, duration: 20, ease: 'power1.in', onUpdate: updateGauges }, 0);
+    tl.to(flightData, { speed: 560, duration: 30, ease: 'power2.out', onUpdate: updateGauges }, 20);
+    tl.to(flightData, { altitude: 35000, duration: 60, ease: 'power1.inOut', onUpdate: updateGauges }, 0);
+
     // ── Phase 1: Runway taxi (0 → 20) ──────────────────────────────────────
     tl.addLabel('runway', 0);
     tl.to('.runway-layer', { x: '-35%', duration: 20, ease: 'none' }, 0);
@@ -826,6 +1094,11 @@ function TakeoffSequence({
       onReverseComplete: () => { if (audioRef.current) audioRef.current.pause(); },
       onComplete: () => { if (audioRef.current) audioRef.current.pause(); },
     }, 20);
+
+    // Moon moves back and fades as we fly away
+    tl.to('.airport-moon', { x: -300, y: -50, opacity: 0, duration: 15, ease: 'power2.in' }, 20);
+    // Airport scene slides away / fades on takeoff
+    tl.to('.airport-scene', { x: '-60%', y: 80, opacity: 0, duration: 14, ease: 'power2.in' }, 20);
 
     tl.to('.runway-layer', { x: '-100%', y: 250, opacity: 0, scale: 0.8, duration: 18, ease: 'power2.in' }, 20);
     tl.to('.scenery-layer', { y: 200, opacity: 0, duration: 16, ease: 'power2.in' }, 20);
@@ -854,13 +1127,14 @@ function TakeoffSequence({
       tl.fromTo(`.cloud-${i}`, { x: 0 }, { x: cloud.drift, duration: cloud.speed, ease: 'none' }, cloud.startAt);
     });
 
-    // ── Continuously looping cruise clouds (start showing from 60 to the end) ──
-    // We animate a secondary translate or reset position to loop them
+    // ── Continuous cruise clouds (start showing from 60 to the end) ──
     for (let c = 0; c < 6; c++) {
-      // Loop 1
-      tl.fromTo(`.cruise-cloud-${c}`, { x: '100vw' }, { x: '-150vw', duration: 35 + c * 5, ease: 'none' }, 60 + c * 6);
-      // Loop 2 (starts after loop 1 moves a bit)
-      tl.fromTo(`.cruise-cloud-${c}-loop2`, { x: '100vw' }, { x: '-150vw', duration: 35 + c * 5, ease: 'none' }, 85 + c * 6);
+      tl.to(`.cruise-cloud-${c}`, { autoAlpha: 1, duration: 4 }, 60);
+      tl.to(`.cruise-cloud-${c}-loop2`, { autoAlpha: 1, duration: 4 }, 60);
+
+      // Spanning from 60 to 220 (duration 160) so they don't stop mid-scroll
+      tl.fromTo(`.cruise-cloud-${c}`, { xPercent: 150 }, { xPercent: -500, duration: 160, ease: 'none' }, 60);
+      tl.fromTo(`.cruise-cloud-${c}-loop2`, { xPercent: 450 }, { xPercent: -200, duration: 160, ease: 'none' }, 60);
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -887,24 +1161,21 @@ function TakeoffSequence({
 
     // Card 0: DJS Code AI (rainy)
     tl.fromTo('.cable-0', { scaleY: 0 }, { scaleY: 1, duration: 8, ease: 'power1.out', transformOrigin: 'top' }, CARD_TIMING[0][0]);
-    tl.fromTo('.card-group-0', { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 10, ease: 'power2.out' }, CARD_TIMING[0][1]);
+    tl.fromTo('.card-group-0', { opacity: 0, y: 25 }, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 10, ease: 'power2.out' }, CARD_TIMING[0][1]);
+    tl.to('.cable-0', { scaleY: 0, duration: 4, ease: 'power3.in', transformOrigin: 'top' }, 74);
+    tl.to('.card-group-0', { y: '120vh', opacity: 0, pointerEvents: 'none', duration: 8, ease: 'power2.in' }, 75);
 
     // Card 1: DJS S4DS (rainy)
     tl.fromTo('.cable-1', { scaleY: 0 }, { scaleY: 1, duration: 8, ease: 'power1.out', transformOrigin: 'top' }, CARD_TIMING[1][0]);
-    tl.fromTo('.card-group-1', { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 10, ease: 'power2.out' }, CARD_TIMING[1][1]);
+    tl.fromTo('.card-group-1', { opacity: 0, y: 25 }, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 10, ease: 'power2.out' }, CARD_TIMING[1][1]);
+    tl.to('.cable-1', { scaleY: 0, duration: 4, ease: 'power3.in', transformOrigin: 'top' }, 96);
+    tl.to('.card-group-1', { y: '120vh', opacity: 0, pointerEvents: 'none', duration: 8, ease: 'power2.in' }, 97);
 
     // Card 2: DJS SIGAI (rainy)
     tl.fromTo('.cable-2', { scaleY: 0 }, { scaleY: 1, duration: 8, ease: 'power1.out', transformOrigin: 'top' }, CARD_TIMING[2][0]);
-    tl.fromTo('.card-group-2', { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 10, ease: 'power2.out' }, CARD_TIMING[2][1]);
-
-    // All 3 DJS cards visible together → short hold, then drop
-    // Drop DJS cards at 124
-    tl.to(['.cable-0', '.cable-1', '.cable-2'], {
-      scaleY: 0, duration: 5, ease: 'power3.in', transformOrigin: 'top', stagger: 2,
-    }, 124);
-    tl.to(['.card-group-0', '.card-group-1', '.card-group-2'], {
-      y: '120vh', opacity: 0, duration: 12, ease: 'power2.in', stagger: 2,
-    }, 126);
+    tl.fromTo('.card-group-2', { opacity: 0, y: 25 }, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 10, ease: 'power2.out' }, CARD_TIMING[2][1]);
+    tl.to('.cable-2', { scaleY: 0, duration: 4, ease: 'power3.in', transformOrigin: 'top' }, 118);
+    tl.to('.card-group-2', { y: '120vh', opacity: 0, pointerEvents: 'none', duration: 8, ease: 'power2.in' }, 119);
 
     // ═══════════════════════════════════════════════════════════════════════
     // ── Phase 4b: WINTER — COGNIFYZ (130 → 160) ───────────────────────────
@@ -941,11 +1212,11 @@ function TakeoffSequence({
 
     // Card 3: COGNIFYZ (winter)
     tl.fromTo('.cable-3', { scaleY: 0 }, { scaleY: 1, duration: 8, ease: 'power1.out', transformOrigin: 'top' }, CARD_TIMING[3][0]);
-    tl.fromTo('.card-group-3', { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 12, ease: 'power2.out' }, CARD_TIMING[3][1]);
+    tl.fromTo('.card-group-3', { opacity: 0, y: 25 }, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 12, ease: 'power2.out' }, CARD_TIMING[3][1]);
 
     // Drop Cognifyz card at 152
     tl.to('.cable-3', { scaleY: 0, duration: 5, ease: 'power3.in', transformOrigin: 'top' }, 152);
-    tl.to('.card-group-3', { y: '120vh', opacity: 0, duration: 12, ease: 'power2.in' }, 154);
+    tl.to('.card-group-3', { y: '120vh', opacity: 0, pointerEvents: 'none', duration: 12, ease: 'power2.in' }, 154);
 
     // ═══════════════════════════════════════════════════════════════════════
     // ── Phase 4c: SUMMER — Hooman Labs + IIT Patna (155 → 200) ───────────
@@ -954,6 +1225,9 @@ function TakeoffSequence({
 
     // Snow fades out
     tl.to('.snow-layer', { opacity: 0, duration: 8 }, 152);
+
+    // Birds fade in
+    tl.to('.birds-layer', { opacity: 1, duration: 8 }, 155);
 
     // Sky → warm golden-blue (summer)
     tl.to(skyRef.current, {
@@ -984,24 +1258,28 @@ function TakeoffSequence({
       155
     );
 
+    // Sun sphere pops and rises from behind the horizon
+    tl.fromTo('.sun-sphere',
+      { y: 400, x: 0, scale: 0.8, opacity: 0 },
+      { y: 0, x: 0, scale: 1, opacity: 1, duration: 14, ease: 'power2.out' },
+      155
+    );
+
     // Card 4: Hooman Labs (summer)
     tl.fromTo('.cable-4', { scaleY: 0 }, { scaleY: 1, duration: 8, ease: 'power1.out', transformOrigin: 'top' }, CARD_TIMING[4][0]);
-    tl.fromTo('.card-group-4', { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 12, ease: 'power2.out' }, CARD_TIMING[4][1]);
+    tl.fromTo('.card-group-4', { opacity: 0, y: 25 }, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 12, ease: 'power2.out' }, CARD_TIMING[4][1]);
+    tl.to('.cable-4', { scaleY: 0, duration: 4, ease: 'power3.in', transformOrigin: 'top' }, 167);
+    tl.to('.card-group-4', { y: '120vh', opacity: 0, pointerEvents: 'none', duration: 8, ease: 'power2.in' }, 168);
 
     // Card 5: IIT Patna (summer)
     tl.fromTo('.cable-5', { scaleY: 0 }, { scaleY: 1, duration: 8, ease: 'power1.out', transformOrigin: 'top' }, CARD_TIMING[5][0]);
-    tl.fromTo('.card-group-5', { opacity: 0, y: 25 }, { opacity: 1, y: 0, duration: 12, ease: 'power2.out' }, CARD_TIMING[5][1]);
+    tl.fromTo('.card-group-5', { opacity: 0, y: 25 }, { opacity: 1, y: 0, pointerEvents: 'auto', duration: 12, ease: 'power2.out' }, CARD_TIMING[5][1]);
+    tl.to('.cable-5', { scaleY: 0, duration: 4, ease: 'power3.in', transformOrigin: 'top' }, 190);
+    tl.to('.card-group-5', { y: '120vh', opacity: 0, pointerEvents: 'none', duration: 8, ease: 'power2.in' }, 191);
 
     // ── Phase 5: Final Handoff / Drop (200 → 220) ─────────────────────────
     tl.addLabel('drop', 200);
     tl.to('.season-label', { opacity: 0, duration: 4 }, 198);
-
-    tl.to(['.cable-4', '.cable-5'], {
-      scaleY: 0, duration: 5, ease: 'power3.in', transformOrigin: 'top', stagger: 3,
-    }, 200);
-    tl.to(['.card-group-4', '.card-group-5'], {
-      y: '120vh', opacity: 0, duration: 12, ease: 'power2.in', stagger: 3,
-    }, 202);
 
   }, { scope: sectionRef });
 
@@ -1023,23 +1301,26 @@ function TakeoffSequence({
         overflow: 'hidden',
       }}>
         {/* ── Sky background ── */}
-        <div ref={skyRef} className="sky-bg" />
+        <div ref={skyRef} className="sky-bg" style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(180deg, var(--sky-top, #050508) 0%, var(--sky-mid, #08080c) 50%, var(--sky-bot, #0a0a0f) 100%)',
+        }} />
 
-        {/* ── Stars layer ── */}
+        {/* ── Stars layer (visible immediately with subtle 0.3 opacity on start) ── */}
         <div className="stars-layer" style={{
           position: 'absolute', inset: 0, zIndex: 1,
-          opacity: 0, pointerEvents: 'none',
+          opacity: 0.3, pointerEvents: 'none',
         }}>
-          {Array.from({ length: 40 }).map((_, i) => (
+          {Array.from({ length: 45 }).map((_, i) => (
             <div key={i} style={{
               position: 'absolute',
-              top: `${(i * 37 + 11) % 50}%`,
+              top: `${(i * 37 + 11) % 65}%`,
               left: `${(i * 71 + 17) % 100}%`,
               width: (i % 3) + 1,
               height: (i % 3) + 1,
               borderRadius: '50%',
               background: '#fff',
-              opacity: 0.2 + (i % 5) * 0.1,
+              opacity: 0.15 + (i % 5) * 0.15,
             }} />
           ))}
         </div>
@@ -1084,6 +1365,27 @@ function TakeoffSequence({
           ))}
         </div>
 
+        {/* ── Birds layer (summer — Hooman/IIT Patna) ── */}
+        <div className="birds-layer" style={{
+          position: 'absolute', inset: 0, zIndex: 2,
+          opacity: 0, pointerEvents: 'none', overflow: 'hidden',
+        }}>
+          {Array.from({ length: 24 }).map((_, i) => (
+            <div key={i} style={{
+              position: 'absolute',
+              top: `${10 + (i * 13) % 45}%`,
+              left: `${110 + (i * 17) % 70}%`,
+              width: 10 + (i % 4) * 3,
+              height: 10 + (i % 4) * 3,
+              color: `rgba(20, 30, 50, ${0.3 + (i % 4) * 0.15})`, // slightly lighter silhouettes in morning
+              animation: `bird-fly ${10 + (i % 6) * 3}s linear infinite`,
+              animationDelay: `${i * 0.6}s`,
+            }}>
+              <BirdSVG />
+            </div>
+          ))}
+        </div>
+
         {/* ── Season label ── */}
         <div
           ref={seasonLabelRef}
@@ -1103,49 +1405,96 @@ function TakeoffSequence({
           <SeasonBadge />
         </div>
 
-        {/* ── Scenery layer (city silhouette) ── */}
+        {/* ── Scenery layer (parallax hills, grounding at the horizon line) ── */}
         <div className="scenery-layer" style={{
           position: 'absolute',
-          top: 'calc(32% + 15px)',
-          left: 0, right: 0, height: 120,
-          zIndex: 1, opacity: 0.6,
+          top: 'calc(32% + 5px)',
+          left: 0, right: 0, height: 115,
+          zIndex: 1, opacity: 0.85,
         }}>
-          <CityScenerySVG />
+          <AirportHillsScenerySVG />
+        </div>
+
+        {/* ── Glowing Moon (placed in upper-right sky as a realistic light source) ── */}
+        <div
+          className="airport-moon"
+          style={{
+            position: 'absolute',
+            top: '8%',
+            right: '12%',
+            width: 80,
+            height: 80,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(245,240,220,0.9) 30%, rgba(245,240,220,0.2) 65%, transparent 100%)',
+            boxShadow: '0 0 30px rgba(245,240,220,0.4)',
+            zIndex: 1,
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* ── Airport Scene Layer (background: sits behind runway, above horizon) ── */}
+        <div className="airport-scene" style={{
+          position: 'absolute',
+          /* Anchor to the horizon line — push it just above the runway */
+          top: 'calc(32% - 60px)',
+          left: 0, right: 0,
+          height: 180,
+          zIndex: 2,
+          pointerEvents: 'none',
+          overflow: 'hidden',
+        }}>
+          <AirportSceneSVG />
         </div>
 
         {/* ── Ground / horizon line ── */}
         <div className="ground-line" style={{
           position: 'absolute',
-          top: 'calc(32% + 135px)',
+          top: 'calc(32% + 120px)',
           left: 0, right: 0, height: 1,
           background: 'rgba(255,255,255,0.06)',
           zIndex: 2,
         }} />
 
-        {/* ── Runway layer ── */}
+        {/* ── Runway layer (lowered to calc(32% + 120px) to ground the wingtips/engines) ── */}
         <div className="runway-layer" style={{
           position: 'absolute',
-          top: 'calc(32% + 135px)',
+          top: 'calc(32% + 120px)',
           left: '-10%', width: '200%', height: 60, zIndex: 3,
         }}>
           <div style={{
             position: 'absolute', inset: 0,
-            background: '#161618',
-            borderTop: '1.5px solid #2a2a2e',
-            borderBottom: '1.5px solid #2a2a2e',
+            background: 'linear-gradient(180deg, #121214 0%, #17171a 100%)',
+            borderTop: '1.5px solid #202024',
+            borderBottom: '1.5px solid #202024',
           }} />
+          {/* Dashed center line */}
           <div style={{
             position: 'absolute', top: '50%', left: 0, right: 0, height: 3,
             transform: 'translateY(-50%)',
-            background: 'repeating-linear-gradient(to right, rgba(255,255,255,0.7) 0px, rgba(255,255,255,0.7) 30px, transparent 30px, transparent 65px)',
+            background: 'repeating-linear-gradient(to right, rgba(255,255,255,0.75) 0px, rgba(255,255,255,0.75) 30px, transparent 30px, transparent 65px)',
+          }} />
+          {/* Edge markings */}
+          <div style={{
+            position: 'absolute', top: 4, left: 0, right: 0, height: 1.5,
+            background: 'repeating-linear-gradient(to right, rgba(255,190,0,0.55) 0px, rgba(255,190,0,0.55) 20px, transparent 20px, transparent 50px)',
           }} />
           <div style={{
-            position: 'absolute', top: 4, left: 0, right: 0, height: 2,
-            background: 'repeating-linear-gradient(to right, rgba(255,200,0,0.4) 0px, rgba(255,200,0,0.4) 20px, transparent 20px, transparent 50px)',
+            position: 'absolute', bottom: 4, left: 0, right: 0, height: 1.5,
+            background: 'repeating-linear-gradient(to right, rgba(255,190,0,0.55) 0px, rgba(255,190,0,0.55) 20px, transparent 20px, transparent 50px)',
+          }} />
+
+          {/* Runway Edge Lighting (amber/white lights blinking along the edges) */}
+          <div style={{
+            position: 'absolute', top: -3, left: 0, right: 0, height: 6,
+            background: 'repeating-linear-gradient(to right, #ffcc44 0px, #ffcc44 4px, transparent 4px, transparent 80px)',
+            filter: 'drop-shadow(0 0 3px #ffaa00)',
+            opacity: 0.85,
           }} />
           <div style={{
-            position: 'absolute', bottom: 4, left: 0, right: 0, height: 2,
-            background: 'repeating-linear-gradient(to right, rgba(255,200,0,0.4) 0px, rgba(255,200,0,0.4) 20px, transparent 20px, transparent 50px)',
+            position: 'absolute', bottom: -3, left: 0, right: 0, height: 6,
+            background: 'repeating-linear-gradient(to right, #ffffff 0px, #ffffff 4px, transparent 4px, transparent 80px)',
+            filter: 'drop-shadow(0 0 3px #ffffff)',
+            opacity: 0.75,
           }} />
         </div>
 
@@ -1169,9 +1518,9 @@ function TakeoffSequence({
 
           {/* Continuous Cruise Clouds (6 items, duplicated for seamless looping) */}
           {Array.from({ length: 6 }).map((_, c) => {
-            const topPositions = ['15%', '30%', '45%', '60%', '75%', '85%'];
-            const sizes = [180, 240, 310, 150, 280, 210];
-            const opacities = [0.08, 0.05, 0.12, 0.04, 0.07, 0.06];
+            const topPositions = ['12%', '28%', '42%', '58%', '72%', '84%'];
+            const sizes = [200, 260, 320, 180, 290, 220];
+            const opacities = [0.18, 0.15, 0.22, 0.14, 0.19, 0.16]; // Increased opacity so they are clearly visible
             return (
               <div key={c} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
                 <div
@@ -1183,7 +1532,8 @@ function TakeoffSequence({
                     width: sizes[c],
                     height: sizes[c] * 0.42,
                     color: `rgba(255,255,255,${opacities[c]})`,
-                    transform: 'translateX(100vw)',
+                    opacity: 0,
+                    visibility: 'hidden', // Hide by default on start screen
                   }}
                 >
                   <CloudShape />
@@ -1197,7 +1547,8 @@ function TakeoffSequence({
                     width: sizes[c],
                     height: sizes[c] * 0.42,
                     color: `rgba(255,255,255,${opacities[c]})`,
-                    transform: 'translateX(100vw)',
+                    opacity: 0,
+                    visibility: 'hidden', // Hide by default on start screen
                   }}
                 >
                   <CloudShape />
@@ -1225,6 +1576,24 @@ function TakeoffSequence({
           }}
         />
 
+        {/* ── Sun Sphere (Right Top, popping up in Summer phase) ── */}
+        <div
+          className="sun-sphere"
+          style={{
+            position: 'absolute',
+            top: '8%',
+            right: '8%',
+            width: 90,
+            height: 90,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, #fffdf0 0%, #ffde6a 40%, #f59e0b 80%, rgba(245,158,11,0) 100%)',
+            boxShadow: '0 0 40px rgba(245,158,11,0.6), 0 0 90px rgba(245,158,11,0.3)',
+            zIndex: 0,
+            opacity: 0,
+            pointerEvents: 'none',
+          }}
+        />
+
         {/* ── Airplane (stays centered) ── */}
         <div className="plane-wrapper" style={{
           position: 'absolute',
@@ -1236,7 +1605,8 @@ function TakeoffSequence({
         </div>
 
         {/* ── Hanging experience cards ── */}
-        {/* Cards are positioned absolutely at the center so they display beautifully, one-by-one, without being compressed by a flex row */}
+        {/* Because position is absolute, cards sit centered on top of each other. 
+            GSAP controls opacity and pointer-events so that ONLY ONE card is active/visible/interactable at any given moment. */}
         <div className="cards-layer" style={{
           position: 'absolute',
           top: '46%', left: '50%',
@@ -1256,6 +1626,7 @@ function TakeoffSequence({
                 left: 0,
                 width: '100%',
                 opacity: 0,
+                pointerEvents: 'none', // Critical: prevent overlapping invisible cards from blocking clicks
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -1286,6 +1657,35 @@ function TakeoffSequence({
               />
             </div>
           ))}
+        </div>
+
+        {/* ── HUD Gauges ── */}
+        <FlightGauge label="Altitude" unit="FT" classNamePrefix="alt" position="left" />
+        <FlightGauge label="Airspeed" unit="KTS" classNamePrefix="speed" position="right" />
+
+        {/* ── Scroll cue indicator (Bottom Center) ── */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 24,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 15,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 4,
+            pointerEvents: 'none',
+            color: '#a0a0a8',
+            animation: 'scroll-cue-bounce 2s infinite ease-in-out',
+          }}
+        >
+          <span style={{ fontSize: 10, fontFamily: "'Geist Mono', monospace", letterSpacing: '0.12em', textTransform: 'uppercase' }}>
+            Scroll to departure
+          </span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
         </div>
       </div>
     </section>
@@ -1415,16 +1815,22 @@ function ExperiencePage() {
       
       {/* ── Static Cards (The "Landing" Zone) ── */}
       {/* Renders immediately after the pin ends so they scroll smoothly into view */}
-      <div style={{ padding: '40px 24px 20px', maxWidth: 700, margin: '0 auto' }}>
-        {omkar.experience.map((exp, i) => (
-          <StaticExperienceCard
-            key={exp.company}
-            exp={exp}
-            index={i}
-            isExpanded={expandedCard === i}
-            onToggle={() => setExpandedCard(expandedCard === i ? null : i)}
-          />
-        ))}
+      <div style={{ padding: '60px 32px 40px', maxWidth: 1000, margin: '0 auto' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 20,
+        }}>
+          {omkar.experience.map((exp, i) => (
+            <StaticExperienceCard
+              key={exp.company}
+              exp={exp}
+              index={i}
+              isExpanded={expandedCard === i}
+              onToggle={() => setExpandedCard(expandedCard === i ? null : i)}
+            />
+          ))}
+        </div>
       </div>
 
       <LessonsSection />
