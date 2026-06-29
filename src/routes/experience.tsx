@@ -854,6 +854,15 @@ function TakeoffSequence({
       tl.fromTo(`.cloud-${i}`, { x: 0 }, { x: cloud.drift, duration: cloud.speed, ease: 'none' }, cloud.startAt);
     });
 
+    // ── Continuously looping cruise clouds (start showing from 60 to the end) ──
+    // We animate a secondary translate or reset position to loop them
+    for (let c = 0; c < 6; c++) {
+      // Loop 1
+      tl.fromTo(`.cruise-cloud-${c}`, { x: '100vw' }, { x: '-150vw', duration: 35 + c * 5, ease: 'none' }, 60 + c * 6);
+      // Loop 2 (starts after loop 1 moves a bit)
+      tl.fromTo(`.cruise-cloud-${c}-loop2`, { x: '100vw' }, { x: '-150vw', duration: 35 + c * 5, ease: 'none' }, 85 + c * 6);
+    }
+
     // ═══════════════════════════════════════════════════════════════════════
     // ── Phase 4a: RAINY SEASON — DJS clubs (60 → 120) ─────────────────────
     // ═══════════════════════════════════════════════════════════════════════
@@ -967,6 +976,13 @@ function TakeoffSequence({
 
     // Stars settle to light cruise level
     tl.to('.stars-layer', { opacity: 0.3, duration: 8 }, 155);
+
+    // Sunrise Glow element rises from the bottom horizon
+    tl.fromTo('.sunrise-glow', 
+      { y: 350, opacity: 0, scale: 0.8 }, 
+      { y: 0, opacity: 0.75, scale: 1, duration: 18, ease: 'power2.out' }, 
+      155
+    );
 
     // Card 4: Hooman Labs (summer)
     tl.fromTo('.cable-4', { scaleY: 0 }, { scaleY: 1, duration: 8, ease: 'power1.out', transformOrigin: 'top' }, CARD_TIMING[4][0]);
@@ -1150,7 +1166,64 @@ function TakeoffSequence({
               <CloudShape />
             </div>
           ))}
+
+          {/* Continuous Cruise Clouds (6 items, duplicated for seamless looping) */}
+          {Array.from({ length: 6 }).map((_, c) => {
+            const topPositions = ['15%', '30%', '45%', '60%', '75%', '85%'];
+            const sizes = [180, 240, 310, 150, 280, 210];
+            const opacities = [0.08, 0.05, 0.12, 0.04, 0.07, 0.06];
+            return (
+              <div key={c} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+                <div
+                  className={`cruise-cloud-${c}`}
+                  style={{
+                    position: 'absolute',
+                    top: topPositions[c],
+                    left: 0,
+                    width: sizes[c],
+                    height: sizes[c] * 0.42,
+                    color: `rgba(255,255,255,${opacities[c]})`,
+                    transform: 'translateX(100vw)',
+                  }}
+                >
+                  <CloudShape />
+                </div>
+                <div
+                  className={`cruise-cloud-${c}-loop2`}
+                  style={{
+                    position: 'absolute',
+                    top: topPositions[c],
+                    left: 0,
+                    width: sizes[c],
+                    height: sizes[c] * 0.42,
+                    color: `rgba(255,255,255,${opacities[c]})`,
+                    transform: 'translateX(100vw)',
+                  }}
+                >
+                  <CloudShape />
+                </div>
+              </div>
+            );
+          })}
         </div>
+
+        {/* ── Sunrise Glow (Summer phase only) ── */}
+        <div
+          className="sunrise-glow"
+          style={{
+            position: 'absolute',
+            bottom: '-10%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '120%',
+            height: '40%',
+            background: 'radial-gradient(ellipse at bottom, rgba(245,158,11,0.2) 0%, rgba(239,68,68,0.08) 50%, transparent 100%)',
+            filter: 'blur(30px)',
+            zIndex: 1,
+            opacity: 0,
+            pointerEvents: 'none',
+          }}
+        />
 
         {/* ── Airplane (stays centered) ── */}
         <div className="plane-wrapper" style={{
