@@ -17,6 +17,50 @@ export const omkar = {
 
   experience: [
     {
+      company: "DJS Code AI",
+      role: "Committee Member (Placeholder)",
+      period: "Rainy Season 2025",
+      accent: "#f87171", // red
+      highlights: [
+        "Organized coding events and AI workshops for over 500+ students in the college.",
+        "Built internal tooling and managed technical operations for the community."
+      ],
+      tech: ["Python", "Machine Learning", "Community Building"],
+    },
+    {
+      company: "DJS S4DS",
+      role: "Core Member (Placeholder)",
+      period: "Rainy Season 2025",
+      accent: "#fb923c", // orange
+      highlights: [
+        "Promoted data science awareness by hosting hackathons and speaker sessions.",
+        "Collaborated with peers to develop predictive models for real-world datasets."
+      ],
+      tech: ["Data Science", "Pandas", "Scikit-Learn"],
+    },
+    {
+      company: "DJS SIGAI",
+      role: "Technical Team (Placeholder)",
+      period: "Rainy Season 2025",
+      accent: "#facc15", // yellow
+      highlights: [
+        "Researched and presented papers on state-of-the-art NLP architectures.",
+        "Helped orchestrate the flagship AI symposium for the university."
+      ],
+      tech: ["Deep Learning", "NLP", "PyTorch"],
+    },
+    {
+      company: "COGNIFYZ",
+      role: "Data Science Intern (Placeholder)",
+      period: "Winter 2025",
+      accent: "#60a5fa", // blue
+      highlights: [
+        "Analyzed large-scale customer datasets to extract actionable business insights.",
+        "Developed and deployed machine learning pipelines for predictive analytics."
+      ],
+      tech: ["Python", "Machine Learning", "Data Analysis"],
+    },
+    {
       company: "Hooman Labs",
       role: "Founders Office Intern",
       period: "Apr 2026 – Present",
@@ -43,6 +87,7 @@ export const omkar = {
   projects: [
     {
       id: "nolan",
+      index: "01",
       name: "Nolan AI Studio",
       tagline: "Graph-RAG powered multi-agent storytelling platform",
       accent: "#c084fc",
@@ -63,6 +108,7 @@ export const omkar = {
     },
     {
       id: "finverse",
+      index: "02",
       name: "Finverse",
       tagline: "Offline-first financial literacy for rural India",
       accent: "#34d399",
@@ -83,6 +129,7 @@ export const omkar = {
     },
     {
       id: "signsync",
+      index: "03",
       name: "SignSync",
       tagline: "Real-time ISL/ASL translation with 3D avatars",
       accent: "#60a5fa",
@@ -104,6 +151,19 @@ export const omkar = {
   ],
 
   hackathons: [
+
+    {
+      place: 1,
+      placeLabel: "1st Place",
+      event: "ACE 2.0 National Level Hackathon",
+      host: "NMIMS MPSTME",
+      participants: "National Level",
+      project: "Healthtech Solution",
+      accent: "#f43f5e",
+      tech: ["Healthtech", "AI"],
+      detail: "Secured 1st place in the Healthtech domain.",
+      image: "/acewin.png",
+    },
     {
       place: 1,
       placeLabel: "1st Place",
@@ -114,6 +174,7 @@ export const omkar = {
       accent: "#c084fc",
       tech: ["Graph-RAG", "Neo4j", "LangGraph"],
       detail: "Graph-RAG multi-agent storytelling with AI comic generation and voice review workflows.",
+      image: "/devhackswin.png",
     },
     {
       place: 1,
@@ -125,6 +186,7 @@ export const omkar = {
       accent: "#34d399",
       tech: ["OpenCV", "IoT", "Routing"],
       detail: "Smart waste platform using OpenCV detection and intelligent routing to the nearest sanitation worker.",
+      image: "/hackxcelearatewin.png",
     },
     {
       place: 3,
@@ -136,6 +198,31 @@ export const omkar = {
       accent: "#60a5fa",
       tech: ["IndexedDB", "IVR", "Next.js"],
       detail: "Offline-first financial literacy with IndexedDB sync, IVR assistance and gamified modules.",
+      image: "/spectrumwin.png",
+    },
+    {
+      place: 6,
+      placeLabel: "Top 6",
+      event: "InnovGenius Hackathon",
+      host: "TCS x TCET",
+      participants: "Hackathon",
+      project: "Voice KYC",
+      accent: "#f59e0b",
+      tech: ["Voice AI", "KYC"],
+      detail: "Built an automated voice-based KYC platform.",
+      image: null,
+    },
+    {
+      place: 10,
+      placeLabel: "Top 10",
+      event: "Rubix 2026",
+      host: "Thadomal Shahani Engineering College",
+      participants: "Hackathon",
+      project: "Health-Sync",
+      accent: "#22c55e",
+      tech: ["MERN", "Agentic AI", "IndexedDB"],
+      detail: "Smart Hospital Operations & Decision Support System focused on improving real-time hospital efficiency and patient flow.",
+      image: "/rubixwin.png",
     },
   ],
 

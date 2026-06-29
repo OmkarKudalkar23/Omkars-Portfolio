@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import { AmbientBackground } from "@/components/background/AmbientBackground";
+import { IntroAnimation } from "@/components/animations/IntroAnimation";
 import { Greeting } from "@/components/chat/Greeting";
 import { SuggestedPrompts } from "@/components/chat/SuggestedPrompts";
 import { ChatMessage } from "@/components/chat/ChatMessage";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { useChat } from "@/hooks/useChat";
+import { Sidebar } from "@/components/sidebar/Sidebar";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -36,7 +38,11 @@ function Index() {
 
   return (
     <div className="relative min-h-screen">
+      <IntroAnimation />
       <AmbientBackground />
+
+      {/* Sidebar — fixed, sits outside the centered column */}
+      <Sidebar sendPrompt={send} />
 
       <main className="relative z-10 mx-auto flex min-h-screen w-full max-w-[760px] flex-col px-5">
         <div className="flex-1 pt-[14vh]">

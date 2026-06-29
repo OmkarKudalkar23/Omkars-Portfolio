@@ -9,18 +9,72 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ResumeRouteImport } from './routes/resume'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as HackathonsRouteImport } from './routes/hackathons'
+import { Route as ExperienceRouteImport } from './routes/experience'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CodingRouteImport } from './routes/coding'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProjectsNolanStudioRouteImport } from './routes/projects_.nolan-studio'
+import { Route as ProjectsFinverseRouteImport } from './routes/projects_.finverse'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
+const SkillsRoute = SkillsRouteImport.update({
+  id: '/skills',
+  path: '/skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResumeRoute = ResumeRouteImport.update({
+  id: '/resume',
+  path: '/resume',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HackathonsRoute = HackathonsRouteImport.update({
+  id: '/hackathons',
+  path: '/hackathons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExperienceRoute = ExperienceRouteImport.update({
+  id: '/experience',
+  path: '/experience',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CodingRoute = CodingRouteImport.update({
+  id: '/coding',
+  path: '/coding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsNolanStudioRoute = ProjectsNolanStudioRouteImport.update({
+  id: '/projects_/nolan-studio',
+  path: '/projects/nolan-studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsFinverseRoute = ProjectsFinverseRouteImport.update({
+  id: '/projects_/finverse',
+  path: '/projects/finverse',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiChatRoute = ApiChatRouteImport.update({
@@ -31,36 +85,116 @@ const ApiChatRoute = ApiChatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/coding': typeof CodingRoute
+  '/contact': typeof ContactRoute
+  '/experience': typeof ExperienceRoute
+  '/hackathons': typeof HackathonsRoute
+  '/projects': typeof ProjectsRoute
+  '/resume': typeof ResumeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/skills': typeof SkillsRoute
   '/api/chat': typeof ApiChatRoute
+  '/projects/finverse': typeof ProjectsFinverseRoute
+  '/projects/nolan-studio': typeof ProjectsNolanStudioRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/coding': typeof CodingRoute
+  '/contact': typeof ContactRoute
+  '/experience': typeof ExperienceRoute
+  '/hackathons': typeof HackathonsRoute
+  '/projects': typeof ProjectsRoute
+  '/resume': typeof ResumeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/skills': typeof SkillsRoute
   '/api/chat': typeof ApiChatRoute
+  '/projects/finverse': typeof ProjectsFinverseRoute
+  '/projects/nolan-studio': typeof ProjectsNolanStudioRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/coding': typeof CodingRoute
+  '/contact': typeof ContactRoute
+  '/experience': typeof ExperienceRoute
+  '/hackathons': typeof HackathonsRoute
+  '/projects': typeof ProjectsRoute
+  '/resume': typeof ResumeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/skills': typeof SkillsRoute
   '/api/chat': typeof ApiChatRoute
+  '/projects_/finverse': typeof ProjectsFinverseRoute
+  '/projects_/nolan-studio': typeof ProjectsNolanStudioRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sitemap.xml' | '/api/chat'
+  fullPaths:
+    | '/'
+    | '/coding'
+    | '/contact'
+    | '/experience'
+    | '/hackathons'
+    | '/projects'
+    | '/resume'
+    | '/sitemap.xml'
+    | '/skills'
+    | '/api/chat'
+    | '/projects/finverse'
+    | '/projects/nolan-studio'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sitemap.xml' | '/api/chat'
-  id: '__root__' | '/' | '/sitemap.xml' | '/api/chat'
+  to:
+    | '/'
+    | '/coding'
+    | '/contact'
+    | '/experience'
+    | '/hackathons'
+    | '/projects'
+    | '/resume'
+    | '/sitemap.xml'
+    | '/skills'
+    | '/api/chat'
+    | '/projects/finverse'
+    | '/projects/nolan-studio'
+  id:
+    | '__root__'
+    | '/'
+    | '/coding'
+    | '/contact'
+    | '/experience'
+    | '/hackathons'
+    | '/projects'
+    | '/resume'
+    | '/sitemap.xml'
+    | '/skills'
+    | '/api/chat'
+    | '/projects_/finverse'
+    | '/projects_/nolan-studio'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CodingRoute: typeof CodingRoute
+  ContactRoute: typeof ContactRoute
+  ExperienceRoute: typeof ExperienceRoute
+  HackathonsRoute: typeof HackathonsRoute
+  ProjectsRoute: typeof ProjectsRoute
+  ResumeRoute: typeof ResumeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SkillsRoute: typeof SkillsRoute
   ApiChatRoute: typeof ApiChatRoute
+  ProjectsFinverseRoute: typeof ProjectsFinverseRoute
+  ProjectsNolanStudioRoute: typeof ProjectsNolanStudioRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/skills': {
+      id: '/skills'
+      path: '/skills'
+      fullPath: '/skills'
+      preLoaderRoute: typeof SkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -68,11 +202,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/resume': {
+      id: '/resume'
+      path: '/resume'
+      fullPath: '/resume'
+      preLoaderRoute: typeof ResumeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hackathons': {
+      id: '/hackathons'
+      path: '/hackathons'
+      fullPath: '/hackathons'
+      preLoaderRoute: typeof HackathonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/experience': {
+      id: '/experience'
+      path: '/experience'
+      fullPath: '/experience'
+      preLoaderRoute: typeof ExperienceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/coding': {
+      id: '/coding'
+      path: '/coding'
+      fullPath: '/coding'
+      preLoaderRoute: typeof CodingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects_/nolan-studio': {
+      id: '/projects_/nolan-studio'
+      path: '/projects/nolan-studio'
+      fullPath: '/projects/nolan-studio'
+      preLoaderRoute: typeof ProjectsNolanStudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects_/finverse': {
+      id: '/projects_/finverse'
+      path: '/projects/finverse'
+      fullPath: '/projects/finverse'
+      preLoaderRoute: typeof ProjectsFinverseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/chat': {
@@ -87,9 +277,28 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CodingRoute: CodingRoute,
+  ContactRoute: ContactRoute,
+  ExperienceRoute: ExperienceRoute,
+  HackathonsRoute: HackathonsRoute,
+  ProjectsRoute: ProjectsRoute,
+  ResumeRoute: ResumeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SkillsRoute: SkillsRoute,
   ApiChatRoute: ApiChatRoute,
+  ProjectsFinverseRoute: ProjectsFinverseRoute,
+  ProjectsNolanStudioRoute: ProjectsNolanStudioRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { generateText, Output } from "ai";
 import { z } from "zod";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createMistral } from "@ai-sdk/mistral";
 import { omkar } from "@/lib/data";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
@@ -55,19 +55,19 @@ export const Route = createFileRoute("/api/chat")({
           });
         }
 
-        const key = process.env.LOVABLE_API_KEY;
+        const key = process.env.MISTRAL_API_KEY;
         if (!key) {
-          return new Response(JSON.stringify({ error: "Missing LOVABLE_API_KEY" }), {
+          return new Response(JSON.stringify({ error: "Missing MISTRAL_API_KEY" }), {
             status: 500,
             headers: { "content-type": "application/json" },
           });
         }
 
-        const gateway = createLovableAiGatewayProvider(key);
+        const mistral = createMistral({ apiKey: key });
 
         try {
           const { output } = await generateText({
-            model: gateway("google/gemini-3-flash-preview"),
+            model: mistral("mistral-large-latest"),
             system: SYSTEM_PROMPT,
             messages: messages.map((m) => ({ role: m.role, content: m.content })),
             output: Output.object({
