@@ -1163,20 +1163,30 @@ function TakeoffSequence({
         </div>
 
         {/* ── Hanging experience cards ── */}
-        {/* Cards show ONE at a time — all start invisible, GSAP reveals each in sequence */}
+        {/* Cards are positioned absolutely at the center so they display beautifully, one-by-one, without being compressed by a flex row */}
         <div className="cards-layer" style={{
           position: 'absolute',
-          top: '50%', left: '50%',
+          top: '46%', left: '50%',
           transform: 'translateX(-50%)',
-          display: 'flex',
-          gap: 40,
+          width: '100%',
+          maxWidth: 420,
+          height: 480,
           zIndex: 10,
         }}>
           {omkar.experience.map((exp, i) => (
             <div
               key={exp.company}
               className={`card-group-${i}`}
-              style={{ opacity: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                opacity: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
             >
               {/* Cable line */}
               <div
