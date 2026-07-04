@@ -33,12 +33,7 @@ function Index() {
   const { messages, busy, send, openProject } = useChat();
   const bottomRef = useRef<HTMLDivElement>(null);
   const [isMounted, setIsMounted] = useState(false);
-  const [hasFinishedIntro, setHasFinishedIntro] = useState(() => {
-    if (typeof window !== "undefined") {
-      return sessionStorage.getItem("hasFinishedIntro") === "true";
-    }
-    return false;
-  });
+  const [hasFinishedIntro, setHasFinishedIntro] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -49,7 +44,6 @@ function Index() {
   }, [messages]);
 
   const handleIntroFinish = () => {
-    sessionStorage.setItem("hasFinishedIntro", "true");
     setHasFinishedIntro(true);
   };
 
