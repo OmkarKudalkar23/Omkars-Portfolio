@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
-import { AmbientBackground } from "@/components/background/AmbientBackground";
+import { useEffect, useRef, useState } from "react";
 import { IntroAnimation } from "@/components/animations/IntroAnimation";
 import { Greeting } from "@/components/chat/Greeting";
 import { SuggestedPrompts } from "@/components/chat/SuggestedPrompts";
@@ -8,6 +7,8 @@ import { ChatMessage } from "@/components/chat/ChatMessage";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { useChat } from "@/hooks/useChat";
 import { Sidebar } from "@/components/sidebar/Sidebar";
+import { Lightfall } from "@/components/ui/Lightfall";
+import { AirplaneLandingIntro } from "@/components/animations/AirplaneLandingIntro";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,15 +32,56 @@ export const Route = createFileRoute("/")({
 function Index() {
   const { messages, busy, send, openProject } = useChat();
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+  const [hasFinishedIntro, setHasFinishedIntro] = useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("hasFinishedIntro") === "true";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages]);
 
+  const handleIntroFinish = () => {
+    sessionStorage.setItem("hasFinishedIntro", "true");
+    setHasFinishedIntro(true);
+  };
+
+  if (!hasFinishedIntro) {
+    return <AirplaneLandingIntro onFinish={handleIntroFinish} />;
+  }
+
   return (
     <div className="relative min-h-screen">
       <IntroAnimation />
-      <AmbientBackground />
+      
+      {isMounted && (
+        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+          <Lightfall
+            colors={['#4f8ef7', '#7850c8', '#3ecf8e']}
+            backgroundColor="#080809"
+            speed={0.25}
+            streakCount={4}
+            streakWidth={0.8}
+            streakLength={1.3}
+            glow={0.7}
+            density={0.45}
+            twinkle={0.5}
+            zoom={2.2}
+            backgroundGlow={0.5}
+            opacity={0.4}
+            mouseInteraction={true}
+            mouseStrength={0.7}
+            mouseRadius={1.1}
+          />
+        </div>
+      )}
 
       {/* Sidebar — fixed, sits outside the centered column */}
       <Sidebar sendPrompt={send} />
@@ -62,3 +104,4 @@ function Index() {
     </div>
   );
 }
+

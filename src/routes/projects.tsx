@@ -276,8 +276,14 @@ function ProjectsPage() {
 
       {/* Header */}
       <header style={{ display: 'flex', justifyContent: 'space-between', padding: '32px 48px', position: 'relative', zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Asterisk size={16} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Asterisk size={24} color="#a0a0a8" />
+          </motion.div>
           <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.1em' }}>SELECTED PROJECTS</span>
         </div>
         <Menu size={20} />

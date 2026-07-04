@@ -1,779 +1,716 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import * as d3 from 'd3';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { X, ExternalLink } from 'lucide-react';
-import { PageShell } from '@/components/layout/PageShell';
+import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Eye, EyeOff } from "lucide-react";
+import { PageShell } from "@/components/layout/PageShell";
+import { useLenis } from "lenis/react";
+import "maplibre-gl/dist/maplibre-gl.css";
+import maplibregl from "maplibre-gl";
 
-gsap.registerPlugin(ScrollTrigger);
+// ─── Types ───────────────────────────────────────────────────────────────────
 
-// ─── Data Scaffolding ────────────────────────────────────────────────────────
+type StopType = "source" | "waypoint" | "destination";
 
-const BRAND_COLOR = "#4f8ef7";
+type FlightStop = {
+  id: string;
+  city: string;
+  icao: string;
+  lat: number;
+  lng: number;
+  label: string;
+  type: StopType;
+  skills: string[];
+};
 
-const skillsData = [
-  { id: "python", label: "Python", icon: "python", category: "languages", usageWeight: 9, description: "Used extensively for data processing, AI agent pipelines, and backend logic in both research and production systems.", projectLink: null },
-  { id: "cpp", label: "C++", icon: "cplusplus", category: "languages", usageWeight: 7, description: "Core language for algorithmic problem solving and performance-critical systems.", projectLink: null },
-  { id: "c", label: "C", icon: "c", category: "languages", usageWeight: 6, description: "Foundational language used for systems programming and embedded understanding.", projectLink: null },
-  { id: "java", label: "Java", icon: "java", category: "languages", usageWeight: 6, description: "Object-oriented backend development and enterprise architecture exposure.", projectLink: null },
-  { id: "js", label: "JavaScript", icon: "javascript", category: "languages", usageWeight: 9, description: "The backbone of my web development workflow, heavily used across the entire stack.", projectLink: null },
-  
-  { id: "nextjs", label: "Next.js", icon: "nextdotjs", category: "frontend", usageWeight: 9, description: "My go-to React framework for production applications, utilizing SSR, API routes, and App Router.", projectLink: "/projects/nolan-studio" },
-  { id: "react", label: "React.js", icon: "react", category: "frontend", usageWeight: 9, description: "Used for building highly interactive and component-driven user interfaces.", projectLink: null },
-  { id: "threejs", label: "Three.js", icon: "threedotjs", category: "frontend", usageWeight: 6, description: "Leveraged via React Three Fiber to build immersive 3D web experiences.", projectLink: null },
-  { id: "framer", label: "Framer Motion", icon: "framer", category: "frontend", usageWeight: 8, description: "Used to orchestrate complex, fluid, physics-based animations across all my frontends.", projectLink: null },
-  { id: "tailwind", label: "Tailwind CSS", icon: "tailwindcss", category: "frontend", usageWeight: 9, description: "My primary styling tool for rapid, design-system-driven utility class development.", projectLink: null },
-  
-  { id: "nodejs", label: "Node.js", icon: "nodedotjs", category: "backend", usageWeight: 8, description: "Powers the backend servers and API layers of my full-stack applications.", projectLink: null },
-  { id: "express", label: "Express.js", icon: "express", category: "backend", usageWeight: 8, description: "Used for robust, traditional RESTful API development and middleware orchestration.", projectLink: null },
-  { id: "mongodb", label: "MongoDB", icon: "mongodb", category: "backend", usageWeight: 8, description: "Flexible NoSQL database used for rapid prototyping and unstructured data storage.", projectLink: "/projects/finverse" },
-  { id: "neo4j", label: "Neo4j", icon: "neo4j", category: "backend", usageWeight: 9, description: "Graph database powering complex relationship engines. Replaced traditional vector chunking with graph-based retrieval for long-form story consistency.", projectLink: "/projects/nolan-studio" },
-  { id: "rest", label: "REST APIs", icon: null, category: "backend", usageWeight: 9, description: "Core architectural style I use for client-server communication.", projectLink: null },
-  
-  { id: "langchain", label: "LangChain", icon: "langchain", category: "ai", usageWeight: 8, description: "Used to orchestrate LLM calls, tools, and chains for complex AI agent workflows.", projectLink: "/projects/nolan-studio" },
-  { id: "langgraph", label: "LangGraph", icon: "langchain", category: "ai", usageWeight: 8, description: "Utilized for stateful, multi-agent coordination in production AI pipelines.", projectLink: "/projects/nolan-studio" },
-  { id: "mediapipe", label: "MediaPipe", icon: "google", category: "ai", usageWeight: 7, description: "Used for real-time computer vision tasks like hand landmark detection.", projectLink: "/projects/signsync" },
-  { id: "opencv", label: "OpenCV", icon: "opencv", category: "ai", usageWeight: 7, description: "Core library for image processing and vision algorithms.", projectLink: "/projects/signsync" },
-  { id: "lstm", label: "LSTM", icon: null, category: "ai", usageWeight: 6, description: "Implemented recurrent neural networks for sequence modeling and temporal data.", projectLink: "/projects/signsync" },
-  { id: "whisper", label: "Whisper", icon: "openai", category: "ai", usageWeight: 6, description: "Integrated OpenAI's Whisper model for robust speech-to-text transcription.", projectLink: null },
-  
-  { id: "git", label: "Git", icon: "git", category: "tools", usageWeight: 9, description: "Essential version control for all my codebases.", projectLink: null },
-  { id: "github", label: "GitHub", icon: "github", category: "tools", usageWeight: 9, description: "Used for collaboration, issue tracking, and CI/CD pipelines.", projectLink: null },
-  { id: "vercel", label: "Vercel", icon: "vercel", category: "tools", usageWeight: 8, description: "My primary deployment platform for frontend and serverless projects.", projectLink: null },
-  { id: "n8n", label: "n8n", icon: "n8n", category: "tools", usageWeight: 6, description: "Used for building internal automation workflows and nocode API integrations.", projectLink: null },
-  { id: "cicd", label: "CI/CD", icon: "githubactions", category: "tools", usageWeight: 7, description: "Automated testing and deployment pipelines to ensure production reliability.", projectLink: null },
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const flightRoute: FlightStop[] = [
+  {
+    id: "origin",
+    city: "Mumbai",
+    icao: "OMK",
+    lat: 19.0760, lng: 72.8777,
+    label: "OMKAR",
+    type: "source",
+    skills: [],
+  },
+  {
+    id: "bengaluru",
+    city: "Bengaluru",
+    icao: "BLR",
+    lat: 12.9716, lng: 77.5946,
+    label: "AI / ML",
+    type: "waypoint",
+    skills: ["LangChain", "LangGraph", "MediaPipe", "OpenCV", "LSTM", "Whisper"],
+  },
+  {
+    id: "hyderabad",
+    city: "Hyderabad",
+    icao: "HYD",
+    lat: 17.3850, lng: 78.4867,
+    label: "BACKEND",
+    type: "waypoint",
+    skills: ["Node.js", "Express.js", "MongoDB", "Neo4j", "REST APIs"],
+  },
+  {
+    id: "pune",
+    city: "Pune",
+    icao: "PNQ",
+    lat: 18.5204, lng: 73.8567,
+    label: "FRONTEND",
+    type: "waypoint",
+    skills: ["React.js", "Next.js", "Three.js", "Framer Motion", "Tailwind CSS"],
+  },
+  {
+    id: "delhi",
+    city: "New Delhi",
+    icao: "DEL",
+    lat: 28.6139, lng: 77.2090,
+    label: "TOOLS",
+    type: "waypoint",
+    skills: ["Git", "GitHub", "Vercel", "n8n", "CI/CD"],
+  },
+  {
+    id: "chennai",
+    city: "Chennai",
+    icao: "MAA",
+    lat: 13.0827, lng: 80.2707,
+    label: "LANGUAGES",
+    type: "waypoint",
+    skills: ["Python", "JavaScript", "C++", "Java"],
+  },
+  {
+    id: "destination",
+    city: "Next Role",
+    icao: "NXT",
+    lat: 12.2958, lng: 76.6394, // Mysuru
+    label: "NEXT ROLE",
+    type: "destination",
+    skills: [],
+  },
 ];
 
-const projectLinksData = [
-  // Nolan AI Studio
-  { source: "neo4j", target: "langgraph", project: "Nolan AI Studio", route: "/projects/nolan-studio" },
-  { source: "neo4j", target: "nextjs", project: "Nolan AI Studio", route: "/projects/nolan-studio" },
-  { source: "langchain", target: "langgraph", project: "Nolan AI Studio", route: "/projects/nolan-studio" },
-  { source: "mongodb", target: "nextjs", project: "Nolan AI Studio", route: "/projects/nolan-studio" },
-  
-  // SignSync
-  { source: "mediapipe", target: "opencv", project: "SignSync", route: "/projects" },
-  { source: "lstm", target: "python", project: "SignSync", route: "/projects" },
-  { source: "react", target: "mediapipe", project: "SignSync", route: "/projects" },
-  
-  // Finverse
-  { source: "react", target: "nodejs", project: "Finverse", route: "/projects" },
-  { source: "mongodb", target: "express", project: "Finverse", route: "/projects" },
-  { source: "threejs", target: "react", project: "Finverse", route: "/projects" },
-  
-  // General connections
-  { source: "js", target: "react", project: "Frontend ecosystem", route: null },
-  { source: "python", target: "langchain", project: "AI ecosystem", route: null },
-  { source: "git", target: "github", project: "Version control", route: null },
-];
+const categoryColors: Record<string, string> = {
+  bengaluru:   "#8b5cf6", // purple — AI
+  hyderabad:   "#10b981", // green — Backend
+  pune:        "#3b82f6", // blue — Frontend
+  delhi:       "#64748b", // slate — Tools
+  chennai:     "#f59e0b", // amber — Languages
+  destination: "#22c55e", // green — Next Role
+};
 
-// ─── D3 Node/Link Types ──────────────────────────────────────────────────────
+// ─── Skill Chart Component ────────────────────────────────────────────────────
 
-type ConstellationNode = d3.SimulationNodeDatum & typeof skillsData[0] & { radius: number };
-type ConstellationLink = d3.SimulationLinkDatum<ConstellationNode> & typeof projectLinksData[0];
-
-// ─── Skill Constellation Component ────────────────────────────────────────────
-
-function SkillConstellation({
-  prefersReducedMotion,
-  externalSelectedNodeId,
-  onExternalSelectChange,
-}: {
+function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
   prefersReducedMotion: boolean;
-  externalSelectedNodeId?: string | null;
-  onExternalSelectChange?: (id: string | null) => void;
+  isMobile: boolean;
+  scrollProg: number;
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const wrapperRef = useRef<SVGGElement>(null);
-  const navigate = useNavigate();
-  
-  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
-  const [selectedNodeId, _setSelectedNodeId] = useState<string | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
-  // Merge external control with internal selection
-  const effectiveSelected = externalSelectedNodeId !== undefined ? externalSelectedNodeId : selectedNodeId;
-  const setSelectedNodeId = (id: string | null) => {
-    _setSelectedNodeId(id);
-    onExternalSelectChange?.(id);
-  };
-  
-  // GSAP Cinematic Camera State
-  const isAnimatingRef = useRef(false);
-  const travelTweenRef = useRef<gsap.core.Tween | null>(null);
-  const idleTweenRef = useRef<gsap.core.Tween | null>(null);
-  const [isTravelling, setIsTravelling] = useState(false);
-  
-  // Generate a massive network of dummy nodes to make the graph feel huge and dense
-  const dummyGraph = useMemo(() => {
-    const nodes = Array.from({ length: 400 }).map((_, i) => ({
-      id: `dummy-${i}`,
-      label: "",
-      icon: null,
-      category: "dummy",
-      usageWeight: Math.random() * 2.5 + 0.5,
-      description: "",
-      projectLink: null
-    }));
+  const [mapInstance, setMapInstance] = useState<maplibregl.Map | null>(null);
+  const [pixelCoords, setPixelCoords] = useState<Record<string, { x: number; y: number }>>({});
+  const [trailPositions, setTrailPositions] = useState<{ x: number; y: number }[]>([]);
 
-    const links: { source: string; target: string; project: string; route: string | null }[] = [];
-    nodes.forEach(node => {
-      const numConnections = Math.floor(Math.random() * 2) + 1;
-      for (let i = 0; i < numConnections; i++) {
-        const connectToReal = Math.random() > 0.85; 
-        const targetId = connectToReal 
-          ? skillsData[Math.floor(Math.random() * skillsData.length)].id
-          : nodes[Math.floor(Math.random() * nodes.length)].id;
-        
-        if (targetId !== node.id) {
-          links.push({ source: node.id, target: targetId, project: "dummy", route: null });
-        }
-      }
-    });
-    return { nodes, links };
-  }, []);
+  const showAll = prefersReducedMotion || isMobile;
 
-  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
-  
-  const graphData = useMemo(() => {
-    const allSkills = [...skillsData, ...dummyGraph.nodes];
-    const allLinks = [...projectLinksData, ...dummyGraph.links];
-    
-    const nodes: ConstellationNode[] = allSkills.map(s => ({
-      ...s,
-      radius: s.category === 'dummy' ? (2 + Math.random() * 4) : (6 + (s.usageWeight / 10) * 14),
-    }));
-    const links: ConstellationLink[] = allLinks.map(l => ({ ...l }));
-    return { nodes, links };
-  }, [dummyGraph]);
-
+  // Initialize MapLibre
   useEffect(() => {
-    if (!containerRef.current) return;
-    const observer = new ResizeObserver(entries => {
-      for (let entry of entries) {
-        setDimensions({ width: entry.contentRect.width, height: entry.contentRect.height });
-      }
-    });
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, []);
+    if (!mapContainerRef.current) return;
 
-  // ─── D3 Zoom & Infinite Panning ───────────────────────────
-  const zoomBehavior = useMemo(() => d3.zoom<SVGSVGElement, unknown>()
-    .scaleExtent([0.3, 4])
-    .on('start', (event) => {
-      // If the user manually starts dragging/zooming, instantly kill any idle float animations
-      if (event.sourceEvent && idleTweenRef.current) {
-        idleTweenRef.current.kill();
-        idleTweenRef.current = null;
-      }
-    })
-    .on('zoom', (event) => {
-      d3.select(wrapperRef.current).attr('transform', event.transform);
-    }), []);
-
-  useEffect(() => {
-    if (!svgRef.current) return;
-    const svg = d3.select(svgRef.current);
-    svg.call(zoomBehavior);
-    svg.on("dblclick.zoom", null);
-  }, [zoomBehavior]);
-
-  // Force simulation setup
-  useEffect(() => {
-    const { nodes, links } = graphData;
-    const { width, height } = dimensions;
-    if (width === 0 || height === 0) return;
-
-    const simulation = d3.forceSimulation<ConstellationNode>(nodes)
-      .force("charge", d3.forceManyBody().strength(-200)) 
-      .force("link", d3.forceLink<ConstellationNode, ConstellationLink>(links).id(d => d.id).distance(120))
-      .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("collide", d3.forceCollide<ConstellationNode>().radius(d => d.radius + 15).iterations(2));
-
-    const svgNode = svgRef.current;
-    if (!svgNode) return;
-    const svg = d3.select(svgNode);
-    
-    const linkSelection = svg.selectAll<SVGLineElement, ConstellationLink>('.graph-link').data(links);
-    const nodeSelection = svg.selectAll<SVGGElement, ConstellationNode>('.graph-node').data(nodes);
-
-    if (!prefersReducedMotion) {
-      simulation.alphaTarget(0.015).restart();
-    }
-
-    simulation.on("tick", () => {
-      linkSelection
-        .attr('x1', d => (d.source as ConstellationNode).x ?? 0)
-        .attr('y1', d => (d.source as ConstellationNode).y ?? 0)
-        .attr('x2', d => (d.target as ConstellationNode).x ?? 0)
-        .attr('y2', d => (d.target as ConstellationNode).y ?? 0);
-        
-      nodeSelection
-        .attr('transform', d => `translate(${d.x ?? 0},${d.y ?? 0})`);
+    const map = new maplibregl.Map({
+      container: mapContainerRef.current,
+      style: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+      center: [82.0, 22.0], // Center of India
+      zoom: 4.5,            // India fills viewport nicely
+      pitch: 20,            // slight 3D tilt
+      bearing: 0,
+      interactive: false,
+      attributionControl: false,
     });
 
-    const drag = d3.drag<SVGGElement, ConstellationNode>()
-      .on('start', (event, d) => {
-        if (isAnimatingRef.current) return; // Prevent drag during camera travel
-        if (!event.active && !prefersReducedMotion) simulation.alphaTarget(0.1).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-      })
-      .on('drag', (event, d) => {
-        if (isAnimatingRef.current) return;
-        d.fx = event.x;
-        d.fy = event.y;
-      })
-      .on('end', (event, d) => {
-        if (isAnimatingRef.current) return;
-        if (!event.active && !prefersReducedMotion) simulation.alphaTarget(0.015);
-        d.fx = null;
-        d.fy = null;
-      });
-
-    nodeSelection.call(drag);
+    map.on("load", () => {
+      setMapInstance(map);
+    });
 
     return () => {
-      simulation.stop();
+      map.remove();
     };
-  }, [graphData, dimensions, prefersReducedMotion]);
+  }, []);
 
-  // ─── Cinematic GSAP Camera Animation ─────────────────────────────────────
+  // Update pixel mappings on map move / resize
   useEffect(() => {
-    const svgNode = svgRef.current;
-    if (!svgNode) return;
-    const svg = d3.select(svgNode);
-    const { width, height } = dimensions;
-    if (width === 0 || height === 0) return;
+    if (!mapInstance) return;
 
-    // Cleanup any existing camera tweens
-    if (travelTweenRef.current) travelTweenRef.current.kill();
-    if (idleTweenRef.current) idleTweenRef.current.kill();
-    
-    const currentTransform = d3.zoomTransform(svgNode);
-    const proxy = { 
-      x: currentTransform.x, 
-      y: currentTransform.y, 
-      k: currentTransform.k 
+    const updatePixels = () => {
+      const coords: Record<string, { x: number; y: number }> = {};
+      flightRoute.forEach(stop => {
+        const px = mapInstance.project([stop.lng, stop.lat]);
+        coords[stop.id] = { x: px.x, y: px.y };
+      });
+      setPixelCoords(coords);
     };
 
-    if (selectedNodeId) {
-      const node = graphData.nodes.find(n => n.id === selectedNodeId);
-      if (node && node.x != null && node.y != null) {
-        // Calculate framing logic
-        const panelWidth = window.innerWidth < 768 ? 0 : 320;
-        const scale = 1.6;
-        const targetX = (width - panelWidth) / 2 - node.x * scale;
-        const targetY = height / 2 - node.y * scale;
+    updatePixels();
+    mapInstance.on("move", updatePixels);
+    mapInstance.on("resize", updatePixels);
 
-        isAnimatingRef.current = true;
-        setIsTravelling(true);
+    return () => {
+      mapInstance.off("move", updatePixels);
+      mapInstance.off("resize", updatePixels);
+    };
+  }, [mapInstance]);
 
-        travelTweenRef.current = gsap.to(proxy, {
-          x: targetX,
-          y: targetY,
-          k: scale,
-          duration: 1.4,
-          ease: "back.out(1.2)", // Momentum with subtle 2-4% overshoot
-          onUpdate: () => {
-            // Continuously interpolate internal D3 zoom state synchronously
-            svg.call(zoomBehavior.transform, d3.zoomIdentity.translate(proxy.x, proxy.y).scale(proxy.k));
-          },
-          onComplete: () => {
-            isAnimatingRef.current = false;
-            setIsTravelling(false);
-            
-            // Trigger zero-gravity idle float
-            const idleProxy = { offset: 0 };
-            idleTweenRef.current = gsap.to(idleProxy, {
-              offset: Math.PI * 2,
-              duration: 8,
-              repeat: -1,
-              ease: "none",
-              onUpdate: () => {
-                // Continuous, extremely slow 1-3 pixel floating movement
-                const floatX = targetX + Math.sin(idleProxy.offset) * 2.5;
-                const floatY = targetY + Math.cos(idleProxy.offset * 0.8) * 2.5;
-                svg.call(zoomBehavior.transform, d3.zoomIdentity.translate(floatX, floatY).scale(scale));
-              }
-            });
-          }
-        });
-      }
-    } else {
-      // Reset Camera Sequence
-      isAnimatingRef.current = true;
-      setIsTravelling(true);
+  // Smoothly pan camera to track current plane position
+  useEffect(() => {
+    if (!mapInstance || showAll) return;
 
-      travelTweenRef.current = gsap.to(proxy, {
-        x: 0,
-        y: 0,
-        k: 1, // Default scale
-        duration: 1.2,
-        ease: "power3.inOut", // Smooth deceleration
-        onUpdate: () => {
-          svg.call(zoomBehavior.transform, d3.zoomIdentity.translate(proxy.x, proxy.y).scale(proxy.k));
-        },
-        onComplete: () => {
-          isAnimatingRef.current = false;
-          setIsTravelling(false);
-        }
+    const totalLegs = flightRoute.length - 1;
+    const progressVal = scrollProg * totalLegs;
+    const currentLeg = Math.min(Math.floor(progressVal), totalLegs - 1);
+    const legProgress = progressVal - currentLeg;
+
+    const fromCity = flightRoute[currentLeg];
+    const toCity = flightRoute[currentLeg + 1];
+
+    if (fromCity && toCity) {
+      const currentLng = fromCity.lng + (toCity.lng - fromCity.lng) * legProgress;
+      const currentLat = fromCity.lat + (toCity.lat - fromCity.lat) * legProgress;
+
+      mapInstance.easeTo({
+        center: [currentLng, currentLat],
+        zoom: scrollProg > 0.95 ? 4.2 : 5.0,
+        duration: 80,
+        easing: t => t,
       });
     }
-  }, [selectedNodeId, dimensions, graphData.nodes, zoomBehavior]);
+  }, [scrollProg, mapInstance, showAll]);
 
-  // Determine opacities based on hover/select state
-  const getNodeOpacity = (nodeId: string) => {
-    if (effectiveSelected) {
-      if (nodeId === effectiveSelected) return 1;
-      const isConnected = graphData.links.some(l => 
-        ((l.source as ConstellationNode).id === effectiveSelected && (l.target as ConstellationNode).id === nodeId) ||
-        ((l.target as ConstellationNode).id === effectiveSelected && (l.source as ConstellationNode).id === nodeId)
-      );
-      return isConnected ? 1 : 0.15;
-    }
-    
-    if (!hoveredNode) return 1;
-    if (hoveredNode === nodeId) return 1;
-    const isConnected = graphData.links.some(l => 
-      ((l.source as ConstellationNode).id === hoveredNode && (l.target as ConstellationNode).id === nodeId) ||
-      ((l.target as ConstellationNode).id === hoveredNode && (l.source as ConstellationNode).id === nodeId)
-    );
-    return isConnected ? 1 : 0.2;
-  };
+  // Calculate current active leg state
+  const totalLegs = flightRoute.length - 1;
+  const progressVal = scrollProg * totalLegs;
+  const currentLegIndex = Math.min(Math.floor(progressVal), totalLegs - 1);
+  const currentLegProgress = progressVal - currentLegIndex;
 
-  const getLinkOpacity = (link: ConstellationLink) => {
-    if (effectiveSelected) {
-      if ((link.source as ConstellationNode).id === effectiveSelected || (link.target as ConstellationNode).id === effectiveSelected) return 0.6;
-      return 0.05;
+  const currentLegString = useMemo(() => {
+    if (showAll || scrollProg >= 0.99) return "N/A — COMPLETED";
+    if (scrollProg === 0) return "AWAITING DEPARTURE";
+    const fromCity = flightRoute[currentLegIndex];
+    const toCity = flightRoute[currentLegIndex + 1];
+    return `${fromCity.icao} → ${toCity.icao}`;
+  }, [currentLegIndex, scrollProg, showAll]);
+
+  // Calculate plane position in screen coordinates
+  const planeState = useMemo(() => {
+    if (Object.keys(pixelCoords).length === 0) return null;
+
+    if (showAll || scrollProg >= 0.99) {
+      // Park at Mysuru (destination)
+      const destPx = pixelCoords["destination"];
+      return { x: destPx?.x ?? 0, y: destPx?.y ?? 0, angle: -8 };
     }
 
-    if (!hoveredNode) return 0.15;
-    if ((link.source as ConstellationNode).id === hoveredNode || (link.target as ConstellationNode).id === hoveredNode) return 0.6;
-    return 0.05;
-  };
+    const fromCity = flightRoute[currentLegIndex];
+    const toCity = flightRoute[currentLegIndex + 1];
+    const fromPx = pixelCoords[fromCity.id];
+    const toPx = pixelCoords[toCity.id];
 
-  // Get connected skills for the selected node
-  const selectedNodeData = useMemo(() => graphData.nodes.find(n => n.id === effectiveSelected), [effectiveSelected, graphData.nodes]);
-  const connectedSkills = useMemo(() => {
-    if (!effectiveSelected) return [];
-    const connectedIds = new Set<string>();
-    graphData.links.forEach(l => {
-      if ((l.source as ConstellationNode).id === effectiveSelected) connectedIds.add((l.target as ConstellationNode).id);
-      if ((l.target as ConstellationNode).id === effectiveSelected) connectedIds.add((l.source as ConstellationNode).id);
-    });
-    return graphData.nodes.filter(n => connectedIds.has(n.id) && n.category !== 'dummy'); // Exclude dummy nodes from panel list
-  }, [effectiveSelected, graphData]);
+    if (!fromPx || !toPx) return null;
 
-  // Sync GSAP camera when externalSelectedNodeId changes
+    // Midpoint & curve control points
+    const mx = (fromPx.x + toPx.x) / 2;
+    const my = (fromPx.y + toPx.y) / 2;
+    const dx = toPx.x - fromPx.x;
+    const dy = toPx.y - fromPx.y;
+    const cx = mx - dy * (-0.3);
+    const cy = my + dx * (-0.3);
+
+    // Quadratic bezier position
+    const t = currentLegProgress;
+    const x = (1 - t) * (1 - t) * fromPx.x + 2 * (1 - t) * t * cx + t * t * toPx.x;
+    const y = (1 - t) * (1 - t) * fromPx.y + 2 * (1 - t) * t * cy + t * t * toPx.y;
+
+    // Tangent derivative vector for auto-rotation
+    const vx = 2 * (1 - t) * (cx - fromPx.x) + 2 * t * (toPx.x - cx);
+    const vy = 2 * (1 - t) * (cy - fromPx.y) + 2 * t * (toPx.y - cy);
+    // Since the top-view image points UP, we add 90 degrees offset to align it with math vectors (pointing right)
+    const angle = Math.atan2(vy, vx) * (180 / Math.PI) + 90;
+
+    return { x, y, angle };
+  }, [pixelCoords, currentLegIndex, currentLegProgress, scrollProg, showAll]);
+
+  // Update plane trails position array
   useEffect(() => {
-    if (externalSelectedNodeId !== undefined) {
-      _setSelectedNodeId(externalSelectedNodeId);
-    }
-  }, [externalSelectedNodeId]);
+    if (!planeState || showAll) return;
+    setTrailPositions(prev => {
+      const next = [{ x: planeState.x, y: planeState.y }, ...prev];
+      return next.slice(0, 5);
+    });
+  }, [planeState, showAll]);
+
+  const fmcProgressPercent = Math.round(scrollProg * 100);
+
+  // Helper to render arcs
+  const renderArcs = () => {
+    if (Object.keys(pixelCoords).length === 0) return null;
+
+    return flightRoute.slice(0, -1).map((stop, i) => {
+      const nextStop = flightRoute[i + 1];
+      const fromPx = pixelCoords[stop.id];
+      const toPx = pixelCoords[nextStop.id];
+
+      if (!fromPx || !toPx) return null;
+
+      const mx = (fromPx.x + toPx.x) / 2;
+      const my = (fromPx.y + toPx.y) / 2;
+      const dx = toPx.x - fromPx.x;
+      const dy = toPx.y - fromPx.y;
+      const cx = mx - dy * (-0.3);
+      const cy = my + dx * (-0.3);
+
+      const d = `M ${fromPx.x} ${fromPx.y} Q ${cx} ${cy} ${toPx.x} ${toPx.y}`;
+
+      // Calculate path visibility offset
+      let legVisProg = 0;
+      if (showAll || scrollProg >= 0.99) {
+        legVisProg = 1.0;
+      } else if (scrollProg > 0) {
+        if (i < currentLegIndex) {
+          legVisProg = 1.0;
+        } else if (i === currentLegIndex) {
+          legVisProg = currentLegProgress;
+        }
+      }
+
+      // We use 2000 as large default path offset multiplier
+      const offsetVal = 2000 * (1 - legVisProg);
+
+      return (
+        <g key={`arc-${stop.id}-${nextStop.id}`}>
+          {/* Casing */}
+          <path d={d} fill="none" stroke="#060d1a" strokeWidth={10} strokeLinecap="round" />
+          {/* Dashed background corridor */}
+          <path d={d} fill="none" stroke="rgba(59,130,246,0.15)" strokeWidth={3} strokeDasharray="8 5" />
+          {/* Highlight drawing layer */}
+          <path
+            d={d}
+            fill="none"
+            stroke={scrollProg > 0.01 ? "rgba(147,197,253,0.7)" : "rgba(147,197,253,0.1)"}
+            strokeWidth={1.5}
+            strokeDasharray={2000}
+            strokeDashoffset={offsetVal}
+            style={{ transition: "stroke-dashoffset 0.05s linear, stroke 0.3s" }}
+          />
+        </g>
+      );
+    });
+  };
+
+  // Helper to render nodes
+  const renderNodes = () => {
+    if (Object.keys(pixelCoords).length === 0) return null;
+
+    return flightRoute.map((stop, i) => {
+      const pos = pixelCoords[stop.id];
+      if (!pos) return null;
+
+      const arrivedAtStop = showAll || scrollProg >= 0.99 || i <= currentLegIndex;
+      const opacity = arrivedAtStop ? 1 : 0;
+      const scale = arrivedAtStop ? 1 : 0.3;
+
+      if (stop.type === "source") {
+        return (
+          <g key={stop.id} transform={`translate(${pos.x},${pos.y})`}>
+            {/* Pulsing radar ping */}
+            <circle r={36} className="radar-ping" fill="none" stroke="#ef4444" strokeWidth={1.5} />
+            <circle r={22} fill="#ef4444" opacity={0.15} />
+            <circle r={8} fill="#ef4444" style={{ filter: "drop-shadow(0 0 8px #ef4444)" }} />
+            {/* Crosshair ticks */}
+            <line x1={0} y1={-14} x2={0} y2={14} stroke="#ef4444" strokeWidth={1.5} />
+            <line x1={-14} y1={0} x2={14} y2={0} stroke="#ef4444" strokeWidth={1.5} />
+            <text y={32} textAnchor="middle" fill="#ef4444" fontSize={9} fontWeight={700} fontFamily="monospace">
+              OMK [MUMBAI]
+            </text>
+          </g>
+        );
+      }
+
+      if (stop.type === "destination") {
+        const destArrived = showAll || scrollProg >= 0.98;
+        const color = destArrived ? "#22c55e" : "#484f58";
+        return (
+          <g key={stop.id} transform={`translate(${pos.x},${pos.y})`}>
+            {destArrived && (
+              <circle r={32} className="radar-ping-green" fill="none" stroke="#22c55e" strokeWidth={1.5} />
+            )}
+            <circle r={20} fill="#0a1628" stroke={color} strokeWidth={2} />
+            <circle r={6} fill={color} />
+            <text y={30} textAnchor="middle" fill={color} fontSize={9} fontWeight={700} fontFamily="monospace">
+              NXT [NEXT ROLE]
+            </text>
+          </g>
+        );
+      }
+
+      // Waypoint city nodes
+      const color = categoryColors[stop.id] ?? "#3b82f6";
+      return (
+        <g
+          key={stop.id}
+          transform={`translate(${pos.x},${pos.y})`}
+          style={{ opacity, transform: `scale(${scale})`, transition: "opacity 0.4s ease-out, transform 0.4s ease-out" }}
+        >
+          <circle r={16} fill="#0a1628" stroke={color} strokeWidth={1.8} />
+          <circle r={4} fill={color} />
+          {/* Waypoint crosshairs */}
+          <line x1={0} y1={-8} x2={0} y2={-16} stroke={color} strokeWidth={1} />
+          <line x1={0} y1={8} x2={0} y2={16} stroke={color} strokeWidth={1} />
+          <line x1={-8} y1={0} x2={-16} y2={0} stroke={color} strokeWidth={1} />
+          <line x1={8} y1={0} x2={16} y2={0} stroke={color} strokeWidth={1} />
+          <text y={26} textAnchor="middle" fill="#ffffff" fontSize={8} fontWeight={600} fontFamily="monospace">
+            {stop.icao}
+          </text>
+        </g>
+      );
+    });
+  };
+
+  // Helper to render skills panels next to stops
+  const renderSkillsPanels = () => {
+    if (Object.keys(pixelCoords).length === 0) return null;
+
+    return flightRoute.map((stop, i) => {
+      if (stop.skills.length === 0) return null;
+      const pos = pixelCoords[stop.id];
+      if (!pos) return null;
+
+      const arrivedAtStop = showAll || scrollProg >= 0.99 || i <= currentLegIndex;
+      const showPanel = showAll || scrollProg >= 0.95 || i === currentLegIndex;
+      
+      const opacity = showPanel && arrivedAtStop ? 1 : 0;
+      const translateY = showPanel ? 0 : 20;
+
+      return (
+        <div
+          key={`panel-${stop.id}`}
+          id={`skills-panel-${stop.id}`}
+          style={{
+            position: "absolute",
+            left: `${pos.x + 30}px`,
+            top: `${pos.y - 65}px`,
+            background: "rgba(6,13,26,0.92)",
+            border: `1px solid ${categoryColors[stop.id]}55`,
+            borderRadius: "12px",
+            padding: "12px 16px",
+            backdropFilter: "blur(12px)",
+            minWidth: "180px",
+            opacity,
+            transform: `translateY(${translateY}px) scale(${showPanel ? 1.0 : 0.95})`,
+            transition: "opacity 0.3s ease-out, transform 0.3s ease-out",
+            zIndex: 20,
+            pointerEvents: "none",
+          }}
+        >
+          {/* City header */}
+          <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: "rgba(255,255,255,0.4)", marginBottom: 4 }}>
+            {stop.icao} — {stop.city.toUpperCase()}
+          </div>
+
+          {/* Category label */}
+          <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 13, color: categoryColors[stop.id], fontWeight: 700, marginBottom: 8, letterSpacing: "0.05em" }}>
+            {stop.label}
+          </div>
+
+          {/* Skill chips */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+            {stop.skills.map((skill, index) => (
+              <span
+                key={index}
+                style={{
+                  background: `${categoryColors[stop.id]}15`,
+                  border: `1px solid ${categoryColors[stop.id]}40`,
+                  borderRadius: 6,
+                  padding: "2px 8px",
+                  fontSize: 10,
+                  fontFamily: "JetBrains Mono, monospace",
+                  color: "rgba(255,255,255,0.85)",
+                }}
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      );
+    });
+  };
+
+  const FMCPanel = (
+    <div style={{
+      position: "absolute", bottom: 16, left: 16, zIndex: 30,
+      background: "rgba(6,13,26,0.92)", backdropFilter: "blur(16px)",
+      border: "1px solid rgba(59,130,246,0.25)", padding: "12px 16px",
+      fontFamily: "'Space Mono','JetBrains Mono',monospace", fontSize: 10,
+      color: "rgba(59,130,246,0.85)", lineHeight: 1.9, minWidth: 270,
+      boxShadow: "0 0 24px rgba(59,130,246,0.08)",
+    }}>
+      <style>{`
+        @keyframes atcPulse { 0%,100%{opacity:1}50%{opacity:.3} }
+        @keyframes radarPing {
+          0% { transform: scale(0.5); opacity: 1; }
+          100% { transform: scale(1.6); opacity: 0; }
+        }
+        .pulse-dot { animation: atcPulse 1.5s ease-in-out infinite; }
+        .radar-ping {
+          transform-origin: center center;
+          animation: radarPing 2.0s infinite linear;
+        }
+        .radar-ping-green {
+          transform-origin: center center;
+          animation: radarPing 1.6s infinite linear;
+        }
+      `}</style>
+      <div style={{ color: "rgba(59,130,246,0.45)", marginBottom: 6, borderBottom: "1px solid rgba(59,130,246,0.15)", paddingBottom: 4, fontSize: 9 }}>
+        ─ FLIGHT MANAGEMENT COMPUTER ────────
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", gap: "2px 8px" }}>
+        <span style={{ opacity: 0.55 }}>ORIGIN</span>
+        <span style={{ color: "#ef4444" }}>OMK (MUMBAI, INDIA)</span>
+        <span style={{ opacity: 0.55 }}>DESTINATION</span>
+        <span style={{ color: "#22c55e" }}>NXT (NEXT ROLE)</span>
+        <span style={{ opacity: 0.55 }}>WAYPOINTS</span>
+        <span style={{ color: "#e2e8f0" }}>5 CITIES</span>
+        {!showAll && (
+          <>
+            <span style={{ opacity: 0.55 }}>EN ROUTE</span>
+            <span style={{ color: "#93c5fd" }}>{currentLegString}</span>
+            <span style={{ opacity: 0.55 }}>PROGRESS</span>
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ display: "flex", gap: 1 }}>
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <span key={i} style={{ width: 8, height: 8, borderRadius: 1, background: i < Math.round(fmcProgressPercent / 10) ? "#3b82f6" : "rgba(255,255,255,0.08)" }} />
+                ))}
+              </span>
+              <span style={{ color: "#3b82f6" }}>{fmcProgressPercent}%</span>
+            </span>
+            <span style={{ opacity: 0.55 }}>ETE</span>
+            <span style={{ color: "#e2e8f0" }}>
+              {scrollProg >= 0.99 ? "ARRIVED" : "SCROLL TO CONTINUE ↓"}
+            </span>
+          </>
+        )}
+        <span style={{ opacity: 0.55 }}>STATUS</span>
+        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <span className="pulse-dot" style={{ width: 5, height: 5, borderRadius: "50%", background: scrollProg >= 0.99 || showAll ? "#22c55e" : "#3b82f6", display: "inline-block" }} />
+          <span style={{ color: scrollProg >= 0.99 || showAll ? "#22c55e" : "#3b82f6" }}>
+            {scrollProg >= 0.99 || showAll ? "● DESTINATION REACHED" : scrollProg === 0 ? "● AWAITING DEPARTURE" : "● EN ROUTE"}
+          </span>
+        </span>
+      </div>
+    </div>
+  );
 
   return (
-    <div 
-      ref={containerRef} 
-      style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}
-    >
-      <svg 
-        ref={svgRef} 
-        width="100%" 
-        height="100%" 
-        style={{ display: 'block', cursor: 'grab' }}
-        onClick={(e) => {
-          if (isAnimatingRef.current) return;
-          if (e.target === svgRef.current || (e.target as Element).id === 'infinite-bg') setSelectedNodeId(null);
-        }}
-        onMouseDown={() => {
-          if (svgRef.current) svgRef.current.style.cursor = 'grabbing';
-        }}
-        onMouseUp={() => {
-          if (svgRef.current) svgRef.current.style.cursor = 'grab';
+    <div ref={wrapRef} style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
+      {/* Maplibre container div */}
+      <div ref={mapContainerRef} style={{ position: "absolute", inset: 0, background: "#060d1a" }} />
+
+      {/* SVG Path Layer Overlay */}
+      <svg
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          zIndex: 5,
         }}
       >
-        <defs>
-          <pattern id="gridPattern" width="60" height="60" patternUnits="userSpaceOnUse">
-            <circle cx="1" cy="1" r="1.5" fill="rgba(255,255,255,0.08)" />
-          </pattern>
-        </defs>
+        {renderArcs()}
+        {renderNodes()}
 
-        {/* Main Graph Layer */}
-        <g ref={wrapperRef}>
-          {/* Infinite background layer */}
-          <rect id="infinite-bg" x="-20000" y="-20000" width="40000" height="40000" fill="url(#gridPattern)" />
-
-          {/* Edges */}
-          <g className="links">
-            {graphData.links.map((link, i) => (
-              <line
-                key={i}
-                className="graph-link"
-                stroke={BRAND_COLOR}
-                strokeWidth={1}
-                style={{ opacity: getLinkOpacity(link), transition: 'opacity 0.3s' }}
-              />
-            ))}
-          </g>
-          
-          {/* Nodes */}
-          <g className="nodes">
-            {graphData.nodes.map(node => {
-              const isDummy = node.category === 'dummy';
-              const isTargetNode = selectedNodeId === node.id;
-              const showTravelBloom = isTargetNode && isTravelling;
-              
-              // Dynamic drop-shadow calculation
-              const shadowSize = showTravelBloom ? 25 : ((hoveredNode === node.id || isTargetNode) ? 15 : 5);
-              const shadowOpacity = showTravelBloom ? 1 : 0.6;
-              const dropShadowFilter = isDummy ? 'none' : `drop-shadow(0 0 ${shadowSize}px rgba(79,142,247,${shadowOpacity}))`;
-              
-              return (
-              <g 
-                key={node.id} 
-                className="graph-node"
-                style={{ 
-                  opacity: getNodeOpacity(node.id), 
-                  transition: 'opacity 0.3s', 
-                  cursor: isDummy ? 'default' : 'pointer',
-                  pointerEvents: isDummy ? 'none' : 'auto'
-                }}
-                onMouseEnter={() => !isDummy && setHoveredNode(node.id)}
-                onMouseLeave={() => !isDummy && setHoveredNode(null)}
-                onClick={() => {
-                  if (isAnimatingRef.current) return;
-                  if (!isDummy) setSelectedNodeId(node.id);
-                }}
-              >
-                <circle 
-                  r={node.radius * (hoveredNode === node.id || isTargetNode ? 1.2 : 1)} 
-                  fill={node.icon ? `rgba(79,142,247,0.15)` : (isDummy ? 'rgba(79,142,247,0.4)' : BRAND_COLOR)} 
-                  stroke={node.icon ? BRAND_COLOR : "none"}
-                  strokeWidth={node.icon ? 1 : 0}
-                  style={{ 
-                    filter: dropShadowFilter,
-                    transition: 'r 0.3s ease, filter 0.3s ease, fill 0.3s ease'
-                  }} 
-                />
-                {node.icon && (
-                  <image 
-                    href={`https://cdn.simpleicons.org/${node.icon}/white`}
-                    x={-node.radius * 0.6 * (hoveredNode === node.id || isTargetNode ? 1.2 : 1)}
-                    y={-node.radius * 0.6 * (hoveredNode === node.id || isTargetNode ? 1.2 : 1)}
-                    width={node.radius * 1.2 * (hoveredNode === node.id || isTargetNode ? 1.2 : 1)}
-                    height={node.radius * 1.2 * (hoveredNode === node.id || isTargetNode ? 1.2 : 1)}
-                    style={{ transition: 'all 0.3s ease', pointerEvents: 'none' }}
-                  />
-                )}
-                {!isDummy && (
-                  <text 
-                    y={node.radius * (hoveredNode === node.id || isTargetNode ? 1.2 : 1) + 14} 
-                    textAnchor="middle" 
-                    fill={(hoveredNode === node.id || isTargetNode) ? "#fff" : "#a0a0a8"} 
-                    fontSize={(hoveredNode === node.id || isTargetNode) ? 14 : 11}
-                    fontFamily="'Geist Mono', monospace"
-                    pointerEvents="none"
-                    style={{ transition: 'all 0.3s ease' }}
-                  >
-                    {node.label}
-                  </text>
-                )}
-              </g>
-            )})}
-          </g>
-        </g>
+        {/* Trail dots */}
+        {!showAll && trailPositions.slice(1).map((pos, i) => (
+          <circle
+            key={i}
+            cx={pos.x}
+            cy={pos.y}
+            r={i === 0 ? 3.5 : i === 1 ? 2.5 : 1.5}
+            fill="#4f8ef7"
+            opacity={0.5 - i * 0.12}
+            style={{ transformOrigin: "center center", filter: "drop-shadow(0 0 4px #4f8ef7)" }}
+          />
+        ))}
       </svg>
-      
-      {/* Slide-in Side Panel */}
-      <AnimatePresence>
-        {selectedNodeData && (
-          <motion.div
-            initial={{ x: '100%', opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: '100%', opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            style={{
-              position: 'absolute',
-              top: 16,
-              right: 16,
-              bottom: 16,
-              width: 320,
-              maxWidth: 'calc(100% - 32px)',
-              background: 'rgba(8,8,9,0.85)',
-              backdropFilter: 'blur(24px)',
-              WebkitBackdropFilter: 'blur(24px)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: 20,
-              padding: 24,
-              display: 'flex',
-              flexDirection: 'column',
-              zIndex: 20,
-              boxShadow: '-8px 0 32px rgba(0,0,0,0.5)'
-            }}
-          >
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
-              <div>
-                <span style={{ fontSize: 10, color: '#505058', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'Geist Mono', monospace", display: 'block', marginBottom: 4 }}>
-                  {selectedNodeData.category}
-                </span>
-                <h3 style={{ margin: 0, fontSize: 24, color: '#f2f2f3', fontWeight: 500 }}>
-                  {selectedNodeData.label}
-                </h3>
-              </div>
-              <button 
-                onClick={() => {
-                  if (isAnimatingRef.current) return;
-                  setSelectedNodeId(null);
-                }}
-                style={{ background: 'transparent', border: 'none', color: '#a0a0a8', cursor: 'pointer', padding: 4 }}
-              >
-                <X size={20} />
-              </button>
-            </div>
 
-            {/* Usage Meter */}
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ fontSize: 11, color: '#a0a0a8', fontFamily: "'Geist Mono', monospace" }}>Usage Intensity</span>
-                <span style={{ fontSize: 11, color: BRAND_COLOR, fontFamily: "'Geist Mono', monospace" }}>{selectedNodeData.usageWeight}/10</span>
-              </div>
-              <div style={{ display: 'flex', gap: 3 }}>
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div key={i} style={{ flex: 1, height: 4, borderRadius: 2, background: i < selectedNodeData.usageWeight ? BRAND_COLOR : 'rgba(255,255,255,0.08)' }} />
-                ))}
-              </div>
-            </div>
+      {/* Real Plane Asset - PNG from public folder */}
+      {planeState && (
+        <div
+          style={{
+            position: "absolute",
+            left: `${planeState.x}px`,
+            top: `${planeState.y}px`,
+            transform: `translate(-50%, -50%) rotate(${planeState.angle}deg)`,
+            transformOrigin: "center center",
+            width: "60px",
+            height: "60px",
+            pointerEvents: "none",
+            zIndex: 10,
+            transition: "transform 0.03s linear",
+            filter: "drop-shadow(0 0 6px rgba(79,142,247,0.5))",
+          }}
+        >
+          <img src="/plane-top-view.png" alt="Plane" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+        </div>
+      )}
 
-            {/* Description */}
-            <p style={{ fontSize: 14, color: '#a0a0a8', lineHeight: 1.6, margin: '0 0 24px 0' }}>
-              {selectedNodeData.description}
-            </p>
+      {/* Floating skill panels overlay */}
+      {renderSkillsPanels()}
 
-            {/* Connected Skills */}
-            {connectedSkills.length > 0 && (
-              <div style={{ marginBottom: 24, flex: 1 }}>
-                <span style={{ fontSize: 10, color: '#505058', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: "'Geist Mono', monospace", display: 'block', marginBottom: 12 }}>
-                  Connected Skills
-                </span>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {connectedSkills.map(skill => (
-                    <button
-                      key={skill.id}
-                      onClick={() => {
-                        if (isAnimatingRef.current) return;
-                        setSelectedNodeId(skill.id);
-                      }}
-                      style={{
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '0.5px solid rgba(255,255,255,0.08)',
-                        borderRadius: 8,
-                        padding: '6px 12px',
-                        fontSize: 12,
-                        color: '#f2f2f3',
-                        fontFamily: "'Geist Mono', monospace",
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                      }}
-                      onMouseEnter={(e) => {
-                        if (isAnimatingRef.current) return;
-                        e.currentTarget.style.background = 'rgba(79,142,247,0.1)';
-                        e.currentTarget.style.borderColor = 'rgba(79,142,247,0.3)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
-                        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
-                      }}
-                    >
-                      {skill.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+      {/* Scroll hint */}
+      {!showAll && scrollProg === 0 && (
+        <div style={{
+          position: "absolute", bottom: 160, left: "16px",
+          zIndex: 30, color: "rgba(255,255,255,0.4)", fontSize: 10,
+          fontFamily: "'Space Mono',monospace", letterSpacing: "0.08em",
+          animation: "atcPulse 2s ease-in-out infinite",
+          pointerEvents: "none", whiteSpace: "nowrap",
+        }}>
+          SCROLL TO BEGIN JOURNEY ↓
+        </div>
+      )}
 
-            {/* Project CTA */}
-            {selectedNodeData.projectLink && (
-              <button
-                onClick={() => navigate({ to: selectedNodeData.projectLink! })}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                  background: 'rgba(79,142,247,0.1)',
-                  border: '1px solid rgba(79,142,247,0.3)',
-                  borderRadius: 12,
-                  padding: '12px',
-                  color: BRAND_COLOR,
-                  fontSize: 13,
-                  fontWeight: 500,
-                  cursor: 'pointer',
-                  width: '100%',
-                  transition: 'all 0.2s ease',
-                  marginTop: 'auto'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(79,142,247,0.2)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(79,142,247,0.1)';
-                }}
-              >
-                View in Project <ExternalLink size={14} />
-              </button>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {FMCPanel}
     </div>
   );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// ─── Skills Reveal Page ───────────────────────────────────────────────────────
 
 function SkillsPage() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [tourIndex, setTourIndex] = useState(0);
-  const sectionRef = useRef<HTMLDivElement>(null);
+  const [isGraphView, setIsGraphView] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+  const [scrollProg, setScrollProg] = useState(0);
 
-  // The ordered list of real skill IDs for the scroll tour
-  const tourIds = useMemo(() => skillsData.map(s => s.id), []);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const showAll = prefersReducedMotion || isMobile;
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mediaQuery.matches);
-    const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mq.matches);
+    const h = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    mq.addEventListener("change", h);
+    return () => mq.removeEventListener("change", h);
   }, []);
 
-  // Scroll-driven camera tour
   useEffect(() => {
-    if (prefersReducedMotion || !sectionRef.current) return;
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
-    const steps = tourIds.length;
+  useEffect(() => { if (isMobile) setIsGraphView(false); }, [isMobile]);
 
-    const st = ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: 'top top',
-      end: `+=${steps * 300}`,   // 300px of scroll per skill
-      pin: true,
-      scrub: false,
-      onUpdate: (self) => {
-        const idx = Math.min(steps - 1, Math.floor(self.progress * steps));
-        if (idx !== tourIndex) {
-          setTourIndex(idx);
-          setSelectedNodeId(tourIds[idx]);
-        }
-      },
-      onLeave: () => {
-        // After touring all skills, deselect and let the user scroll away
-        setSelectedNodeId(null);
-      },
-      onLeaveBack: () => {
-        setSelectedNodeId(tourIds[0]);
-        setTourIndex(0);
-      },
-    });
-
-    return () => st.kill();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prefersReducedMotion, tourIds]);
-
-  const currentlyLearning = [
-    'WebGL shaders',
-    'Rust',
-    'Distributed systems',
-    'RL fundamentals',
-    'Transformers architecture',
-    'CUDA programming',
-  ];
+  // Hook up Lenis scroll tracking directly in parent page content
+  useLenis((lenis) => {
+    if (showAll || !scrollRef.current) return;
+    const rect = scrollRef.current.getBoundingClientRect();
+    const totalScrollable = rect.height - window.innerHeight;
+    const currentScrolled = -rect.top;
+    const rawProg = Math.max(0, Math.min(1, currentScrolled / totalScrollable));
+    setScrollProg(rawProg);
+  });
 
   return (
     <PageShell path="/skills">
-      <div ref={sectionRef} style={{ position: 'relative', width: '100%', height: '100vh' }}>
-        {/* Full Screen Graph Layer */}
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-          <SkillConstellation
-            prefersReducedMotion={prefersReducedMotion}
-            externalSelectedNodeId={selectedNodeId}
-            onExternalSelectChange={setSelectedNodeId}
-          />
-        </div>
-
-        {/* Floating Hero Layer */}
-        <div style={{ position: 'relative', zIndex: 10, padding: '80px 64px 48px', maxWidth: 1200, margin: '0 auto', pointerEvents: 'none' }}>
-          <div>
-            <p style={{ fontSize: 11, color: '#505058', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 16, fontFamily: 'Geist Mono, monospace' }}>
-              Technical Stack
-            </p>
-            <h1 style={{ fontSize: 52, fontWeight: 300, color: '#f2f2f3', fontFamily: 'Geist, system-ui, sans-serif', letterSpacing: '-0.03em', lineHeight: 1.15, margin: 0 }}>
-              Full-stack. AI-native.<br />Graph-first.
-            </h1>
-            <p style={{ fontSize: 17, color: '#a0a0a8', maxWidth: 460, marginTop: 16, lineHeight: 1.7 }}>
-              Every skill in production — none in a tutorial repo.
-            </p>
-          </div>
-        </div>
-
-        {/* Scroll Tour Progress HUD */}
-        {!prefersReducedMotion && selectedNodeId && (
-          <div style={{
-            position: 'absolute', bottom: 90, left: '50%', transform: 'translateX(-50%)',
-            zIndex: 20, display: 'flex', alignItems: 'center', gap: 6, pointerEvents: 'none',
-          }}>
-            {skillsData.map((s, i) => (
-              <div key={s.id} style={{
-                width: i === tourIndex ? 20 : 5, height: 5,
-                borderRadius: 3,
-                background: i === tourIndex ? '#4f8ef7' : 'rgba(255,255,255,0.15)',
-                transition: 'width 0.3s ease, background 0.3s ease',
-              }} />
-            ))}
-          </div>
-        )}
-        {!prefersReducedMotion && selectedNodeId && (
-          <div style={{
-            position: 'absolute', bottom: 110, left: '50%', transform: 'translateX(-50%)',
-            zIndex: 20, pointerEvents: 'none',
-            fontSize: 10, color: '#505058', fontFamily: "'Geist Mono', monospace",
-            letterSpacing: '0.1em', textTransform: 'uppercase',
-          }}>
-            {tourIndex + 1} / {skillsData.length} — {skillsData[tourIndex]?.label}
-          </div>
-        )}
-
-        {/* Floating Marquee Layer at bottom */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 10, paddingBottom: 24, pointerEvents: 'none' }}>
-          <div style={{ padding: '0 64px', maxWidth: 1200, margin: '0 auto' }}>
-            <div style={{ fontSize: 11, color: '#505058', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 16, fontFamily: 'Geist Mono, monospace' }}>
-              Currently going deeper
+      <div style={{ position: "relative", width: "100%", background: "#060d1a" }}>
+        {/* Sticky header */}
+        <div style={{
+          position: "sticky", top: 0, zIndex: 100,
+          padding: "20px 64px 14px",
+          background: "linear-gradient(to bottom, rgba(6,13,26,0.98) 80%, transparent)",
+          backdropFilter: "blur(8px)",
+        }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              <p style={{ fontSize: 10, color: "#484f58", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 6, fontFamily: "'Space Mono',monospace" }}>
+                Navigation Chart / Technical Stack — maplibre
+              </p>
+              <h1 style={{ fontSize: 28, fontWeight: 300, color: "#e6edf3", fontFamily: "Geist,system-ui,sans-serif", letterSpacing: "-0.03em", lineHeight: 1.2, margin: 0 }}>
+                Flight path through <span style={{ color: "#3b82f6" }}>your stack</span>
+              </h1>
             </div>
-          </div>
-          <div style={{ overflow: 'hidden' }}>
-            <div className="marquee-track" style={{ pointerEvents: 'auto' }}>
-              {[...currentlyLearning, ...currentlyLearning].map((item, i) => (
-                <span
-                  key={i}
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(8,8,9,0.5)', backdropFilter: 'blur(12px)', border: '0.5px solid rgba(255,255,255,0.08)', borderRadius: 20, padding: '6px 16px', fontSize: 13, color: '#505058', whiteSpace: 'nowrap', flexShrink: 0, fontFamily: 'Geist Mono, monospace' }}
-                >
-                  → {item}
-                </span>
-              ))}
-            </div>
+            <button
+              onClick={() => setIsGraphView(v => !v)}
+              style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4, padding: "8px 14px", color: "#8b949e", fontSize: 11, fontFamily: "'Space Mono',monospace", cursor: "pointer", transition: "all 0.15s" }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+            >
+              {isGraphView ? <EyeOff size={14} /> : <Eye size={14} />}
+              {isGraphView ? "≡ List View" : "✈ Chart View"}
+            </button>
           </div>
         </div>
+
+        {/* Content */}
+        <AnimatePresence mode="wait">
+          {isGraphView ? (
+            <motion.div key="chart" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+              {/* Outer scroll height container */}
+              <div ref={scrollRef} style={{ position: "relative", width: "100%", height: showAll ? "calc(100vh - 80px)" : "400vh" }}>
+                <div style={{
+                  position: showAll ? "relative" : "fixed",
+                  top: showAll ? 0 : 80,
+                  left: showAll ? 0 : 48,
+                  right: 0,
+                  bottom: 0,
+                  height: showAll ? "100%" : "calc(100vh - 80px)",
+                  overflow: "hidden",
+                  zIndex: 1
+                }}>
+                  <FlightPathChart
+                    prefersReducedMotion={prefersReducedMotion}
+                    isMobile={isMobile}
+                    scrollProg={scrollProg}
+                  />
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+              {/* Fallback to simple skill listing */}
+              <div style={{ padding: "40px 64px", maxWidth: 900, margin: "0 auto" }}>
+                {flightRoute.filter(stop => stop.skills.length > 0).map(stop => (
+                  <div key={stop.id} style={{ marginBottom: 36 }}>
+                    <h3 style={{ fontSize: 10, color: categoryColors[stop.id], textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: "'Space Mono',monospace", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ flex: 1, height: 1, background: `${categoryColors[stop.id]}33` }} />{stop.label}<span style={{ flex: 1, height: 1, background: `${categoryColors[stop.id]}33` }} />
+                    </h3>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      {stop.skills.map((skill, index) => (
+                        <div key={index} style={{
+                          display: "flex", alignItems: "center", gap: 8,
+                          background: "rgba(255,255,255,0.03)",
+                          border: `1px solid ${categoryColors[stop.id]}44`,
+                          borderRadius: 4, padding: "10px 16px", color: "#e6edf3",
+                          fontSize: 12, fontFamily: "'Space Mono',monospace"
+                        }}>
+                          <span style={{ fontSize: 9, color: categoryColors[stop.id], opacity: 0.8 }}>[{stop.icao}]</span>
+                          <span>{skill}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </PageShell>
   );
 }
 
-export const Route = createFileRoute('/skills')({
-  component: SkillsPage,
-});
+export const Route = createFileRoute("/skills")({ component: SkillsPage });

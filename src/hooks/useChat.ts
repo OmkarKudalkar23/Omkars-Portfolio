@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { omkar } from "@/lib/data";
 import type { WidgetData } from "@/components/widgets/WidgetRenderer";
 
@@ -16,6 +17,7 @@ const uid = () => Math.random().toString(36).slice(2) + Date.now().toString(36);
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export function useChat() {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [busy, setBusy] = useState(false);
   const turnsRef = useRef(0);
@@ -86,7 +88,14 @@ export function useChat() {
       if (trimmed.toLowerCase() === "/dev") {
         setMessages((prev) => [
           ...prev,
-          { id: uid(), role: "assistant", content: "", component: "DevPanel", data: null, status: "done" },
+          {
+            id: uid(),
+            role: "assistant",
+            content: "",
+            component: "DevPanel",
+            data: null,
+            status: "done",
+          },
         ]);
         return;
       }
@@ -95,7 +104,14 @@ export function useChat() {
       const assistantId = uid();
       setMessages((prev) => [
         ...prev,
-        { id: assistantId, role: "assistant", content: "", component: null, data: null, status: "typing" },
+        {
+          id: assistantId,
+          role: "assistant",
+          content: "",
+          component: null,
+          data: null,
+          status: "typing",
+        },
       ]);
 
       // "Surprise me" — local random moment
@@ -128,6 +144,15 @@ export function useChat() {
         }
 
         await streamText(assistantId, json.message ?? "");
+
+        if (json.navigate && /^[a-z-]+$/.test(json.navigate)) {
+          patch(assistantId, { component: null, data: null, status: "done" });
+          setBusy(false);
+          await sleep(800);
+          navigate({ to: `/${json.navigate}` });
+          return;
+        }
+
         patch(assistantId, {
           component: json.component ?? null,
           data: json.data ?? null,

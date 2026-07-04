@@ -315,13 +315,18 @@
 }
 
 .exp-hanging-card {
-  background: rgba(10, 14, 22, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(8, 12, 20, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 16px;
   padding: 24px;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
   max-width: 380px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.08) inset,
+    0 16px 56px rgba(0, 0, 0, 0.55),
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 0.5px rgba(255, 255, 255, 0.06);
 }
 
 /* ── Weather particle animations ──────────────────────────── */
@@ -372,4 +377,357 @@
   0%, 100% { transform: scaleY(1); }
   50%      { transform: scaleY(-0.4); }
 }
+
+/* ── Airplane idle life animations ─────────────────────────── */
+
+/* Gentle up/down bob (2–4 px range) */
+@keyframes plane-bob {
+  0%, 100% { transform: translateY(0px); }
+  30%      { transform: translateY(-3.5px); }
+  65%      { transform: translateY(2px); }
+}
+
+/* Subtle left/right roll tilt */
+@keyframes plane-tilt {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-1.2deg); }
+  60%      { transform: rotate(0.8deg); }
+  80%      { transform: rotate(-0.5deg); }
+}
+
+/* Tiny high-frequency engine vibration */
+@keyframes plane-vibrate {
+  0%, 100% { transform: translate(0, 0); }
+  20%      { transform: translate(0.4px, -0.3px); }
+  40%      { transform: translate(-0.3px, 0.4px); }
+  60%      { transform: translate(0.5px, 0.2px); }
+  80%      { transform: translate(-0.4px, -0.4px); }
+}
+
+/* Glowing pulse on the cable when it is visible */
+@keyframes cable-glow-pulse {
+  0%, 100% { opacity: 0.8; filter: brightness(1); }
+  50%      { opacity: 1;   filter: brightness(1.3) drop-shadow(0 0 4px rgba(240,192,96,0.7)); }
+}
+
+.plane-bob {
+  animation: plane-bob 5.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+.plane-tilt {
+  animation: plane-tilt 7.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+.plane-vibrate {
+  animation: plane-vibrate 0.18s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plane-bob,
+  .plane-tilt,
+  .plane-vibrate {
+    animation: none !important;
+  }
+}
+
+/* ── Cable glowing pulse (applied to cable divs via className) ── */
+.cable-glow-pulse {
+  animation: cable-glow-pulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cable-glow-pulse {
+    animation: none !important;
+  }
+}
+
+/* ── Card drag hint: fades in, holds, then fades out permanently ── */
+@keyframes card-drag-hint {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  15%  { opacity: 1; transform: translateX(-50%) translateY(0px); }
+  70%  { opacity: 1; transform: translateX(-50%) translateY(0px); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+}
+
+
+/* ── Airplane Landing Intro Scrollytelling Styles ── */
+
+.airplane-landing-viewport {
+  margin: 0;
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Libre Baskerville', serif;
+  background-color: #D0CBC7;
+  font-weight: 400;
+  overflow-x: hidden;
+  position: relative;
+  color: #171511;
+  --padding: 10vmin;
+  --font-size-large: 8vw;
+  --font-size-medium: 4vw;
+  --font-size-normal: 2vw;
+}
+
+@media only screen and (min-width: 800px) {
+  .airplane-landing-viewport {
+    --font-size-large: 64px;
+    --font-size-medium: 32px;
+    --font-size-normal: 16px;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .airplane-landing-viewport {
+    --font-size-large: 40px;
+    --font-size-medium: 20px;
+    --font-size-normal: 14px;
+  }
+}
+
+.airplane-landing-viewport a {
+  color: white;
+}
+
+.airplane-landing-viewport ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.airplane-landing-viewport li {
+  margin-top: 10px;
+}
+
+.airplane-landing-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  pointer-events: none;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.airplane-landing-viewport svg {
+  z-index: 100;
+}
+
+.airplane-landing-viewport .solid {
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.airplane-landing-viewport .wireframe {
+  clip-path: polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%);
+}
+
+.airplane-landing-viewport .content {
+  position: relative;
+  z-index: 1;
+}
+
+.airplane-landing-viewport .content .trigger {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+}
+
+.airplane-landing-viewport .content .section {
+  position: relative;
+  padding: var(--padding);
+  width: 100%;
+  height: 100vh;
+  box-sizing: border-box;
+  margin: 0 auto;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.airplane-landing-viewport .content .section.dark {
+  color: white;
+  background-color: transparent;
+}
+
+.airplane-landing-viewport .content .section.right {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.airplane-landing-viewport .content .blueprint {
+  position: relative;
+  background-color: #131C2A;
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+  background-attachment: fixed;
+}
+
+.airplane-landing-viewport .content .blueprint svg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  stroke: white;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.airplane-landing-viewport .content .blueprint svg line,
+.airplane-landing-viewport .content .blueprint svg path,
+.airplane-landing-viewport .content .blueprint svg circle {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  fill: none;
+  stroke-width: 0.5;
+  stroke: rgba(255, 255, 255, 0.95);
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
+}
+
+.airplane-landing-viewport .content .blueprint .dark {
+  background-color: transparent;
+}
+
+.airplane-landing-viewport .content .ground-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.airplane-landing-viewport .content .ground-container .parallax {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -150px;
+  background-repeat: no-repeat;
+  background-position: top center; 
+  background-size: cover;
+  transform-origin: top center;
+  will-change: transform;
+}
+
+.airplane-landing-viewport .content .ground-container .ground {
+  z-index: -1;
+  background-image: url("https://assets.codepen.io/557388/background-reduced.jpg");   
+}
+
+.airplane-landing-viewport .content .ground-container .clouds {
+  z-index: 2;
+  background-image: url("https://assets.codepen.io/557388/clouds.png");
+}
+
+.airplane-landing-viewport .content .scroll-cta, 
+.airplane-landing-viewport .content .credits {
+  position: absolute;
+  bottom: var(--padding);
+} 
+
+.airplane-landing-viewport .content .scroll-cta {
+  font-size: var(--font-size-medium);
+  opacity: 0;
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+.airplane-landing-viewport .content .sunset {
+  background: url("https://assets.codepen.io/557388/sunset-reduced.jpg") no-repeat top center; 
+  background-size: cover;
+  transform-origin: top center;
+}
+
+.airplane-landing-viewport h1, 
+.airplane-landing-viewport h2 {
+  font-size: var(--font-size-large);
+  margin: 0 0 2vmin 0;
+  font-weight: 700;
+}
+
+.airplane-landing-viewport h3 {
+  font-size: var(--font-size-medium);
+  font-weight: 400;
+  margin: 0;
+  color: #3b82f6;
+}
+
+.airplane-landing-viewport .end h2 {
+  margin-bottom: 30vh;
+}
+
+.airplane-landing-viewport .loading {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-medium);
+  background-color: #D0CBC7;
+  z-index: 500;
+  color: #171511;
+  font-family: monospace;
+  letter-spacing: 0.15em;
+}
+
+/* Skip button overlay */
+.skip-landing-btn {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 4px;
+  color: white;
+  font-family: monospace;
+  font-size: 11px;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.2s ease;
+  letter-spacing: 0.08em;
+}
+
+.skip-landing-btn:hover {
+  background: rgba(0, 0, 0, 0.55);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ── Fixed Flight Stage for 2D Plane Scrollytelling ── */
+.plane-flight-stage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 15;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flight-plane-container {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  transform-origin: center center;
+  will-change: transform;
+  pointer-events: none;
+}
+
+
 
