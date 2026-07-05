@@ -11,12 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SkillsRouteImport } from './routes/skills'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ResumeRouteImport } from './routes/resume'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as HackathonsRouteImport } from './routes/hackathons'
 import { Route as ExperienceRouteImport } from './routes/experience'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as CodingRouteImport } from './routes/coding'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsNolanStudioRouteImport } from './routes/projects_.nolan-studio'
 import { Route as ProjectsFinverseRouteImport } from './routes/projects_.finverse'
@@ -30,11 +28,6 @@ const SkillsRoute = SkillsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResumeRoute = ResumeRouteImport.update({
-  id: '/resume',
-  path: '/resume',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsRoute = ProjectsRouteImport.update({
@@ -55,11 +48,6 @@ const ExperienceRoute = ExperienceRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CodingRoute = CodingRouteImport.update({
-  id: '/coding',
-  path: '/coding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -85,12 +73,10 @@ const ApiChatRoute = ApiChatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/coding': typeof CodingRoute
   '/contact': typeof ContactRoute
   '/experience': typeof ExperienceRoute
   '/hackathons': typeof HackathonsRoute
   '/projects': typeof ProjectsRoute
-  '/resume': typeof ResumeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/api/chat': typeof ApiChatRoute
@@ -99,12 +85,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/coding': typeof CodingRoute
   '/contact': typeof ContactRoute
   '/experience': typeof ExperienceRoute
   '/hackathons': typeof HackathonsRoute
   '/projects': typeof ProjectsRoute
-  '/resume': typeof ResumeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/api/chat': typeof ApiChatRoute
@@ -114,12 +98,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/coding': typeof CodingRoute
   '/contact': typeof ContactRoute
   '/experience': typeof ExperienceRoute
   '/hackathons': typeof HackathonsRoute
   '/projects': typeof ProjectsRoute
-  '/resume': typeof ResumeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/skills': typeof SkillsRoute
   '/api/chat': typeof ApiChatRoute
@@ -130,12 +112,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/coding'
     | '/contact'
     | '/experience'
     | '/hackathons'
     | '/projects'
-    | '/resume'
     | '/sitemap.xml'
     | '/skills'
     | '/api/chat'
@@ -144,12 +124,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/coding'
     | '/contact'
     | '/experience'
     | '/hackathons'
     | '/projects'
-    | '/resume'
     | '/sitemap.xml'
     | '/skills'
     | '/api/chat'
@@ -158,12 +136,10 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/coding'
     | '/contact'
     | '/experience'
     | '/hackathons'
     | '/projects'
-    | '/resume'
     | '/sitemap.xml'
     | '/skills'
     | '/api/chat'
@@ -173,12 +149,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CodingRoute: typeof CodingRoute
   ContactRoute: typeof ContactRoute
   ExperienceRoute: typeof ExperienceRoute
   HackathonsRoute: typeof HackathonsRoute
   ProjectsRoute: typeof ProjectsRoute
-  ResumeRoute: typeof ResumeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SkillsRoute: typeof SkillsRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -200,13 +174,6 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/resume': {
-      id: '/resume'
-      path: '/resume'
-      fullPath: '/resume'
-      preLoaderRoute: typeof ResumeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects': {
@@ -235,13 +202,6 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/coding': {
-      id: '/coding'
-      path: '/coding'
-      fullPath: '/coding'
-      preLoaderRoute: typeof CodingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -277,12 +237,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CodingRoute: CodingRoute,
   ContactRoute: ContactRoute,
   ExperienceRoute: ExperienceRoute,
   HackathonsRoute: HackathonsRoute,
   ProjectsRoute: ProjectsRoute,
-  ResumeRoute: ResumeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SkillsRoute: SkillsRoute,
   ApiChatRoute: ApiChatRoute,

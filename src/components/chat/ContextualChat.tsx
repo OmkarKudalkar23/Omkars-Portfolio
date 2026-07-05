@@ -20,7 +20,6 @@ const GREETINGS: Record<string, string> = {
   "/experience": "Ask me anything about my work at Hooman Labs or IIT Patna.",
   "/hackathons": "Two firsts, one runner-up — what do you want to know?",
   "/skills": "Ask about any specific tech or how I've applied it in production.",
-  "/resume": "Happy to walk you through any part of my background.",
   "/contact": "I'll help you reach Omkar — what would you like to know first?",
 };
 
@@ -33,8 +32,6 @@ const CONTEXT_SEEDS: Record<string, string> = {
     "The user is viewing Omkar's Hackathons page. Focus answers on his hackathon wins: DevHacks 2026, HackXelerate 2026, and Spectrum 2026.",
   "/skills":
     "The user is viewing Omkar's Skills page. Focus answers on his tech stack and how he's applied skills in production.",
-  "/resume":
-    "The user is viewing Omkar's Resume page. Focus answers on his educational background, CGPA, and overall qualifications.",
   "/contact":
     "The user is viewing Omkar's Contact page. Help them understand how to reach Omkar and what he's available for.",
 };
@@ -44,7 +41,6 @@ const SECTION_LABELS: Record<string, string> = {
   "/experience": "experience",
   "/hackathons": "hackathons",
   "/skills": "skills",
-  "/resume": "resume",
   "/contact": "contact",
 };
 

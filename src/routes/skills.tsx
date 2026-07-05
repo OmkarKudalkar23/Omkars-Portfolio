@@ -9,99 +9,293 @@ import maplibregl from "maplibre-gl";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type StopType = "source" | "waypoint" | "destination";
+type SkillCategory = "source" | "languages" | "frontend" | "backend" | "ai" | "tools" | "goal";
 
-type FlightStop = {
+type SkillStop = {
   id: string;
-  city: string;
+  label: string;
   icao: string;
   lat: number;
   lng: number;
-  label: string;
-  type: StopType;
-  skills: string[];
+  category: SkillCategory;
+  skill: string | null;
 };
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-const flightRoute: FlightStop[] = [
+const skillStops: SkillStop[] = [
   {
-    id: "origin",
-    city: "Mumbai",
+    id: "mumbai",
+    label: "ORIGIN",
     icao: "OMK",
-    lat: 19.0760, lng: 72.8777,
-    label: "OMKAR",
-    type: "source",
-    skills: [],
+    lat: 19.076,
+    lng: 72.8777,
+    category: "source",
+    skill: null,
   },
   {
-    id: "bengaluru",
-    city: "Bengaluru",
-    icao: "BLR",
-    lat: 12.9716, lng: 77.5946,
-    label: "AI / ML",
-    type: "waypoint",
-    skills: ["LangChain", "LangGraph", "MediaPipe", "OpenCV", "LSTM", "Whisper"],
+    id: "goa",
+    label: "GOA",
+    icao: "GOI",
+    lat: 15.4909,
+    lng: 73.8278,
+    category: "languages",
+    skill: "JavaScript",
   },
   {
-    id: "hyderabad",
-    city: "Hyderabad",
-    icao: "HYD",
-    lat: 17.3850, lng: 78.4867,
-    label: "BACKEND",
-    type: "waypoint",
-    skills: ["Node.js", "Express.js", "MongoDB", "Neo4j", "REST APIs"],
+    id: "mangaluru",
+    label: "MANGALURU",
+    icao: "IXE",
+    lat: 12.9141,
+    lng: 74.856,
+    category: "languages",
+    skill: "TypeScript",
   },
   {
-    id: "pune",
-    city: "Pune",
-    icao: "PNQ",
-    lat: 18.5204, lng: 73.8567,
-    label: "FRONTEND",
-    type: "waypoint",
-    skills: ["React.js", "Next.js", "Three.js", "Framer Motion", "Tailwind CSS"],
+    id: "kozhikode",
+    label: "KOZHIKODE",
+    icao: "CCJ",
+    lat: 11.2588,
+    lng: 75.7804,
+    category: "languages",
+    skill: "Python",
   },
   {
-    id: "delhi",
-    city: "New Delhi",
-    icao: "DEL",
-    lat: 28.6139, lng: 77.2090,
-    label: "TOOLS",
-    type: "waypoint",
-    skills: ["Git", "GitHub", "Vercel", "n8n", "CI/CD"],
+    id: "kochi",
+    label: "KOCHI",
+    icao: "COK",
+    lat: 9.9312,
+    lng: 76.2673,
+    category: "languages",
+    skill: "C++",
+  },
+  {
+    id: "trivandrum",
+    label: "TRIVANDRUM",
+    icao: "TRV",
+    lat: 8.5241,
+    lng: 76.9366,
+    category: "languages",
+    skill: "Java",
+  },
+  {
+    id: "kanyakumari",
+    label: "KANYAKUMARI",
+    icao: "KKM",
+    lat: 8.0883,
+    lng: 77.5385,
+    category: "frontend",
+    skill: "React",
+  },
+  {
+    id: "madurai",
+    label: "MADURAI",
+    icao: "IXM",
+    lat: 9.9252,
+    lng: 78.1198,
+    category: "frontend",
+    skill: "Next.js",
+  },
+  {
+    id: "trichy",
+    label: "TIRUCHIRAPPALLI",
+    icao: "TRZ",
+    lat: 10.7905,
+    lng: 78.7047,
+    category: "frontend",
+    skill: "Three.js",
   },
   {
     id: "chennai",
-    city: "Chennai",
+    label: "CHENNAI",
     icao: "MAA",
-    lat: 13.0827, lng: 80.2707,
-    label: "LANGUAGES",
-    type: "waypoint",
-    skills: ["Python", "JavaScript", "C++", "Java"],
+    lat: 13.0827,
+    lng: 80.2707,
+    category: "frontend",
+    skill: "Framer Motion",
   },
   {
-    id: "destination",
-    city: "Next Role",
-    icao: "NXT",
-    lat: 12.2958, lng: 76.6394, // Mysuru
-    label: "NEXT ROLE",
-    type: "destination",
-    skills: [],
+    id: "vizag",
+    label: "VISAKHAPATNAM",
+    icao: "VTZ",
+    lat: 17.6868,
+    lng: 83.2185,
+    category: "frontend",
+    skill: "Tailwind CSS",
+  },
+  {
+    id: "bhubaneswar",
+    label: "BHUBANESWAR",
+    icao: "BBI",
+    lat: 20.2961,
+    lng: 85.8245,
+    category: "backend",
+    skill: "Node.js",
+  },
+  {
+    id: "kolkata",
+    label: "KOLKATA",
+    icao: "CCU",
+    lat: 22.5726,
+    lng: 88.3639,
+    category: "backend",
+    skill: "Express.js",
+  },
+  {
+    id: "guwahati",
+    label: "GUWAHATI",
+    icao: "GAU",
+    lat: 26.1445,
+    lng: 91.7362,
+    category: "backend",
+    skill: "MongoDB",
+  },
+  {
+    id: "dibrugarh",
+    label: "DIBRUGARH",
+    icao: "DIB",
+    lat: 27.4728,
+    lng: 94.912,
+    category: "backend",
+    skill: "Neo4j",
+  },
+  {
+    id: "itanagar",
+    label: "ITANAGAR",
+    icao: "HGI",
+    lat: 27.0844,
+    lng: 93.6053,
+    category: "backend",
+    skill: "REST APIs",
+  },
+  {
+    id: "jorhat",
+    label: "JORHAT",
+    icao: "JRH",
+    lat: 26.7496,
+    lng: 94.2037,
+    category: "ai",
+    skill: "LangChain",
+  },
+  {
+    id: "imphal",
+    label: "IMPHAL",
+    icao: "IMF",
+    lat: 24.817,
+    lng: 93.9368,
+    category: "ai",
+    skill: "LangGraph",
+  },
+  {
+    id: "aizawl",
+    label: "AIZAWL",
+    icao: "AJL",
+    lat: 23.7271,
+    lng: 92.7176,
+    category: "ai",
+    skill: "OpenCV",
+  },
+  {
+    id: "shillong",
+    label: "SHILLONG",
+    icao: "SHL",
+    lat: 25.5788,
+    lng: 91.8933,
+    category: "ai",
+    skill: "MediaPipe",
+  },
+  {
+    id: "silchar",
+    label: "SILCHAR",
+    icao: "IXS",
+    lat: 24.8333,
+    lng: 92.7789,
+    category: "ai",
+    skill: "Whisper",
+  },
+  {
+    id: "jammu",
+    label: "JAMMU",
+    icao: "IXJ",
+    lat: 32.7266,
+    lng: 74.857,
+    category: "tools",
+    skill: "Git",
+  },
+  {
+    id: "ludhiana",
+    label: "LUDHIANA",
+    icao: "LUH",
+    lat: 30.901,
+    lng: 75.8573,
+    category: "tools",
+    skill: "GitHub",
+  },
+  {
+    id: "jaipur",
+    label: "JAIPUR",
+    icao: "JAI",
+    lat: 26.9124,
+    lng: 75.7873,
+    category: "tools",
+    skill: "Vercel",
+  },
+  {
+    id: "ahmedabad",
+    label: "AHMEDABAD",
+    icao: "AMD",
+    lat: 23.0225,
+    lng: 72.5714,
+    category: "tools",
+    skill: "n8n",
+  },
+  {
+    id: "jamnagar",
+    label: "JAMNAGAR",
+    icao: "JGA",
+    lat: 22.4707,
+    lng: 70.0577,
+    category: "tools",
+    skill: "CI/CD",
+  },
+  {
+    id: "nagpur",
+    label: "DESTINATION",
+    icao: "NAG",
+    lat: 21.1458,
+    lng: 79.0882,
+    category: "goal",
+    skill: null,
   },
 ];
 
-const categoryColors: Record<string, string> = {
-  bengaluru:   "#8b5cf6", // purple — AI
-  hyderabad:   "#10b981", // green — Backend
-  pune:        "#3b82f6", // blue — Frontend
-  delhi:       "#64748b", // slate — Tools
-  chennai:     "#f59e0b", // amber — Languages
-  destination: "#22c55e", // green — Next Role
+const categoryColors: Record<SkillCategory, string> = {
+  source: "#ef4444",
+  languages: "#f59e0b",
+  frontend: "#3b82f6",
+  backend: "#10b981",
+  ai: "#8b5cf6",
+  tools: "#64748b",
+  goal: "#22c55e",
+};
+
+const categoryLabels: Record<SkillCategory, string> = {
+  source: "SOURCE",
+  languages: "LANGUAGES",
+  frontend: "FRONTEND",
+  backend: "BACKEND",
+  ai: "AI / ML",
+  tools: "TOOLS",
+  goal: "GOAL",
 };
 
 // ─── Skill Chart Component ────────────────────────────────────────────────────
 
-function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
+function FlightPathChart({
+  prefersReducedMotion,
+  isMobile,
+  scrollProg,
+}: {
   prefersReducedMotion: boolean;
   isMobile: boolean;
   scrollProg: number;
@@ -122,9 +316,9 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
       style: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-      center: [82.0, 22.0], // Center of India
-      zoom: 4.5,            // India fills viewport nicely
-      pitch: 20,            // slight 3D tilt
+      center: [82.0, 22.0],
+      zoom: 4.5,
+      pitch: 20,
       bearing: 0,
       interactive: false,
       attributionControl: false,
@@ -145,7 +339,7 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
 
     const updatePixels = () => {
       const coords: Record<string, { x: number; y: number }> = {};
-      flightRoute.forEach(stop => {
+      skillStops.forEach((stop) => {
         const px = mapInstance.project([stop.lng, stop.lat]);
         coords[stop.id] = { x: px.x, y: px.y };
       });
@@ -166,13 +360,23 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
   useEffect(() => {
     if (!mapInstance || showAll) return;
 
-    const totalLegs = flightRoute.length - 1;
+    const totalLegs = skillStops.length - 1;
     const progressVal = scrollProg * totalLegs;
     const currentLeg = Math.min(Math.floor(progressVal), totalLegs - 1);
     const legProgress = progressVal - currentLeg;
 
-    const fromCity = flightRoute[currentLeg];
-    const toCity = flightRoute[currentLeg + 1];
+    if (scrollProg > 0.95) {
+      mapInstance.easeTo({
+        center: [82.0, 22.0],
+        zoom: 4.3,
+        duration: 300,
+        easing: (t) => t,
+      });
+      return;
+    }
+
+    const fromCity = skillStops[currentLeg];
+    const toCity = skillStops[currentLeg + 1];
 
     if (fromCity && toCity) {
       const currentLng = fromCity.lng + (toCity.lng - fromCity.lng) * legProgress;
@@ -180,15 +384,15 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
 
       mapInstance.easeTo({
         center: [currentLng, currentLat],
-        zoom: scrollProg > 0.95 ? 4.2 : 5.0,
+        zoom: 5.0,
         duration: 80,
-        easing: t => t,
+        easing: (t) => t,
       });
     }
   }, [scrollProg, mapInstance, showAll]);
 
   // Calculate current active leg state
-  const totalLegs = flightRoute.length - 1;
+  const totalLegs = skillStops.length - 1;
   const progressVal = scrollProg * totalLegs;
   const currentLegIndex = Math.min(Math.floor(progressVal), totalLegs - 1);
   const currentLegProgress = progressVal - currentLegIndex;
@@ -196,8 +400,8 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
   const currentLegString = useMemo(() => {
     if (showAll || scrollProg >= 0.99) return "N/A — COMPLETED";
     if (scrollProg === 0) return "AWAITING DEPARTURE";
-    const fromCity = flightRoute[currentLegIndex];
-    const toCity = flightRoute[currentLegIndex + 1];
+    const fromCity = skillStops[currentLegIndex];
+    const toCity = skillStops[currentLegIndex + 1];
     return `${fromCity.icao} → ${toCity.icao}`;
   }, [currentLegIndex, scrollProg, showAll]);
 
@@ -206,35 +410,30 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
     if (Object.keys(pixelCoords).length === 0) return null;
 
     if (showAll || scrollProg >= 0.99) {
-      // Park at Mysuru (destination)
-      const destPx = pixelCoords["destination"];
+      const destPx = pixelCoords["nagpur"];
       return { x: destPx?.x ?? 0, y: destPx?.y ?? 0, angle: -8 };
     }
 
-    const fromCity = flightRoute[currentLegIndex];
-    const toCity = flightRoute[currentLegIndex + 1];
+    const fromCity = skillStops[currentLegIndex];
+    const toCity = skillStops[currentLegIndex + 1];
     const fromPx = pixelCoords[fromCity.id];
     const toPx = pixelCoords[toCity.id];
 
     if (!fromPx || !toPx) return null;
 
-    // Midpoint & curve control points
     const mx = (fromPx.x + toPx.x) / 2;
     const my = (fromPx.y + toPx.y) / 2;
     const dx = toPx.x - fromPx.x;
     const dy = toPx.y - fromPx.y;
-    const cx = mx - dy * (-0.3);
-    const cy = my + dx * (-0.3);
+    const cx = mx - dy * -0.3;
+    const cy = my + dx * -0.3;
 
-    // Quadratic bezier position
     const t = currentLegProgress;
     const x = (1 - t) * (1 - t) * fromPx.x + 2 * (1 - t) * t * cx + t * t * toPx.x;
     const y = (1 - t) * (1 - t) * fromPx.y + 2 * (1 - t) * t * cy + t * t * toPx.y;
 
-    // Tangent derivative vector for auto-rotation
     const vx = 2 * (1 - t) * (cx - fromPx.x) + 2 * t * (toPx.x - cx);
     const vy = 2 * (1 - t) * (cy - fromPx.y) + 2 * t * (toPx.y - cy);
-    // Since the top-view image points UP, we add 90 degrees offset to align it with math vectors (pointing right)
     const angle = Math.atan2(vy, vx) * (180 / Math.PI) + 90;
 
     return { x, y, angle };
@@ -243,7 +442,7 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
   // Update plane trails position array
   useEffect(() => {
     if (!planeState || showAll) return;
-    setTrailPositions(prev => {
+    setTrailPositions((prev) => {
       const next = [{ x: planeState.x, y: planeState.y }, ...prev];
       return next.slice(0, 5);
     });
@@ -255,8 +454,8 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
   const renderArcs = () => {
     if (Object.keys(pixelCoords).length === 0) return null;
 
-    return flightRoute.slice(0, -1).map((stop, i) => {
-      const nextStop = flightRoute[i + 1];
+    return skillStops.slice(0, -1).map((stop, i) => {
+      const nextStop = skillStops[i + 1];
       const fromPx = pixelCoords[stop.id];
       const toPx = pixelCoords[nextStop.id];
 
@@ -266,12 +465,11 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
       const my = (fromPx.y + toPx.y) / 2;
       const dx = toPx.x - fromPx.x;
       const dy = toPx.y - fromPx.y;
-      const cx = mx - dy * (-0.3);
-      const cy = my + dx * (-0.3);
+      const cx = mx - dy * -0.3;
+      const cy = my + dx * -0.3;
 
       const d = `M ${fromPx.x} ${fromPx.y} Q ${cx} ${cy} ${toPx.x} ${toPx.y}`;
 
-      // Calculate path visibility offset
       let legVisProg = 0;
       if (showAll || scrollProg >= 0.99) {
         legVisProg = 1.0;
@@ -283,26 +481,60 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
         }
       }
 
-      // We use 2000 as large default path offset multiplier
       const offsetVal = 2000 * (1 - legVisProg);
 
       return (
         <g key={`arc-${stop.id}-${nextStop.id}`}>
-          {/* Casing */}
-          <path d={d} fill="none" stroke="#060d1a" strokeWidth={10} strokeLinecap="round" />
-          {/* Dashed background corridor */}
-          <path d={d} fill="none" stroke="rgba(59,130,246,0.15)" strokeWidth={3} strokeDasharray="8 5" />
-          {/* Highlight drawing layer */}
+          <path d={d} fill="none" stroke="#060d1a" strokeWidth={8} strokeLinecap="round" />
           <path
             d={d}
             fill="none"
-            stroke={scrollProg > 0.01 ? "rgba(147,197,253,0.7)" : "rgba(147,197,253,0.1)"}
-            strokeWidth={1.5}
+            stroke="rgba(59,130,246,0.6)"
+            strokeWidth={2.5}
             strokeDasharray={2000}
             strokeDashoffset={offsetVal}
-            style={{ transition: "stroke-dashoffset 0.05s linear, stroke 0.3s" }}
+            style={{ transition: "stroke-dashoffset 0.05s linear" }}
+          />
+          <path
+            d={d}
+            fill="none"
+            stroke="rgba(147,197,253,0.35)"
+            strokeWidth={1}
+            strokeDasharray={2000}
+            strokeDashoffset={offsetVal}
+            style={{ transition: "stroke-dashoffset 0.05s linear" }}
           />
         </g>
+      );
+    });
+  };
+
+  // Helper to render banner poles (SVG)
+  const renderPoles = () => {
+    if (Object.keys(pixelCoords).length === 0) return null;
+
+    return skillStops.map((stop, i) => {
+      if (!stop.skill) return null;
+      const pos = pixelCoords[stop.id];
+      if (!pos) return null;
+
+      const arrived = showAll || scrollProg >= 0.99 || i <= currentLegIndex;
+      const approaching = !arrived && i === currentLegIndex + 1;
+      const visible = arrived || approaching;
+
+      return (
+        <line
+          key={`pole-${stop.id}`}
+          x1={pos.x}
+          y1={pos.y}
+          x2={pos.x}
+          y2={pos.y - 28}
+          stroke="rgba(255,255,255,0.12)"
+          strokeWidth={1}
+          strokeDasharray={28}
+          strokeDashoffset={visible ? 0 : 28}
+          style={{ transition: "stroke-dashoffset 0.5s ease-out" }}
+        />
       );
     });
   };
@@ -311,7 +543,7 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
   const renderNodes = () => {
     if (Object.keys(pixelCoords).length === 0) return null;
 
-    return flightRoute.map((stop, i) => {
+    return skillStops.map((stop, i) => {
       const pos = pixelCoords[stop.id];
       if (!pos) return null;
 
@@ -319,56 +551,79 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
       const opacity = arrivedAtStop ? 1 : 0;
       const scale = arrivedAtStop ? 1 : 0.3;
 
-      if (stop.type === "source") {
+      if (stop.category === "source") {
         return (
           <g key={stop.id} transform={`translate(${pos.x},${pos.y})`}>
-            {/* Pulsing radar ping */}
             <circle r={36} className="radar-ping" fill="none" stroke="#ef4444" strokeWidth={1.5} />
             <circle r={22} fill="#ef4444" opacity={0.15} />
             <circle r={8} fill="#ef4444" style={{ filter: "drop-shadow(0 0 8px #ef4444)" }} />
-            {/* Crosshair ticks */}
             <line x1={0} y1={-14} x2={0} y2={14} stroke="#ef4444" strokeWidth={1.5} />
             <line x1={-14} y1={0} x2={14} y2={0} stroke="#ef4444" strokeWidth={1.5} />
-            <text y={32} textAnchor="middle" fill="#ef4444" fontSize={9} fontWeight={700} fontFamily="monospace">
+            <text
+              y={32}
+              textAnchor="middle"
+              fill="#ef4444"
+              fontSize={9}
+              fontWeight={700}
+              fontFamily="monospace"
+            >
               OMK [MUMBAI]
             </text>
           </g>
         );
       }
 
-      if (stop.type === "destination") {
-        const destArrived = showAll || scrollProg >= 0.98;
+      if (stop.category === "goal") {
+        const destArrived = showAll || scrollProg >= 0.95;
         const color = destArrived ? "#22c55e" : "#484f58";
         return (
           <g key={stop.id} transform={`translate(${pos.x},${pos.y})`}>
             {destArrived && (
-              <circle r={32} className="radar-ping-green" fill="none" stroke="#22c55e" strokeWidth={1.5} />
+              <circle
+                r={32}
+                className="radar-ping-green"
+                fill="none"
+                stroke="#22c55e"
+                strokeWidth={1.5}
+              />
             )}
             <circle r={20} fill="#0a1628" stroke={color} strokeWidth={2} />
             <circle r={6} fill={color} />
-            <text y={30} textAnchor="middle" fill={color} fontSize={9} fontWeight={700} fontFamily="monospace">
-              NXT [NEXT ROLE]
+            <text
+              y={30}
+              textAnchor="middle"
+              fill={color}
+              fontSize={9}
+              fontWeight={700}
+              fontFamily="monospace"
+            >
+              NAG [NAGPUR]
             </text>
           </g>
         );
       }
 
-      // Waypoint city nodes
-      const color = categoryColors[stop.id] ?? "#3b82f6";
+      const color = categoryColors[stop.category] ?? "#3b82f6";
       return (
         <g
           key={stop.id}
           transform={`translate(${pos.x},${pos.y})`}
-          style={{ opacity, transform: `scale(${scale})`, transition: "opacity 0.4s ease-out, transform 0.4s ease-out" }}
+          style={{
+            opacity,
+            transform: `scale(${scale})`,
+            transition: "opacity 0.4s ease-out, transform 0.4s ease-out",
+          }}
         >
-          <circle r={16} fill="#0a1628" stroke={color} strokeWidth={1.8} />
-          <circle r={4} fill={color} />
-          {/* Waypoint crosshairs */}
-          <line x1={0} y1={-8} x2={0} y2={-16} stroke={color} strokeWidth={1} />
-          <line x1={0} y1={8} x2={0} y2={16} stroke={color} strokeWidth={1} />
-          <line x1={-8} y1={0} x2={-16} y2={0} stroke={color} strokeWidth={1} />
-          <line x1={8} y1={0} x2={16} y2={0} stroke={color} strokeWidth={1} />
-          <text y={26} textAnchor="middle" fill="#ffffff" fontSize={8} fontWeight={600} fontFamily="monospace">
+          <circle r={5} fill={color} style={{ filter: `drop-shadow(0 0 4px ${color})` }} />
+          <text
+            y={16}
+            textAnchor="middle"
+            fill={color}
+            fontSize={7}
+            fontWeight={600}
+            fontFamily="monospace"
+            opacity={0.8}
+          >
             {stop.icao}
           </text>
         </g>
@@ -376,70 +631,49 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
     });
   };
 
-  // Helper to render skills panels next to stops
-  const renderSkillsPanels = () => {
+  // Helper to render skill banners with clipPath unfurl
+  const renderBanners = () => {
     if (Object.keys(pixelCoords).length === 0) return null;
 
-    return flightRoute.map((stop, i) => {
-      if (stop.skills.length === 0) return null;
+    return skillStops.map((stop, i) => {
+      if (!stop.skill) return null;
       const pos = pixelCoords[stop.id];
       if (!pos) return null;
 
-      const arrivedAtStop = showAll || scrollProg >= 0.99 || i <= currentLegIndex;
-      const showPanel = showAll || scrollProg >= 0.95 || i === currentLegIndex;
-      
-      const opacity = showPanel && arrivedAtStop ? 1 : 0;
-      const translateY = showPanel ? 0 : 20;
+      const arrived = showAll || scrollProg >= 0.99 || i <= currentLegIndex;
+      const approaching = !arrived && i === currentLegIndex + 1 && currentLegProgress > 0.3;
+      const revealed = arrived || approaching;
+      const color = categoryColors[stop.category];
 
       return (
         <div
-          key={`panel-${stop.id}`}
-          id={`skills-panel-${stop.id}`}
+          key={`banner-${stop.id}`}
           style={{
             position: "absolute",
-            left: `${pos.x + 30}px`,
-            top: `${pos.y - 65}px`,
-            background: "rgba(6,13,26,0.92)",
-            border: `1px solid ${categoryColors[stop.id]}55`,
-            borderRadius: "12px",
-            padding: "12px 16px",
-            backdropFilter: "blur(12px)",
-            minWidth: "180px",
-            opacity,
-            transform: `translateY(${translateY}px) scale(${showPanel ? 1.0 : 0.95})`,
-            transition: "opacity 0.3s ease-out, transform 0.3s ease-out",
-            zIndex: 20,
+            left: `${pos.x}px`,
+            top: `${pos.y - 40}px`,
+            transform: "translateX(-50%)",
+            zIndex: 15,
             pointerEvents: "none",
+            clipPath: revealed ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
+            transition: "clip-path 0.5s ease-out",
           }}
         >
-          {/* City header */}
-          <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 9, color: "rgba(255,255,255,0.4)", marginBottom: 4 }}>
-            {stop.icao} — {stop.city.toUpperCase()}
-          </div>
-
-          {/* Category label */}
-          <div style={{ fontFamily: "JetBrains Mono, monospace", fontSize: 13, color: categoryColors[stop.id], fontWeight: 700, marginBottom: 8, letterSpacing: "0.05em" }}>
-            {stop.label}
-          </div>
-
-          {/* Skill chips */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-            {stop.skills.map((skill, index) => (
-              <span
-                key={index}
-                style={{
-                  background: `${categoryColors[stop.id]}15`,
-                  border: `1px solid ${categoryColors[stop.id]}40`,
-                  borderRadius: 6,
-                  padding: "2px 8px",
-                  fontSize: 10,
-                  fontFamily: "JetBrains Mono, monospace",
-                  color: "rgba(255,255,255,0.85)",
-                }}
-              >
-                {skill}
-              </span>
-            ))}
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              background: "rgba(6,13,26,0.9)",
+              borderLeft: `2px solid ${color}`,
+              padding: "3px 10px",
+              fontFamily: "'Space Mono','JetBrains Mono',monospace",
+              fontSize: 10,
+              whiteSpace: "nowrap",
+            }}
+          >
+            <span style={{ color: "rgba(255,255,255,0.4)", fontWeight: 500 }}>[{stop.icao}]</span>
+            <span style={{ color, fontWeight: 700 }}>{stop.skill}</span>
           </div>
         </div>
       );
@@ -447,14 +681,24 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
   };
 
   const FMCPanel = (
-    <div style={{
-      position: "absolute", bottom: 16, left: 16, zIndex: 30,
-      background: "rgba(6,13,26,0.92)", backdropFilter: "blur(16px)",
-      border: "1px solid rgba(59,130,246,0.25)", padding: "12px 16px",
-      fontFamily: "'Space Mono','JetBrains Mono',monospace", fontSize: 10,
-      color: "rgba(59,130,246,0.85)", lineHeight: 1.9, minWidth: 270,
-      boxShadow: "0 0 24px rgba(59,130,246,0.08)",
-    }}>
+    <div
+      style={{
+        position: "absolute",
+        bottom: 16,
+        left: 16,
+        zIndex: 30,
+        background: "rgba(6,13,26,0.92)",
+        backdropFilter: "blur(16px)",
+        border: "1px solid rgba(59,130,246,0.25)",
+        padding: "12px 16px",
+        fontFamily: "'Space Mono','JetBrains Mono',monospace",
+        fontSize: 10,
+        color: "rgba(59,130,246,0.85)",
+        lineHeight: 1.9,
+        minWidth: 270,
+        boxShadow: "0 0 24px rgba(59,130,246,0.08)",
+      }}
+    >
       <style>{`
         @keyframes atcPulse { 0%,100%{opacity:1}50%{opacity:.3} }
         @keyframes radarPing {
@@ -471,16 +715,24 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
           animation: radarPing 1.6s infinite linear;
         }
       `}</style>
-      <div style={{ color: "rgba(59,130,246,0.45)", marginBottom: 6, borderBottom: "1px solid rgba(59,130,246,0.15)", paddingBottom: 4, fontSize: 9 }}>
+      <div
+        style={{
+          color: "rgba(59,130,246,0.45)",
+          marginBottom: 6,
+          borderBottom: "1px solid rgba(59,130,246,0.15)",
+          paddingBottom: 4,
+          fontSize: 9,
+        }}
+      >
         ─ FLIGHT MANAGEMENT COMPUTER ────────
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", gap: "2px 8px" }}>
         <span style={{ opacity: 0.55 }}>ORIGIN</span>
         <span style={{ color: "#ef4444" }}>OMK (MUMBAI, INDIA)</span>
         <span style={{ opacity: 0.55 }}>DESTINATION</span>
-        <span style={{ color: "#22c55e" }}>NXT (NEXT ROLE)</span>
+        <span style={{ color: "#22c55e" }}>NAG (NAGPUR, INDIA)</span>
         <span style={{ opacity: 0.55 }}>WAYPOINTS</span>
-        <span style={{ color: "#e2e8f0" }}>5 CITIES</span>
+        <span style={{ color: "#e2e8f0" }}>25 CITIES</span>
         {!showAll && (
           <>
             <span style={{ opacity: 0.55 }}>EN ROUTE</span>
@@ -489,7 +741,18 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <span style={{ display: "flex", gap: 1 }}>
                 {Array.from({ length: 10 }).map((_, i) => (
-                  <span key={i} style={{ width: 8, height: 8, borderRadius: 1, background: i < Math.round(fmcProgressPercent / 10) ? "#3b82f6" : "rgba(255,255,255,0.08)" }} />
+                  <span
+                    key={i}
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 1,
+                      background:
+                        i < Math.round(fmcProgressPercent / 10)
+                          ? "#3b82f6"
+                          : "rgba(255,255,255,0.08)",
+                    }}
+                  />
                 ))}
               </span>
               <span style={{ color: "#3b82f6" }}>{fmcProgressPercent}%</span>
@@ -502,9 +765,22 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
         )}
         <span style={{ opacity: 0.55 }}>STATUS</span>
         <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-          <span className="pulse-dot" style={{ width: 5, height: 5, borderRadius: "50%", background: scrollProg >= 0.99 || showAll ? "#22c55e" : "#3b82f6", display: "inline-block" }} />
+          <span
+            className="pulse-dot"
+            style={{
+              width: 5,
+              height: 5,
+              borderRadius: "50%",
+              background: scrollProg >= 0.99 || showAll ? "#22c55e" : "#3b82f6",
+              display: "inline-block",
+            }}
+          />
           <span style={{ color: scrollProg >= 0.99 || showAll ? "#22c55e" : "#3b82f6" }}>
-            {scrollProg >= 0.99 || showAll ? "● DESTINATION REACHED" : scrollProg === 0 ? "● AWAITING DEPARTURE" : "● EN ROUTE"}
+            {scrollProg >= 0.99 || showAll
+              ? "● DESTINATION REACHED"
+              : scrollProg === 0
+                ? "● AWAITING DEPARTURE"
+                : "● EN ROUTE"}
           </span>
         </span>
       </div>
@@ -512,11 +788,15 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
   );
 
   return (
-    <div ref={wrapRef} style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}>
-      {/* Maplibre container div */}
-      <div ref={mapContainerRef} style={{ position: "absolute", inset: 0, background: "#060d1a" }} />
+    <div
+      ref={wrapRef}
+      style={{ position: "relative", width: "100%", height: "100%", overflow: "hidden" }}
+    >
+      <div
+        ref={mapContainerRef}
+        style={{ position: "absolute", inset: 0, background: "#060d1a" }}
+      />
 
-      {/* SVG Path Layer Overlay */}
       <svg
         style={{
           position: "absolute",
@@ -528,23 +808,25 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
         }}
       >
         {renderArcs()}
+        {renderPoles()}
         {renderNodes()}
 
-        {/* Trail dots */}
-        {!showAll && trailPositions.slice(1).map((pos, i) => (
-          <circle
-            key={i}
-            cx={pos.x}
-            cy={pos.y}
-            r={i === 0 ? 3.5 : i === 1 ? 2.5 : 1.5}
-            fill="#4f8ef7"
-            opacity={0.5 - i * 0.12}
-            style={{ transformOrigin: "center center", filter: "drop-shadow(0 0 4px #4f8ef7)" }}
-          />
-        ))}
+        {!showAll &&
+          trailPositions
+            .slice(1)
+            .map((pos, i) => (
+              <circle
+                key={i}
+                cx={pos.x}
+                cy={pos.y}
+                r={i === 0 ? 3.5 : i === 1 ? 2.5 : 1.5}
+                fill="#4f8ef7"
+                opacity={0.5 - i * 0.12}
+                style={{ transformOrigin: "center center", filter: "drop-shadow(0 0 4px #4f8ef7)" }}
+              />
+            ))}
       </svg>
 
-      {/* Real Plane Asset - PNG from public folder */}
       {planeState && (
         <div
           style={{
@@ -561,22 +843,32 @@ function FlightPathChart({ prefersReducedMotion, isMobile, scrollProg }: {
             filter: "drop-shadow(0 0 6px rgba(79,142,247,0.5))",
           }}
         >
-          <img src="/plane-top-view.png" alt="Plane" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+          <img
+            src="/plane-top-view.png"
+            alt="Plane"
+            style={{ width: "100%", height: "100%", objectFit: "contain" }}
+          />
         </div>
       )}
 
-      {/* Floating skill panels overlay */}
-      {renderSkillsPanels()}
+      {renderBanners()}
 
-      {/* Scroll hint */}
       {!showAll && scrollProg === 0 && (
-        <div style={{
-          position: "absolute", bottom: 160, left: "16px",
-          zIndex: 30, color: "rgba(255,255,255,0.4)", fontSize: 10,
-          fontFamily: "'Space Mono',monospace", letterSpacing: "0.08em",
-          animation: "atcPulse 2s ease-in-out infinite",
-          pointerEvents: "none", whiteSpace: "nowrap",
-        }}>
+        <div
+          style={{
+            position: "absolute",
+            bottom: 160,
+            left: "16px",
+            zIndex: 30,
+            color: "rgba(255,255,255,0.4)",
+            fontSize: 10,
+            fontFamily: "'Space Mono',monospace",
+            letterSpacing: "0.08em",
+            animation: "atcPulse 2s ease-in-out infinite",
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+          }}
+        >
           SCROLL TO BEGIN JOURNEY ↓
         </div>
       )}
@@ -612,9 +904,10 @@ function SkillsPage() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  useEffect(() => { if (isMobile) setIsGraphView(false); }, [isMobile]);
+  useEffect(() => {
+    if (isMobile) setIsGraphView(false);
+  }, [isMobile]);
 
-  // Hook up Lenis scroll tracking directly in parent page content
   useLenis((lenis) => {
     if (showAll || !scrollRef.current) return;
     const rect = scrollRef.current.getBoundingClientRect();
@@ -624,30 +917,98 @@ function SkillsPage() {
     setScrollProg(rawProg);
   });
 
+  // Build grouped skill list
+  const groupedSkills = useMemo(() => {
+    const groups: Record<SkillCategory, { icao: string; skill: string }[]> = {
+      source: [],
+      languages: [],
+      frontend: [],
+      backend: [],
+      ai: [],
+      tools: [],
+      goal: [],
+    };
+    skillStops.forEach((stop) => {
+      if (stop.skill) {
+        groups[stop.category].push({ icao: stop.icao, skill: stop.skill });
+      }
+    });
+    return groups;
+  }, []);
+
+  const listCategories: SkillCategory[] = ["languages", "frontend", "backend", "ai", "tools"];
+
   return (
     <PageShell path="/skills">
       <div style={{ position: "relative", width: "100%", background: "#060d1a" }}>
-        {/* Sticky header */}
-        <div style={{
-          position: "sticky", top: 0, zIndex: 100,
-          padding: "20px 64px 14px",
-          background: "linear-gradient(to bottom, rgba(6,13,26,0.98) 80%, transparent)",
-          backdropFilter: "blur(8px)",
-        }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div
+          style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 100,
+            padding: "20px 64px 14px",
+            background: "linear-gradient(to bottom, rgba(6,13,26,0.98) 80%, transparent)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <div
+            style={{
+              maxWidth: 1200,
+              margin: "0 auto",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+            }}
+          >
             <div>
-              <p style={{ fontSize: 10, color: "#484f58", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 6, fontFamily: "'Space Mono',monospace" }}>
+              <p
+                style={{
+                  fontSize: 10,
+                  color: "#484f58",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.15em",
+                  marginBottom: 6,
+                  fontFamily: "'Space Mono',monospace",
+                }}
+              >
                 Navigation Chart / Technical Stack — maplibre
               </p>
-              <h1 style={{ fontSize: 28, fontWeight: 300, color: "#e6edf3", fontFamily: "Geist,system-ui,sans-serif", letterSpacing: "-0.03em", lineHeight: 1.2, margin: 0 }}>
+              <h1
+                style={{
+                  fontSize: 28,
+                  fontWeight: 300,
+                  color: "#e6edf3",
+                  fontFamily: "Geist,system-ui,sans-serif",
+                  letterSpacing: "-0.03em",
+                  lineHeight: 1.2,
+                  margin: 0,
+                }}
+              >
                 Flight path through <span style={{ color: "#3b82f6" }}>your stack</span>
               </h1>
             </div>
             <button
-              onClick={() => setIsGraphView(v => !v)}
-              style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4, padding: "8px 14px", color: "#8b949e", fontSize: 11, fontFamily: "'Space Mono',monospace", cursor: "pointer", transition: "all 0.15s" }}
-              onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
+              onClick={() => setIsGraphView((v) => !v)}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 4,
+                padding: "8px 14px",
+                color: "#8b949e",
+                fontSize: 11,
+                fontFamily: "'Space Mono',monospace",
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+              }}
             >
               {isGraphView ? <EyeOff size={14} /> : <Eye size={14} />}
               {isGraphView ? "≡ List View" : "✈ Chart View"}
@@ -655,22 +1016,35 @@ function SkillsPage() {
           </div>
         </div>
 
-        {/* Content */}
         <AnimatePresence mode="wait">
           {isGraphView ? (
-            <motion.div key="chart" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-              {/* Outer scroll height container */}
-              <div ref={scrollRef} style={{ position: "relative", width: "100%", height: showAll ? "calc(100vh - 80px)" : "400vh" }}>
-                <div style={{
-                  position: showAll ? "relative" : "fixed",
-                  top: showAll ? 0 : 80,
-                  left: showAll ? 0 : 48,
-                  right: 0,
-                  bottom: 0,
-                  height: showAll ? "100%" : "calc(100vh - 80px)",
-                  overflow: "hidden",
-                  zIndex: 1
-                }}>
+            <motion.div
+              key="chart"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div
+                ref={scrollRef}
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: showAll ? "calc(100vh - 80px)" : "500vh",
+                }}
+              >
+                <div
+                  style={{
+                    position: showAll ? "relative" : "fixed",
+                    top: showAll ? 0 : 80,
+                    left: showAll ? 0 : 48,
+                    right: 0,
+                    bottom: 0,
+                    height: showAll ? "100%" : "calc(100vh - 80px)",
+                    overflow: "hidden",
+                    zIndex: 1,
+                  }}
+                >
                   <FlightPathChart
                     prefersReducedMotion={prefersReducedMotion}
                     isMobile={isMobile}
@@ -680,30 +1054,62 @@ function SkillsPage() {
               </div>
             </motion.div>
           ) : (
-            <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-              {/* Fallback to simple skill listing */}
+            <motion.div
+              key="list"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
               <div style={{ padding: "40px 64px", maxWidth: 900, margin: "0 auto" }}>
-                {flightRoute.filter(stop => stop.skills.length > 0).map(stop => (
-                  <div key={stop.id} style={{ marginBottom: 36 }}>
-                    <h3 style={{ fontSize: 10, color: categoryColors[stop.id], textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: "'Space Mono',monospace", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ flex: 1, height: 1, background: `${categoryColors[stop.id]}33` }} />{stop.label}<span style={{ flex: 1, height: 1, background: `${categoryColors[stop.id]}33` }} />
-                    </h3>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                      {stop.skills.map((skill, index) => (
-                        <div key={index} style={{
-                          display: "flex", alignItems: "center", gap: 8,
-                          background: "rgba(255,255,255,0.03)",
-                          border: `1px solid ${categoryColors[stop.id]}44`,
-                          borderRadius: 4, padding: "10px 16px", color: "#e6edf3",
-                          fontSize: 12, fontFamily: "'Space Mono',monospace"
-                        }}>
-                          <span style={{ fontSize: 9, color: categoryColors[stop.id], opacity: 0.8 }}>[{stop.icao}]</span>
-                          <span>{skill}</span>
-                        </div>
-                      ))}
+                {listCategories.map((cat) => {
+                  const items = groupedSkills[cat];
+                  if (items.length === 0) return null;
+                  const color = categoryColors[cat];
+                  return (
+                    <div key={cat} style={{ marginBottom: 36 }}>
+                      <h3
+                        style={{
+                          fontSize: 10,
+                          color,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.12em",
+                          fontFamily: "'Space Mono',monospace",
+                          marginBottom: 12,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <span style={{ flex: 1, height: 1, background: `${color}33` }} />
+                        {categoryLabels[cat]}
+                        <span style={{ flex: 1, height: 1, background: `${color}33` }} />
+                      </h3>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        {items.map((item, index) => (
+                          <div
+                            key={index}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 8,
+                              background: "rgba(255,255,255,0.03)",
+                              border: `1px solid ${color}44`,
+                              borderRadius: 4,
+                              padding: "10px 16px",
+                              color: "#e6edf3",
+                              fontSize: 12,
+                              fontFamily: "'Space Mono',monospace",
+                            }}
+                          >
+                            <span style={{ fontSize: 9, color, opacity: 0.8 }}>[{item.icao}]</span>
+                            <span>{item.skill}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
           )}

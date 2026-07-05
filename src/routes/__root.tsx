@@ -13,25 +13,28 @@ import { ReactLenis } from "lenis/react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { PlaneCursor } from "@/components/PlaneCursor";
 import { motion } from "framer-motion";
 
 function CubeLoader() {
   return (
-    <div style={{ 
-      display: 'flex', 
-      height: '100vh', 
-      width: '100vw', 
-      alignItems: 'center', 
-      justifyContent: 'center',
-      background: '#080809'
-    }}>
+    <div
+      style={{
+        display: "flex",
+        height: "100vh",
+        width: "100vw",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#080809",
+      }}
+    >
       <div style={{ width: 40, height: 40, perspective: 600 }}>
         <motion.div
           style={{
-            width: '100%',
-            height: '100%',
-            position: 'relative',
-            transformStyle: 'preserve-3d',
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            transformStyle: "preserve-3d",
           }}
           animate={{
             rotateX: [0, 180, 180, 360, 360],
@@ -44,24 +47,30 @@ function CubeLoader() {
           }}
         >
           {[
-            { transform: 'translateZ(20px)' },
-            { transform: 'translateZ(-20px) rotateY(180deg)' },
-            { transform: 'translateX(20px) rotateY(90deg)' },
-            { transform: 'translateX(-20px) rotateY(-90deg)' },
-            { transform: 'translateY(20px) rotateX(-90deg)' },
-            { transform: 'translateY(-20px) rotateX(90deg)' },
+            { transform: "translateZ(20px)" },
+            { transform: "translateZ(-20px) rotateY(180deg)" },
+            { transform: "translateX(20px) rotateY(90deg)" },
+            { transform: "translateX(-20px) rotateY(-90deg)" },
+            { transform: "translateY(20px) rotateX(-90deg)" },
+            { transform: "translateY(-20px) rotateX(90deg)" },
           ].map((style, i) => (
             <div
               key={i}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 inset: 0,
-                border: '1.5px solid rgba(255, 255, 255, 0.1)',
-                background: 'rgba(79, 142, 247, 0.03)',
+                border: "1.5px solid rgba(255, 255, 255, 0.1)",
+                background: "rgba(79, 142, 247, 0.03)",
                 ...style,
               }}
             >
-               <div style={{ position: 'absolute', inset: 4, border: '1px solid rgba(79, 142, 247, 0.4)' }} />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 4,
+                  border: "1px solid rgba(79, 142, 247, 0.4)",
+                }}
+              />
             </div>
           ))}
         </motion.div>
@@ -200,6 +209,7 @@ function RootComponent() {
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </ReactLenis>
+      <PlaneCursor />
       <Toaster position="bottom-center" theme="dark" />
     </QueryClientProvider>
   );
