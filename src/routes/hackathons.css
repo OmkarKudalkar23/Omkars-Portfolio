@@ -1,0 +1,170 @@
+.hackathon-card {
+  background: #0d0d0d;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 40px 32px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  min-height: 380px;
+}
+
+.hackathon-card:hover {
+  background: #111;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.featured-badge {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  z-index: 3;
+}
+
+.card-index {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #10b981;
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.card-title {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 600;
+  color: #f2f2f3;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.card-subtitle {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 24px;
+}
+
+.card-desc {
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.6;
+  margin-bottom: 32px;
+  flex-grow: 1;
+}
+
+.card-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-link {
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  background: #f1f5f9;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.card-link:hover {
+  background: #ffffff;
+  transform: scale(1.04);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.stat-number {
+  font-size: 56px;
+  font-weight: 800;
+  color: #3b82f6;
+  line-height: 1;
+  text-shadow: 0 0 40px rgba(59,130,246,0.3);
+  letter-spacing: -0.03em;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  margin-top: 4px;
+}
+
+.card-image-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.hackathon-card:hover .card-image-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+.card-image-overlay img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.05);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: grayscale(50%) brightness(0.6) contrast(1.1);
+}
+
+.hackathon-card:hover .card-image-overlay img {
+  transform: scale(1);
+}
+
+.card-image-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 70%);
+  pointer-events: none;
+}
+
+.card-content-wrapper {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-grow: 1;
+}
+

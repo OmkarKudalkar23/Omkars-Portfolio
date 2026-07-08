@@ -4,19 +4,44 @@ import { motion } from 'framer-motion';
 import { Trophy, ChevronDown, ChevronUp } from 'lucide-react';
 import { PageShell } from '@/components/layout/PageShell';
 import { omkar } from '@/lib/data';
+import { Component as EtheralShadow } from '@/components/ui/etheral-shadow';
+import './hackathons.css';
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.97 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      delay: i * 0.15,
+      duration: 0.5,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    }
+  })
+};
 
 function HackathonsPage() {
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   const stats = [
-    { value: '3', label: 'Hackathons entered' },
-    { value: '2', label: 'First place wins' },
+    { value: '6', label: 'Hackathons entered' },
+    { value: '3', label: 'First place wins' },
     { value: '1000+', label: 'Participants beaten' },
   ];
 
   return (
     <PageShell path="/hackathons">
+      <div className="fixed inset-0 z-0 w-full h-full pointer-events-none">
+        <EtheralShadow
+          color="rgba(128, 128, 128, 1)"
+          animation={{ scale: 100, speed: 90 }}
+          noise={{ opacity: 1, scale: 1.2 }}
+          sizing="fill"
+        />
+      </div>
+      <div className="relative z-10">
       {/* Hero */}
       <div
         style={{
@@ -72,18 +97,10 @@ function HackathonsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: i * 0.15 }}
             >
-              <div
-                style={{
-                  fontSize: 48,
-                  fontWeight: 300,
-                  color: '#4f8ef7',
-                  fontFamily: 'Geist, system-ui, sans-serif',
-                  lineHeight: 1,
-                }}
-              >
+              <div className="stat-number">
                 {stat.value}
               </div>
-              <div style={{ fontSize: 13, color: '#505058', marginTop: 4 }}>
+              <div className="stat-label">
                 {stat.label}
               </div>
             </motion.div>
@@ -93,258 +110,63 @@ function HackathonsPage() {
 
       {/* Trophy cards */}
       <div
+        className="cards-grid"
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 20,
           padding: '0 64px',
           maxWidth: 1200,
           margin: '0 auto',
         }}
       >
         {omkar.hackathons.map((h, i) => (
-          <div
+          <motion.div
             key={h.event}
-            style={{ perspective: 1200 }}
-            onMouseEnter={() => h.image && setHoveredIdx(i)}
-            onMouseLeave={() => setHoveredIdx(null)}
-            onFocus={() => h.image && setHoveredIdx(i)}
-            onBlur={() => setHoveredIdx(null)}
+            variants={cardVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-50px' }}
+            custom={i}
+            className="hackathon-card"
           >
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.12 }}
-              animate={{ rotateY: hoveredIdx === i ? 180 : 0 }}
-              style={{
-                width: '100%',
-                height: '100%',
-                position: 'relative',
-                transformStyle: 'preserve-3d',
-              }}
-            >
-              {/* FRONT SIDE */}
-              <div
-                style={{
-                  background: 'rgba(255,255,255,0.02)',
-                  borderRadius: 20,
-                  padding: '40px 32px',
-                  textAlign: 'center',
-                  position: 'relative',
-                  border: `0.5px solid ${h.place === 1 ? 'rgba(201,169,110,0.25)' : h.place === 3 ? 'rgba(192,192,192,0.25)' : 'rgba(255,255,255,0.07)'}`,
-                  backfaceVisibility: 'hidden',
-                  // prevent flipping during interactions on front side
-                  pointerEvents: hoveredIdx === i ? 'none' : 'auto',
-                }}
-              >
-                {/* Shimmer for 1st place and 3rd place */}
-                {(h.place === 1 || h.place === 3) && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      inset: 0,
-                      borderRadius: 20,
-                      pointerEvents: 'none',
-                      background: h.place === 1
-                        ? 'linear-gradient(135deg, transparent 30%, rgba(201,169,110,0.12) 50%, transparent 70%)'
-                        : 'linear-gradient(135deg, transparent 30%, rgba(192,192,192,0.12) 50%, transparent 70%)',
-                      backgroundSize: '200% 200%',
-                      animation: 'shimmer-border 3s linear infinite',
-                    }}
-                  />
-                )}
+            {i === 1 && (
+              <div className="featured-badge">
+                Featured
+              </div>
+            )}
+            
+            {h.image && (
+              <div className="card-image-overlay">
+                <img src={h.image} alt={h.event} />
+              </div>
+            )}
 
-                {/* Placement badge */}
-                <div
-                  style={{
-                    fontFamily: 'Geist Mono, monospace',
-                    fontSize: 11,
-                    color: h.place === 1 ? '#c9a96e' : h.place === 3 ? '#c0c0c0' : '#a0a0a8',
-                    letterSpacing: '0.15em',
-                    marginBottom: 16,
-                  }}
-                >
-                  {h.placeLabel ? h.placeLabel.toUpperCase() : (h.place === 1 ? '1ST' : h.place === 2 ? '2ND' : '3RD') + ' PLACE'}
-                </div>
-
-                {/* Trophy icon */}
-                <div style={{ marginBottom: 16 }}>
-                  <Trophy
-                    size={32}
-                    color={h.place === 1 ? '#c9a96e' : h.place === 3 ? '#c0c0c0' : '#505058'}
-                  />
-                </div>
-
-                {/* Event name */}
-                <div
-                  style={{
-                    fontSize: 20,
-                    fontWeight: 500,
-                    color: '#f2f2f3',
-                    marginBottom: 8,
-                    fontFamily: 'Geist, system-ui, sans-serif',
-                  }}
-                >
-                  {h.event}
-                </div>
-
-                {/* Host + participants */}
-                <div style={{ fontSize: 13, color: '#505058', marginBottom: 4 }}>
-                  {h.host}
-                </div>
-                <div style={{ fontSize: 13, color: '#505058', marginBottom: 4 }}>
-                  {h.participants}
-                </div>
-
-                {/* Project name */}
-                <div
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 500,
-                    color: h.accent,
-                    marginTop: 12,
-                    marginBottom: 8,
-                  }}
-                >
-                  {h.project}
-                </div>
-
-                {/* Detail text */}
-                <div
-                  style={{
-                    fontSize: 13,
-                    color: '#a0a0a8',
-                    lineHeight: 1.6,
-                  }}
-                >
-                  {h.detail}
-                </div>
-
-                {/* Tech tags */}
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: 4,
-                    justifyContent: 'center',
-                    marginTop: 12,
-                    marginBottom: 16,
-                  }}
-                >
-                  {h.tech.map((t) => (
-                    <span
-                      key={t}
-                      style={{
-                        fontFamily: 'Geist Mono, monospace',
-                        fontSize: 11,
-                        color: '#505058',
-                        background: 'rgba(255,255,255,0.04)',
-                        border: '0.5px solid rgba(255,255,255,0.08)',
-                        borderRadius: 6,
-                        padding: '2px 8px',
-                      }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Accordion button */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setExpandedIdx(expandedIdx === i ? null : i);
-                  }}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: '#4f8ef7',
-                    fontSize: 12,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 4,
-                    margin: '0 auto',
-                  }}
-                >
-                  {expandedIdx === i ? (
-                    <>
-                      Hide details <ChevronUp size={12} />
-                    </>
-                  ) : (
-                    <>
-                      View details <ChevronDown size={12} />
-                    </>
-                  )}
-                </button>
-
-                {/* Expanded section */}
-                {expandedIdx === i && (
-                  <div
-                    style={{
-                      padding: '14px 0 0',
-                      borderTop: '0.5px solid rgba(255,255,255,0.07)',
-                      marginTop: 12,
-                      textAlign: 'left',
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize: 10,
-                        color: '#505058',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.1em',
-                        marginBottom: 4,
-                        fontFamily: 'Geist Mono, monospace',
-                      }}
-                    >
-                      PROBLEM:
-                    </div>
-                    <div style={{ fontSize: 13, color: '#a0a0a8', lineHeight: 1.6 }}>
-                      {h.detail}
-                    </div>
-                  </div>
-                )}
+            <div className="card-content-wrapper">
+              <div className="card-index">
+                [0{i + 1}]
               </div>
 
-              {/* BACK SIDE */}
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  backfaceVisibility: 'hidden',
-                  transform: 'rotateY(180deg)',
-                  background: 'rgba(255,255,255,0.02)',
-                  borderRadius: 20,
-                  border: `0.5px solid rgba(255,255,255,0.07)`,
-                  overflow: 'hidden',
-                  pointerEvents: hoveredIdx === i ? 'auto' : 'none',
-                }}
-              >
-                {h.image && (
-                  <img 
-                    src={h.image} 
-                    alt={`${h.event} win`}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      opacity: 0.85,
-                      filter: 'grayscale(20%) contrast(1.1)',
-                    }}
-                  />
-                )}
-                {/* Subtle overlay to keep it feeling premium and integrated */}
-                <div style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(to top, rgba(10,10,10,0.6) 0%, transparent 100%)',
-                  pointerEvents: 'none'
-                }} />
+              <div className="card-title">
+                {h.project} - {h.event}
               </div>
-            </motion.div>
-          </div>
+
+              <div className="card-subtitle">
+                {new Date().getFullYear()} · {h.placeLabel || (h.place === 1 ? '1st Place' : h.place === 2 ? '2nd Place' : '3rd Place')}
+              </div>
+
+              <div className="card-desc">
+                {h.detail}
+              </div>
+
+              <div className="card-footer">
+                <a
+                  href="#"
+                  onClick={(e) => e.preventDefault()}
+                  className="card-link"
+                >
+                  ↗ live
+                </a>
+              </div>
+            </div>
+          </motion.div>
         ))}
       </div>
 
@@ -377,6 +199,7 @@ function HackathonsPage() {
           in 24 hours that solves a real problem. Twice, that was enough to
           win."
         </motion.p>
+      </div>
       </div>
     </PageShell>
   );

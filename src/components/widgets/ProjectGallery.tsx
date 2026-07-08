@@ -21,8 +21,18 @@ export function ProjectGallery({ onOpenProject }: { onOpenProject?: (id: string)
               hidden: { opacity: 0, y: 16 },
               visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } },
             }}
-            className="group flex flex-col rounded-2xl border border-border-subtle bg-surface p-6 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-border-default hover:bg-elevated hover:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-            style={{ borderWidth: "0.5px" }}
+            whileHover={{ 
+              y: -2,
+              borderColor: p.id === 'nolan' ? `${p.accent}80` : 'rgba(255,255,255,0.15)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.6)'
+            }}
+            className="group flex flex-col rounded-2xl p-6 text-left"
+            style={{ 
+              background: '#0d0d0d',
+              border: `1px solid ${p.id === 'nolan' ? `${p.accent}30` : 'rgba(255,255,255,0.08)'}`,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+              transition: 'background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease'
+            }}
           >
             <div className="flex items-center gap-2.5">
               <span className="h-2.5 w-2.5 rounded-full" style={{ background: p.accent, boxShadow: `0 0 12px ${p.accent}99` }} />
