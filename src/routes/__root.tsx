@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { PlaneCursor } from "@/components/PlaneCursor";
 import { motion } from "framer-motion";
+import { Analytics } from "@vercel/analytics/react";
 
 function CubeLoader() {
   return (
@@ -211,6 +212,7 @@ function RootComponent() {
       </ReactLenis>
       <PlaneCursor />
       <Toaster position="bottom-center" theme="dark" />
+      <Analytics />
     </QueryClientProvider>
   );
 }
