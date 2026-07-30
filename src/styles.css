@@ -552,6 +552,25 @@
   pointer-events: none;
 }
 
+.airplane-landing-viewport .content .section.hero {
+  background-image: url("/hero_bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.airplane-landing-viewport .content .section.hero::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 25vh;
+  background: linear-gradient(to bottom, transparent, #D0CBC7);
+  z-index: 1;
+  pointer-events: none;
+}
+
 .airplane-landing-viewport .content .section.dark {
   color: white;
   background-color: transparent;

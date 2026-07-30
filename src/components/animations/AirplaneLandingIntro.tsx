@@ -321,7 +321,7 @@ export function AirplaneLandingIntro({ onFinish }: AirplaneLandingIntroProps) {
           </div>
 
           {/* ── Section 1: Intro ── */}
-          <div className="section">
+          <div className="section hero">
             <h1>Omkar Kudalkar.</h1>
             <h3>The Portfolio Guide.</h3>
             <p>You've probably never seen a portfolio like this.</p>
