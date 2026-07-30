@@ -104,6 +104,16 @@ export function AirplaneLandingIntro({ onFinish }: AirplaneLandingIntroProps) {
       strokeDashoffset: 1000
     });
 
+    // Hero Section Editorial Entry Animation
+    const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+    heroTl.to(".hero-vertical-line", { scaleY: 1, duration: 1.2 })
+          .to([".hero-text-block h1", ".hero-text-block h3", ".hero-text-block p"], {
+            opacity: 1,
+            x: 0,
+            duration: 0.8,
+            stagger: 0.15
+          }, "-=0.9");
+
     const sectionDuration = 1;
 
     // Main flight timeline incorporating the exact Codepen flight path positions & rotations
@@ -322,9 +332,14 @@ export function AirplaneLandingIntro({ onFinish }: AirplaneLandingIntroProps) {
 
           {/* ── Section 1: Intro ── */}
           <div className="section hero">
-            <h1>Omkar Kudalkar.</h1>
-            <h3>The Portfolio Guide.</h3>
-            <p>You've probably never seen a portfolio like this.</p>
+            <div className="hero-content-wrapper">
+              <div className="hero-vertical-line" />
+              <div className="hero-text-block">
+                <h1>Omkar Kudalkar.</h1>
+                <h3>The Portfolio Guide.</h3>
+                <p>You've probably never seen a portfolio like this.</p>
+              </div>
+            </div>
             <div className="scroll-cta" style={{ opacity: loading ? 0 : 1 }}>Scroll</div>
           </div>
 
