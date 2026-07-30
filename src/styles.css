@@ -545,7 +545,7 @@
   height: 100vh;
   box-sizing: border-box;
   margin: 0 auto;
-  z-index: 2;
+  z-index: 4;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -604,6 +604,30 @@
 .airplane-landing-viewport .content .ground-container {
   position: relative;
   overflow: hidden;
+}
+
+.airplane-landing-viewport .content .ground-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 25vh;
+  background: linear-gradient(to bottom, #D0CBC7, transparent);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.airplane-landing-viewport .content .ground-container::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 25vh;
+  background: linear-gradient(to bottom, transparent, #131C2A);
+  z-index: 3;
+  pointer-events: none;
 }
 
 .airplane-landing-viewport .content .ground-container .parallax {
