@@ -626,7 +626,26 @@
 
 .airplane-landing-viewport .content .ground-container .clouds {
   z-index: 2;
-  background-image: url("/clouds.png");
+  background-image: url("/clouds_transparent.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: cover;
+  mix-blend-mode: screen;
+  will-change: transform;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18%,
+    black 82%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18%,
+    black 82%,
+    transparent 100%
+  );
 }
 
 .airplane-landing-viewport .content .scroll-cta, 

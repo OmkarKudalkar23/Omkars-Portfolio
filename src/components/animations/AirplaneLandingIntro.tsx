@@ -264,6 +264,9 @@ export function AirplaneLandingIntro({ onFinish }: AirplaneLandingIntroProps) {
       }
     });
 
+    // Clouds parallax — uses gsap.from so div starts 25% below natural position
+    // and moves up to 0% as user scrolls. mix-blend-mode: screen on the element
+    // makes dark areas transparent so only white clouds are visible over the ground.
     gsap.from(".clouds", {
       y: "25%",
       scrollTrigger: {
@@ -325,15 +328,16 @@ export function AirplaneLandingIntro({ onFinish }: AirplaneLandingIntroProps) {
             <div className="scroll-cta" style={{ opacity: loading ? 0 : 1 }}>Scroll</div>
           </div>
 
-          {/* ── Section 2: Buses comparison ── */}
-          <div className="section right">
-            <h2>Most are standard static sites...</h2>
-          </div>
-
           {/* ── Ground / Clouds Parallax Container ── */}
           <div className="ground-container">
             <div className="parallax ground" />
-            
+            <div className="parallax clouds" />
+
+            {/* ── Section 2: Buses comparison ── */}
+            <div className="section right">
+              <h2>Most are standard static sites...</h2>
+            </div>
+
             {/* ── Section 3: Leave ground ── */}
             <div className="section right">
               <h2>..except this one talks back.</h2>
@@ -351,7 +355,6 @@ export function AirplaneLandingIntro({ onFinish }: AirplaneLandingIntroProps) {
               <h2>Defying traditional static resumes.</h2>
               <p>Explore interactive maps, experiences, and logs.</p>
             </div>
-            <div className="parallax clouds" />
           </div>
 
           {/* ── Blueprint Facts & Figures ── */}
