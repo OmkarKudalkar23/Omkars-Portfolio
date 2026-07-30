@@ -626,7 +626,7 @@
 
 .airplane-landing-viewport .content .ground-container .clouds {
   z-index: 2;
-  background-image: url("https://assets.codepen.io/557388/clouds.png");
+  background-image: url("/clouds.png");
 }
 
 .airplane-landing-viewport .content .scroll-cta, 
@@ -643,7 +643,7 @@
 }
 
 .airplane-landing-viewport .content .sunset {
-  background: url("https://assets.codepen.io/557388/sunset-reduced.jpg") no-repeat top center; 
+  background: url("/sunset_eng.jpg") no-repeat top center; 
   background-size: cover;
   transform-origin: top center;
 }

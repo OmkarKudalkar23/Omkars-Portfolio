@@ -318,7 +318,7 @@ function FlightPathChart({
       style: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
       center: [82.0, 22.0],
       zoom: 4.5,
-      pitch: 20,
+      pitch: 45,
       bearing: 0,
       interactive: false,
       attributionControl: false,
@@ -369,6 +369,8 @@ function FlightPathChart({
       mapInstance.easeTo({
         center: [82.0, 22.0],
         zoom: 4.3,
+        pitch: 20,
+        bearing: 0,
         duration: 300,
         easing: (t) => t,
       });
@@ -382,9 +384,20 @@ function FlightPathChart({
       const currentLng = fromCity.lng + (toCity.lng - fromCity.lng) * legProgress;
       const currentLat = fromCity.lat + (toCity.lat - fromCity.lat) * legProgress;
 
+      // Calculate bearing between fromCity and toCity
+      const dLng = (toCity.lng - fromCity.lng) * (Math.PI / 180);
+      const lat1 = fromCity.lat * (Math.PI / 180);
+      const lat2 = toCity.lat * (Math.PI / 180);
+      
+      const y = Math.sin(dLng) * Math.cos(lat2);
+      const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+      const bearing = (Math.atan2(y, x) * 180) / Math.PI;
+
       mapInstance.easeTo({
         center: [currentLng, currentLat],
-        zoom: 5.0,
+        zoom: 6.5,
+        pitch: 65,
+        bearing: bearing,
         duration: 80,
         easing: (t) => t,
       });
@@ -651,29 +664,71 @@ function FlightPathChart({
           style={{
             position: "absolute",
             left: `${pos.x}px`,
-            top: `${pos.y - 40}px`,
-            transform: "translateX(-50%)",
+            top: `${pos.y - 50}px`,
+            transform: "translateX(-50%) perspective(1000px) rotateX(15deg) rotateY(-10deg) translateZ(10px)",
             zIndex: 15,
             pointerEvents: "none",
-            clipPath: revealed ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
-            transition: "clip-path 0.5s ease-out",
+            opacity: revealed ? 1 : 0,
+            transformOrigin: "bottom center",
+            transition: "opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)",
+            ...(revealed
+              ? {}
+              : {
+                  transform: "translateX(-50%) perspective(1000px) rotateX(60deg) rotateY(0deg) translateZ(0px) translateY(20px) scale(0.8)",
+                }),
           }}
         >
+          {/* Stem/pin connecting banner to the city */}
           <div
             style={{
-              display: "inline-flex",
+              position: "absolute",
+              bottom: "-20px",
+              left: "50%",
+              width: "1px",
+              height: "20px",
+              background: `linear-gradient(to top, transparent, ${color})`,
+              transform: "translateX(-50%)",
+            }}
+          />
+          <div
+            style={{
+              display: "flex",
               alignItems: "center",
-              gap: 6,
-              background: "rgba(6,13,26,0.9)",
-              borderLeft: `2px solid ${color}`,
-              padding: "3px 10px",
+              gap: 8,
+              background: "linear-gradient(135deg, rgba(15,23,42,0.85) 0%, rgba(6,13,26,0.95) 100%)",
+              backdropFilter: "blur(12px)",
+              border: `1px solid rgba(255,255,255,0.1)`,
+              borderBottom: `2px solid ${color}`,
+              borderRadius: "8px",
+              padding: "6px 12px",
               fontFamily: "'Space Mono','JetBrains Mono',monospace",
-              fontSize: 10,
+              fontSize: 11,
               whiteSpace: "nowrap",
+              boxShadow: `0 8px 32px rgba(0,0,0,0.4), 0 0 16px ${color}33 inset, 0 4px 12px ${color}22`,
             }}
           >
-            <span style={{ color: "rgba(255,255,255,0.4)", fontWeight: 500 }}>[{stop.icao}]</span>
-            <span style={{ color, fontWeight: 700 }}>{stop.skill}</span>
+            <span
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                padding: "2px 6px",
+                borderRadius: "4px",
+                color: "rgba(255,255,255,0.5)",
+                fontWeight: 600,
+                fontSize: 9,
+                letterSpacing: "0.5px"
+              }}
+            >
+              {stop.icao}
+            </span>
+            <span
+              style={{
+                color: "#ffffff",
+                fontWeight: 700,
+                textShadow: `0 0 10px ${color}88`,
+              }}
+            >
+              {stop.skill}
+            </span>
           </div>
         </div>
       );
@@ -1030,7 +1085,7 @@ function SkillsPage() {
                 style={{
                   position: "relative",
                   width: "100%",
-                  height: showAll ? "calc(100vh - 80px)" : "500vh",
+                  height: showAll ? "calc(100vh - 80px)" : "1500vh",
                 }}
               >
                 <div
