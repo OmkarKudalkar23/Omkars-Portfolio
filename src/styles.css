@@ -772,5 +772,12 @@
   pointer-events: none;
 }
 
+/* Make text inside ground-container (clouds/ground) and sunset sections white/glow for readability */
+.airplane-landing-viewport .content .ground-container .section,
+.airplane-landing-viewport .content .sunset .section {
+  color: #f8f6f0;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7), 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
 
 
