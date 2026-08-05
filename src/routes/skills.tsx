@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { PageShell } from "@/components/layout/PageShell";
+import { canHover } from "@/lib/pointer";
 import { useLenis } from "lenis/react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
@@ -741,17 +742,19 @@ function FlightPathChart({
         position: "absolute",
         bottom: 16,
         left: 16,
+        maxWidth: 270,
         zIndex: 30,
-        background: "rgba(6,13,26,0.92)",
+        background: "rgba(8,8,9,0.88)",
         backdropFilter: "blur(16px)",
-        border: "1px solid rgba(59,130,246,0.25)",
-        padding: "12px 16px",
-        fontFamily: "'Space Mono','JetBrains Mono',monospace",
+        border: "1px solid rgba(255,255,255,0.1)",
+        borderBottom: "2px solid #4f8ef7",
+        borderRadius: 12,
+        padding: "14px 16px",
+        fontFamily: "'Geist Mono', ui-monospace, monospace",
         fontSize: 10,
-        color: "rgba(59,130,246,0.85)",
+        color: "#f2f2f3",
         lineHeight: 1.9,
-        minWidth: 270,
-        boxShadow: "0 0 24px rgba(59,130,246,0.08)",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
       }}
     >
       <style>{`
@@ -772,27 +775,29 @@ function FlightPathChart({
       `}</style>
       <div
         style={{
-          color: "rgba(59,130,246,0.45)",
-          marginBottom: 6,
-          borderBottom: "1px solid rgba(59,130,246,0.15)",
-          paddingBottom: 4,
-          fontSize: 9,
+          color: "#a0a0a8",
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          marginBottom: 10,
         }}
       >
-        ─ FLIGHT MANAGEMENT COMPUTER ────────
+        FLIGHT MANAGEMENT COMPUTER
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", gap: "2px 8px" }}>
-        <span style={{ opacity: 0.55 }}>ORIGIN</span>
+      <div style={{ width: 24, height: 2, background: "#4f8ef7", marginBottom: 10 }} />
+      <div style={{ display: "grid", gridTemplateColumns: "90px 1fr", gap: "2px 12px" }}>
+        <span style={{ color: "#505058", letterSpacing: "0.1em" }}>ORIGIN</span>
         <span style={{ color: "#ef4444" }}>OMK (MUMBAI, INDIA)</span>
-        <span style={{ opacity: 0.55 }}>DESTINATION</span>
-        <span style={{ color: "#22c55e" }}>NAG (NAGPUR, INDIA)</span>
-        <span style={{ opacity: 0.55 }}>WAYPOINTS</span>
-        <span style={{ color: "#e2e8f0" }}>25 CITIES</span>
+        <span style={{ color: "#505058", letterSpacing: "0.1em" }}>DESTINATION</span>
+        <span style={{ color: scrollProg >= 0.99 || showAll ? "#3ecf8e" : "#a0a0a8" }}>
+          NAG (NAGPUR, INDIA)
+        </span>
+        <span style={{ color: "#505058", letterSpacing: "0.1em" }}>WAYPOINTS</span>
+        <span style={{ color: "#f2f2f3" }}>25 CITIES</span>
         {!showAll && (
           <>
-            <span style={{ opacity: 0.55 }}>EN ROUTE</span>
-            <span style={{ color: "#93c5fd" }}>{currentLegString}</span>
-            <span style={{ opacity: 0.55 }}>PROGRESS</span>
+            <span style={{ color: "#505058", letterSpacing: "0.1em" }}>EN ROUTE</span>
+            <span style={{ color: "#4f8ef7" }}>{currentLegString}</span>
+            <span style={{ color: "#505058", letterSpacing: "0.1em" }}>PROGRESS</span>
             <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <span style={{ display: "flex", gap: 1 }}>
                 {Array.from({ length: 10 }).map((_, i) => (
@@ -804,21 +809,21 @@ function FlightPathChart({
                       borderRadius: 1,
                       background:
                         i < Math.round(fmcProgressPercent / 10)
-                          ? "#3b82f6"
+                          ? "#4f8ef7"
                           : "rgba(255,255,255,0.08)",
                     }}
                   />
                 ))}
               </span>
-              <span style={{ color: "#3b82f6" }}>{fmcProgressPercent}%</span>
+              <span style={{ color: "#4f8ef7" }}>{fmcProgressPercent}%</span>
             </span>
-            <span style={{ opacity: 0.55 }}>ETE</span>
-            <span style={{ color: "#e2e8f0" }}>
-              {scrollProg >= 0.99 ? "ARRIVED" : "SCROLL TO CONTINUE ↓"}
+            <span style={{ color: "#505058", letterSpacing: "0.1em" }}>ETE</span>
+            <span style={{ color: scrollProg >= 0.99 ? "#3ecf8e" : "#a0a0a8" }}>
+              {scrollProg >= 0.99 ? "ARRIVED" : "SCROLL TO CONTINUE"}
             </span>
           </>
         )}
-        <span style={{ opacity: 0.55 }}>STATUS</span>
+        <span style={{ color: "#505058", letterSpacing: "0.1em" }}>STATUS</span>
         <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
           <span
             className="pulse-dot"
@@ -826,16 +831,16 @@ function FlightPathChart({
               width: 5,
               height: 5,
               borderRadius: "50%",
-              background: scrollProg >= 0.99 || showAll ? "#22c55e" : "#3b82f6",
+              background: scrollProg >= 0.99 || showAll ? "#3ecf8e" : "#4f8ef7",
               display: "inline-block",
             }}
           />
-          <span style={{ color: scrollProg >= 0.99 || showAll ? "#22c55e" : "#3b82f6" }}>
+          <span style={{ color: scrollProg >= 0.99 || showAll ? "#3ecf8e" : "#4f8ef7" }}>
             {scrollProg >= 0.99 || showAll
-              ? "● DESTINATION REACHED"
+              ? "DESTINATION REACHED"
               : scrollProg === 0
-                ? "● AWAITING DEPARTURE"
-                : "● EN ROUTE"}
+                ? "AWAITING DEPARTURE"
+                : "EN ROUTE"}
           </span>
         </span>
       </div>
@@ -915,16 +920,22 @@ function FlightPathChart({
             bottom: 160,
             left: "16px",
             zIndex: 30,
-            color: "rgba(255,255,255,0.4)",
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            color: "#a0a0a8",
             fontSize: 10,
-            fontFamily: "'Space Mono',monospace",
-            letterSpacing: "0.08em",
+            fontFamily: "'Geist Mono', ui-monospace, monospace",
+            letterSpacing: "0.1em",
             animation: "atcPulse 2s ease-in-out infinite",
             pointerEvents: "none",
             whiteSpace: "nowrap",
           }}
         >
-          SCROLL TO BEGIN JOURNEY ↓
+          SCROLL TO BEGIN JOURNEY
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4f8ef7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
         </div>
       )}
 
@@ -958,10 +969,6 @@ function SkillsPage() {
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
-
-  useEffect(() => {
-    if (isMobile) setIsGraphView(false);
-  }, [isMobile]);
 
   useLenis((lenis) => {
     if (showAll || !scrollRef.current) return;
@@ -997,23 +1004,14 @@ function SkillsPage() {
     <PageShell path="/skills">
       <div style={{ position: "relative", width: "100%", background: "#060d1a" }}>
         <div
+          className="sticky top-0 z-[100] px-6 py-4 md:px-16 md:py-6"
           style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 100,
-            padding: "20px 64px 14px",
             background: "linear-gradient(to bottom, rgba(6,13,26,0.98) 80%, transparent)",
             backdropFilter: "blur(8px)",
           }}
         >
           <div
-            style={{
-              maxWidth: 1200,
-              margin: "0 auto",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-            }}
+            className="max-w-[1200px] mx-auto flex flex-col sm:flex-row gap-4 justify-between sm:items-center"
           >
             <div>
               <p
@@ -1029,14 +1027,9 @@ function SkillsPage() {
                 Navigation Chart / Technical Stack — maplibre
               </p>
               <h1
+                className="text-xl sm:text-2xl md:text-3xl font-light text-[#e6edf3] tracking-tight leading-tight m-0"
                 style={{
-                  fontSize: 28,
-                  fontWeight: 300,
-                  color: "#e6edf3",
                   fontFamily: "Geist,system-ui,sans-serif",
-                  letterSpacing: "-0.03em",
-                  lineHeight: 1.2,
-                  margin: 0,
                 }}
               >
                 Flight path through <span style={{ color: "#3b82f6" }}>your stack</span>
@@ -1059,9 +1052,11 @@ function SkillsPage() {
                 transition: "all 0.15s",
               }}
               onMouseEnter={(e) => {
+                if (!canHover) return;
                 e.currentTarget.style.background = "rgba(255,255,255,0.08)";
               }}
               onMouseLeave={(e) => {
+                if (!canHover) return;
                 e.currentTarget.style.background = "rgba(255,255,255,0.04)";
               }}
             >
@@ -1116,7 +1111,7 @@ function SkillsPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div style={{ padding: "40px 64px", maxWidth: 900, margin: "0 auto" }}>
+              <div className="px-6 py-8 md:px-16 md:py-12 max-w-[900px] mx-auto">
                 {listCategories.map((cat) => {
                   const items = groupedSkills[cat];
                   if (items.length === 0) return null;

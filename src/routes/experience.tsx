@@ -944,8 +944,24 @@ function DraggableCard({
     currentOffset.current = offset;
   }, [offset]);
 
+  const [cardWidth, setCardWidth] = useState(420);
+  useEffect(() => {
+    const handleResize = () => {
+      const w = window.innerWidth;
+      if (w < 480) {
+        setCardWidth(w - 40);
+      } else if (w < 768) {
+        setCardWidth(360);
+      } else {
+        setCardWidth(420);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const CABLE_REST_LENGTH = 88; // cable top to card-top when at rest
-  const CARD_WIDTH = 420;
 
   // ── Spring physics snap-back ──
   // Underdamped spring: low damping makes it overshoot & oscillate like a rubber band
@@ -1048,9 +1064,9 @@ function DraggableCard({
   );
 
   // Compute SVG bezier path from anchor → card-top
-  const anchorX = CARD_WIDTH / 2;
+  const anchorX = cardWidth / 2;
   const anchorY = 0;
-  const cardTopX = CARD_WIDTH / 2 + offset.x;
+  const cardTopX = cardWidth / 2 + offset.x;
   const cardTopY = CABLE_REST_LENGTH + offset.y;
   const dist = Math.sqrt((cardTopX - anchorX) ** 2 + (cardTopY - anchorY) ** 2);
   // Control points droop based on horizontal displacement for natural rope physics
@@ -1066,7 +1082,7 @@ function DraggableCard({
   const dragScale = isDragging.current ? 1.025 : 1;
 
   return (
-    <div style={{ position: "relative", width: CARD_WIDTH }}>
+    <div style={{ position: "relative", width: cardWidth }}>
       {/* Live SVG cable */}
       <svg
         aria-hidden="true"

@@ -31,7 +31,7 @@ export function Greeting() {
       transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
     >
       <h1
-        className="font-display text-[40px] font-light leading-tight text-text-primary"
+        className="font-display text-[clamp(2rem,6vw,2.5rem)] font-light leading-tight text-text-primary"
         style={{ letterSpacing: "-0.02em" }}
       >
         {words.map((w, i) => (

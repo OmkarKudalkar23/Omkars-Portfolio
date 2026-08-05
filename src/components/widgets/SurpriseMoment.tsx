@@ -3,7 +3,7 @@ import { Sparkle } from "lucide-react";
 import { WidgetShell } from "./shared";
 
 const CONFETTI = Array.from({ length: 14 }, (_, i) => i);
-const COLORS = ["#4f8ef7", "#c084fc", "#3ecf8e", "#c9a96e", "#60a5fa"];
+const COLORS = ["#4f8ef7", "#c084fc", "#7850c8", "#60a5fa"];
 
 export function SurpriseMoment({ text }: { text: string }) {
   return (

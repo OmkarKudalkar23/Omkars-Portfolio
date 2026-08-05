@@ -44,11 +44,7 @@ function HackathonsPage() {
       <div className="relative z-10">
       {/* Hero */}
       <div
-        style={{
-          padding: '80px 64px 48px',
-          maxWidth: 1200,
-          margin: '0 auto',
-        }}
+        className="px-6 md:px-16 pt-12 pb-6 md:pt-20 md:pb-12 mx-auto max-w-[1200px]"
       >
         <p
           style={{
@@ -63,14 +59,9 @@ function HackathonsPage() {
           Competitive Record
         </p>
         <h1
+          className="text-[28px] sm:text-[36px] md:text-[48px] font-light text-[#f2f2f3] tracking-tight leading-[1.15] m-0"
           style={{
-            fontSize: 48,
-            fontWeight: 300,
-            color: '#f2f2f3',
             fontFamily: 'Geist, system-ui, sans-serif',
-            letterSpacing: '-0.02em',
-            lineHeight: 1.15,
-            margin: 0,
           }}
         >
           3 hackathons.
@@ -78,18 +69,13 @@ function HackathonsPage() {
           2 wins. 1 runner-up.
         </h1>
         <p
-          style={{
-            fontSize: 17,
-            color: '#a0a0a8',
-            marginTop: 16,
-            lineHeight: 1.6,
-          }}
+          className="text-[15px] md:text-[17px] text-[#a0a0a8] mt-4 leading-relaxed"
         >
           Competing to validate ideas under pressure — and winning.
         </p>
 
         {/* Stat counters */}
-        <div style={{ display: 'flex', gap: 48, marginTop: 48 }}>
+        <div className="flex flex-wrap gap-6 md:gap-12 mt-8 md:mt-12">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -110,12 +96,7 @@ function HackathonsPage() {
 
       {/* Trophy cards */}
       <div
-        className="cards-grid"
-        style={{
-          padding: '0 64px',
-          maxWidth: 1200,
-          margin: '0 auto',
-        }}
+        className="cards-grid px-6 md:px-16 mx-auto max-w-[1200px]"
       >
         {omkar.hackathons.map((h, i) => (
           <motion.div
@@ -172,28 +153,14 @@ function HackathonsPage() {
 
       {/* Quote section */}
       <div
-        style={{
-          marginTop: 64,
-          padding: '0 64px',
-          maxWidth: 1200,
-          margin: '64px auto 0',
-          paddingBottom: 80,
-          textAlign: 'center',
-        }}
+        className="mt-16 px-6 md:px-16 mx-auto max-w-[1200px] pb-16 md:pb-20 text-center"
       >
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          style={{
-            fontSize: 17,
-            fontStyle: 'italic',
-            color: '#a0a0a8',
-            maxWidth: 600,
-            margin: '0 auto',
-            lineHeight: 1.8,
-          }}
+          className="text-[15px] md:text-[17px] italic text-[#a0a0a8] max-w-[600px] mx-auto leading-relaxed"
         >
           "The edge isn't just skill — it's the ability to ship something real
           in 24 hours that solves a real problem. Twice, that was enough to

@@ -59,14 +59,14 @@ function ImageFrame({ src, alt }: { src: string; alt: string }) {
 function FinversePage() {
   return (
     <PageShell path="/projects/finverse">
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 32px 100px' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px) 100px' }}>
         
         {/* ── Hero Section ── */}
         <motion.div 
           initial="hidden" 
           animate="visible" 
           variants={staggerContainer}
-          style={{ paddingTop: 80, paddingBottom: 64 }}
+          style={{ paddingTop: 'clamp(48px, 8vw, 80px)', paddingBottom: 64 }}
         >
           <motion.div variants={fadeInUp} style={{ marginBottom: 40 }}>
             <Link 
@@ -81,7 +81,7 @@ function FinversePage() {
 
           <motion.div variants={fadeInUp} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
             <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#34d399' }} />
-            <h1 style={{ fontSize: 48, fontWeight: 300, color: '#f2f2f3', fontFamily: "'Geist', sans-serif", letterSpacing: '-0.02em', margin: 0 }}>
+            <h1 style={{ fontSize: 'clamp(36px, 8vw, 48px)', fontWeight: 300, color: '#f2f2f3', fontFamily: "'Geist', sans-serif", letterSpacing: '-0.02em', margin: 0 }}>
               Finverse
             </h1>
           </motion.div>
@@ -121,7 +121,7 @@ function FinversePage() {
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           variants={staggerContainer}
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 48, marginBottom: 80 }}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: 48, marginBottom: 80 }}
         >
           <motion.div variants={fadeInUp}>
             <h3 style={{ fontSize: 12, color: '#505058', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 16px', fontFamily: "'Geist Mono', monospace" }}>
@@ -223,7 +223,7 @@ function FinversePage() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeInUp}
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 32 }}
+          style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 16, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 32 }}
         >
           <Link 
             to="/projects"

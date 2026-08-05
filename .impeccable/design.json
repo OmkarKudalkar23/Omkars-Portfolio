@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-01T00:00:00.000Z",
+  "title": "Design System: Omkar AI — Conversational Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "runway-void": {
+        "role": "neutral",
+        "displayName": "Runway Void",
+        "canonical": "oklch(13% 0.002 280)",
+        "tonalRamp": [
+          "oklch(6% 0.002 280)",
+          "oklch(10% 0.002 280)",
+          "oklch(13% 0.002 280)",
+          "oklch(19% 0.002 280)",
+          "oklch(28% 0.002 280)",
+          "oklch(40% 0.002 280)",
+          "oklch(58% 0.002 280)",
+          "oklch(78% 0.002 280)"
+        ]
+      },
+      "tarmac": {
+        "role": "neutral",
+        "displayName": "Tarmac",
+        "canonical": "oklch(15% 0.002 280)",
+        "tonalRamp": [
+          "oklch(7% 0.002 280)",
+          "oklch(11% 0.002 280)",
+          "oklch(15% 0.002 280)",
+          "oklch(21% 0.002 280)",
+          "oklch(30% 0.002 280)",
+          "oklch(42% 0.002 280)",
+          "oklch(60% 0.002 280)",
+          "oklch(80% 0.002 280)"
+        ]
+      },
+      "cockpit-glass": {
+        "role": "neutral",
+        "displayName": "Cockpit Glass",
+        "canonical": "oklch(18% 0.002 280)",
+        "tonalRamp": [
+          "oklch(8% 0.002 280)",
+          "oklch(13% 0.002 280)",
+          "oklch(18% 0.002 280)",
+          "oklch(24% 0.002 280)",
+          "oklch(33% 0.002 280)",
+          "oklch(45% 0.002 280)",
+          "oklch(63% 0.002 280)",
+          "oklch(82% 0.002 280)"
+        ]
+      },
+      "instrument-white": {
+        "role": "neutral",
+        "displayName": "Instrument White",
+        "canonical": "oklch(95% 0.002 280)",
+        "tonalRamp": [
+          "oklch(55% 0.002 280)",
+          "oklch(65% 0.002 280)",
+          "oklch(74% 0.002 280)",
+          "oklch(82% 0.002 280)",
+          "oklch(88% 0.002 280)",
+          "oklch(92% 0.002 280)",
+          "oklch(95% 0.002 280)",
+          "oklch(98% 0.002 280)"
+        ]
+      },
+      "dimmed-steel": {
+        "role": "neutral",
+        "displayName": "Dimmed Steel",
+        "canonical": "oklch(68% 0.005 280)",
+        "tonalRamp": [
+          "oklch(38% 0.005 280)",
+          "oklch(48% 0.005 280)",
+          "oklch(58% 0.005 280)",
+          "oklch(68% 0.005 280)",
+          "oklch(76% 0.005 280)",
+          "oklch(84% 0.005 280)",
+          "oklch(90% 0.005 280)",
+          "oklch(96% 0.005 280)"
+        ]
+      },
+      "shadowed-grey": {
+        "role": "neutral",
+        "displayName": "Shadowed Grey",
+        "canonical": "oklch(40% 0.005 280)",
+        "tonalRamp": [
+          "oklch(18% 0.005 280)",
+          "oklch(27% 0.005 280)",
+          "oklch(34% 0.005 280)",
+          "oklch(40% 0.005 280)",
+          "oklch(52% 0.005 280)",
+          "oklch(64% 0.005 280)",
+          "oklch(76% 0.005 280)",
+          "oklch(88% 0.005 280)"
+        ]
+      },
+      "aurora-gauge-blue": {
+        "role": "primary",
+        "displayName": "Aurora Gauge Blue",
+        "canonical": "oklch(68% 0.16 258)",
+        "tonalRamp": [
+          "oklch(22% 0.12 258)",
+          "oklch(33% 0.14 258)",
+          "oklch(45% 0.16 258)",
+          "oklch(56% 0.17 258)",
+          "oklch(68% 0.16 258)",
+          "oklch(77% 0.12 258)",
+          "oklch(85% 0.08 258)",
+          "oklch(93% 0.04 258)"
+        ]
+      },
+      "nav-light-gold": {
+        "role": "secondary",
+        "displayName": "Nav Light Gold",
+        "canonical": "oklch(74% 0.08 88)",
+        "tonalRamp": [
+          "oklch(26% 0.06 88)",
+          "oklch(38% 0.07 88)",
+          "oklch(50% 0.08 88)",
+          "oklch(62% 0.08 88)",
+          "oklch(74% 0.08 88)",
+          "oklch(82% 0.06 88)",
+          "oklch(89% 0.04 88)",
+          "oklch(96% 0.02 88)"
+        ]
+      },
+      "clearance-green": {
+        "role": "secondary",
+        "displayName": "Clearance Green",
+        "canonical": "oklch(78% 0.14 155)",
+        "tonalRamp": [
+          "oklch(26% 0.09 155)",
+          "oklch(40% 0.11 155)",
+          "oklch(53% 0.13 155)",
+          "oklch(66% 0.14 155)",
+          "oklch(78% 0.14 155)",
+          "oklch(85% 0.11 155)",
+          "oklch(91% 0.07 155)",
+          "oklch(97% 0.03 155)"
+        ]
+      },
+      "alert-red": {
+        "role": "tertiary",
+        "displayName": "Alert Red",
+        "canonical": "oklch(60% 0.22 25)",
+        "tonalRamp": [
+          "oklch(22% 0.16 25)",
+          "oklch(35% 0.19 25)",
+          "oklch(48% 0.22 25)",
+          "oklch(60% 0.22 25)",
+          "oklch(70% 0.18 25)",
+          "oklch(80% 0.13 25)",
+          "oklch(89% 0.08 25)",
+          "oklch(96% 0.03 25)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display — Geist Light",
+        "purpose": "Hero headlines and the home greeting only. Light weight is the identity; never bold."
+      },
+      "headline": {
+        "displayName": "Headline — Geist Medium",
+        "purpose": "Section titles and widget headings."
+      },
+      "body": {
+        "displayName": "Body — Inter",
+        "purpose": "Chat answers, descriptions, paragraphs. Reading lines under ~65ch."
+      },
+      "label": {
+        "displayName": "Label — Geist Mono",
+        "purpose": "Instrument readouts: dates, metrics, tech, roles, eyebrow labels."
+      }
+    },
+    "shadows": [
+      { "name": "rest", "value": "0 4px 20px rgba(0,0,0,0.4)", "purpose": "Resting shadow for cards." },
+      { "name": "hover", "value": "0 8px 32px rgba(0,0,0,0.6)", "purpose": "Card hover lift (-2px) shadow." },
+      { "name": "floating", "value": "0 8px 40px rgba(0,0,0,0.45)", "purpose": "Contact card, toast, contextual chat bubble." },
+      { "name": "hanging", "value": "0 16px 56px rgba(0,0,0,0.55), inset 0 2px 0 rgba(255,255,255,0.08)", "purpose": "Scrollytelling experience cards — deepest shadow in the system." },
+      { "name": "node-glow", "value": "0 0 8px rgba(79,142,247,0.5)", "purpose": "Timeline node glow — live signal." },
+      { "name": "dot-glow", "value": "0 0 12px rgba(79,142,247,0.6)", "purpose": "Project accent dot glow." }
+    ],
+    "motion": [
+      { "name": "ease-luxe", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "The signature easing — every entrance and spring feel in the system." },
+      { "name": "state-150", "value": "150ms", "purpose": "State transitions: hovers, border shifts, icon fills." },
+      { "name": "entrance-400", "value": "400ms", "purpose": "Widget entrances and page mounts." },
+      { "name": "entrance-600", "value": "600ms", "purpose": "Greeting and first-frame reveals." },
+      { "name": "spring-panel", "value": "stiffness 300, damping 30", "purpose": "Slide-out panel and mobile bottom sheet." },
+      { "name": "stagger-chips", "value": "0.06s–0.08s stagger", "purpose": "Suggested prompts and card grids." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px", "purpose": "Grids collapse below this; project gallery switches 2-col → 1-col." },
+      { "name": "md", "value": "768px", "purpose": "Rail returns / mobile menu hides; content gains 48px left margin." },
+      { "name": "intro-lg", "value": "800px", "purpose": "Landing intro type scale caps." },
+      { "name": "intro-sm", "value": "500px", "purpose": "Landing intro type scale floors." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Send Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The only filled button in the system — a 32px aurora circle that sends the chat message.",
+      "html": "<button class=\"ds-send\" aria-label=\"Send message\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#080809\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 19V5\"/><path d=\"m5 12 7-7 7 7\"/></svg></button>",
+      "css": ".ds-send { width: 32px; height: 32px; border-radius: 999px; background: #4f8ef7; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity 0.2s, background 0.2s, transform 0.2s cubic-bezier(0.16,1,0.3,1); } .ds-send:hover { background: #5f9bf8; } .ds-send:active { transform: scale(0.94); } .ds-send:focus-visible { outline: 2px solid rgba(79,142,247,0.5); outline-offset: 2px; } .ds-send:disabled { opacity: 0.3; cursor: default; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "The default action button — hairline seam, dimmed steel, quiet cockpit-glass hover.",
+      "html": "<button class=\"ds-ghost\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"4\" width=\"20\" height=\"16\" rx=\"2\"/><path d=\"m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7\"/></svg> Send Email</button>",
+      "css": ".ds-ghost { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 10px; border: 0.5px solid rgba(255,255,255,0.1); background: transparent; color: #a0a0a8; font-family: Inter, system-ui, sans-serif; font-size: 13px; cursor: pointer; transition: all 0.15s cubic-bezier(0.16,1,0.3,1); } .ds-ghost:hover { background: #161618; border-color: rgba(255,255,255,0.18); color: #f2f2f3; } .ds-ghost:focus-visible { outline: 2px solid rgba(79,142,247,0.5); outline-offset: 2px; }"
+    },
+    {
+      "name": "Suggested Prompt Chip",
+      "kind": "chip",
+      "refersTo": "chip-prompt",
+      "description": "Pill-shaped starter question — frosted glass, lifts and brightens on hover.",
+      "html": "<button class=\"ds-prompt\">Show my projects</button>",
+      "css": ".ds-prompt { padding: 8px 16px; border-radius: 999px; border: 0.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #a0a0a8; font-family: Inter, system-ui, sans-serif; font-size: 14px; cursor: pointer; transition: all 0.15s cubic-bezier(0.16,1,0.3,1); } .ds-prompt:hover { transform: translateY(-1px); background: #161618; border-color: rgba(255,255,255,0.18); color: #f2f2f3; } .ds-prompt:focus-visible { outline: 2px solid rgba(79,142,247,0.5); outline-offset: 2px; }"
+    },
+    {
+      "name": "Tech Pill",
+      "kind": "chip",
+      "refersTo": "pill-tech",
+      "description": "Instrument readout tag — 11px Geist Mono fact chip. Accent-tinted variants inherit item color at ~8% fill.",
+      "html": "<span class=\"ds-pill\">LangGraph</span>",
+      "css": ".ds-pill { display: inline-block; padding: 4px 10px; border-radius: 999px; border: 0.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); color: #a0a0a8; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 11px; line-height: 1.4; }"
+    },
+    {
+      "name": "Project Card",
+      "kind": "card",
+      "refersTo": "card-project",
+      "description": "Tarmac card with a glowing accent dot and mono fact chips; lifts 2px and deepens shadow on hover.",
+      "html": "<div class=\"ds-pcard\" tabindex=\"0\"><span class=\"ds-dot\"></span><h3>Nolan AI Studio</h3><p>Graph-RAG powered multi-agent storytelling platform</p><div class=\"ds-chips\"><span class=\"ds-pill\">Neo4j</span><span class=\"ds-pill\">LangGraph</span></div></div>",
+      "css": ".ds-pcard { background: #0d0d0d; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); transition: transform 0.2s cubic-bezier(0.16,1,0.3,1), box-shadow 0.2s, border-color 0.2s; cursor: pointer; display: flex; flex-direction: column; gap: 8px; } .ds-pcard:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.6); border-color: rgba(255,255,255,0.15); } .ds-pcard:focus-visible { outline: 2px solid rgba(79,142,247,0.5); outline-offset: 2px; } .ds-dot { width: 10px; height: 10px; border-radius: 50%; background: #c084fc; box-shadow: 0 0 12px rgba(192,132,252,0.6); } .ds-pcard h3 { margin: 0; font-family: Geist, system-ui, sans-serif; font-weight: 500; font-size: 20px; letter-spacing: -0.01em; color: #f2f2f3; } .ds-pcard p { margin: 0; font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.5; color: #a0a0a8; } .ds-chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }"
+    },
+    {
+      "name": "Chat Composer",
+      "kind": "input",
+      "refersTo": "input-chat",
+      "description": "The runway input — frosted glass, hairline seam, aurora border on focus, cursor-tracked radial gradient.",
+      "html": "<div class=\"ds-composer\"><textarea class=\"ds-input\" rows=\"1\" placeholder=\"Ask me anything…\"></textarea><button class=\"ds-send\" aria-label=\"Send\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#080809\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 19V5\"/><path d=\"m5 12 7-7 7 7\"/></svg></button></div>",
+      "css": ".ds-composer { position: relative; display: flex; align-items: flex-end; border-radius: 16px; border: 0.5px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); padding: 14px 18px; transition: border-color 0.2s; } .ds-composer:focus-within { border-color: rgba(79,142,247,0.4); } .ds-input { width: 100%; min-height: 24px; resize: none; background: transparent; border: none; outline: none; color: #f2f2f3; font-family: Inter, system-ui, sans-serif; font-size: 15px; line-height: 1.6; padding-right: 40px; } .ds-input::placeholder { color: #505058; } .ds-composer .ds-send { position: absolute; right: 10px; bottom: 10px; }"
+    },
+    {
+      "name": "Nav Rail Item",
+      "kind": "nav",
+      "refersTo": "nav-rail",
+      "description": "Desktop dock item — quiet at 35% white, aurora-lit when active with a 2px left indicator bar.",
+      "html": "<nav class=\"ds-rail\"><button class=\"ds-rail-item ds-active\" aria-label=\"Projects\"><svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15.5 7h5a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-9a2 2 0 0 1-2-2v-5\"/><path d=\"M8.5 3H1v8h19V3H8.5z\"/></svg></button><button class=\"ds-rail-item\" aria-label=\"Experience\"><svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"7\" width=\"20\" height=\"14\" rx=\"2\"/><path d=\"M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16\"/></svg></button></nav>",
+      "css": ".ds-rail { position: relative; width: 48px; display: flex; flex-direction: column; gap: 2px; padding: 8px 0; background: rgba(255,255,255,0.03); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 0 14px 14px 0; backdrop-filter: blur(12px); } .ds-rail-item { position: relative; width: 40px; height: 40px; margin: 0 auto; border: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: transparent; color: rgba(255,255,255,0.35); cursor: pointer; transition: all 0.15s cubic-bezier(0.16,1,0.3,1); } .ds-rail-item:hover { color: #4f8ef7; background: rgba(79,142,247,0.1); } .ds-rail-item:focus-visible { outline: 2px solid rgba(79,142,247,0.5); outline-offset: 2px; } .ds-rail-item.ds-active { color: #4f8ef7; background: rgba(79,142,247,0.1); } .ds-rail-item.ds-active::before { content: ''; position: absolute; left: -4px; top: 20%; height: 60%; width: 2px; border-radius: 0 2px 2px 0; background: #4f8ef7; }"
+    },
+    {
+      "name": "Panel Header",
+      "kind": "custom",
+      "refersTo": "panel-header",
+      "description": "Slide-out panel section header — mono eyebrow readout with a 24px aurora underline.",
+      "html": "<div class=\"ds-pheader\"><div>PROJECTS</div><span></span></div>",
+      "css": ".ds-pheader { margin-bottom: 20px; } .ds-pheader div { font-family: 'Geist Mono', ui-monospace, monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #505058; margin-bottom: 6px; } .ds-pheader span { display: block; width: 24px; height: 1.5px; border-radius: 2px; background: #4f8ef7; }"
+    },
+    {
+      "name": "Availability Status",
+      "kind": "custom",
+      "refersTo": "status-live",
+      "description": "The clearance signal — pulsing green dot with label, the system's 'open to opportunities' beacon.",
+      "html": "<div class=\"ds-status\"><span></span>Open to opportunities</div>",
+      "css": ".ds-status { display: inline-flex; align-items: center; gap: 6px; font-family: Inter, system-ui, sans-serif; font-size: 12px; color: #3ecf8e; } .ds-status span { width: 6px; height: 6px; border-radius: 50%; background: #3ecf8e; animation: ds-pulse 2s cubic-bezier(0.16,1,0.3,1) infinite; } @keyframes ds-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(62,207,142,0.4); } 50% { box-shadow: 0 0 0 7px transparent; } }"
+    },
+    {
+      "name": "Mobile Menu Trigger",
+      "kind": "button",
+      "refersTo": "mobile-trigger",
+      "description": "Floating circular dock trigger (mobile only) — aurora-tinted glass, bottom-right.",
+      "html": "<button class=\"ds-mtrigger\" aria-label=\"Open navigation\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"4\" x2=\"20\" y1=\"12\" y2=\"12\"/><line x1=\"4\" x2=\"20\" y1=\"6\" y2=\"6\"/><line x1=\"4\" x2=\"20\" y1=\"18\" y2=\"18\"/></svg></button>",
+      "css": ".ds-mtrigger { position: fixed; bottom: 90px; right: 16px; width: 44px; height: 44px; border-radius: 50%; border: 0.5px solid rgba(79,142,247,0.3); background: rgba(79,142,247,0.12); backdrop-filter: blur(12px); color: #4f8ef7; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s cubic-bezier(0.16,1,0.3,1); } .ds-mtrigger:hover { background: rgba(79,142,247,0.2); } .ds-mtrigger:focus-visible { outline: 2px solid rgba(79,142,247,0.5); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Night Flight Deck",
+    "overview": "The visitor is a passenger being guided in for landing. The site is the air-traffic control tower of Omkar's career: a near-black night sky (#080809) with a single instrument panel of lights — one aurora-blue beacon for anything live or interactive, gold for wins, green for clearance to reach out. The airplane intro literally brings the visitor in to land; after that, the entire interface behaves like cockpit glass: dark, precise, layered, and lit only where it matters.\n\nThe personality is precision luxury, quiet drama. Everything is deliberate: 0.5px hairlines instead of borders, Geist's quiet geometry for display type, monospace labels read like instrument readouts, and motion uses one signature easing curve (cubic-bezier(0.16, 1, 0.3, 1)) so every transition feels sprung, never bouncy. The drama arrives in rare, earned moments — the landing intro, the lightfall background, a gold shimmer on a first-place card — never as constant noise.\n\nThe confirmed anti-reference is the neon cyberpunk overglow and gradient soup common to dark 'AI' sites. This system rejects that entire lane: no neon fills, no rainbow gradients, no saturated glow on large surfaces. Glow is reserved for life: a pulsing dot, a hover accent, a live connection.",
+    "keyCharacteristics": [
+      "Near-black layered surfaces (void → tarmac → cockpit glass) separated by 0.5px hairlines, never heavy borders.",
+      "One primary light — Aurora Gauge Blue — used only for interactive and live states.",
+      "Geist display at light weights with tight tracking; Geist Mono as instrument readouts.",
+      "Glass via backdrop blur on panels, rails, and sheets; depth via soft black shadows, not colored glows.",
+      "One easing curve everywhere; state transitions at 150ms; entrances at 400–600ms.",
+      "Motion reduced for prefers-reduced-motion in every animation path."
+    ],
+    "rules": [
+      { "name": "The One Light Rule", "body": "Aurora Gauge Blue covers under ~10% of any screen. Its rarity is what makes it a beacon; a second full-strength blue surface on the same screen is a defect.", "section": "colors" },
+      { "name": "The Status Lock Rule", "body": "Green and gold are status lights, not decoration. Green = open to opportunities / success. Gold = first place. Nothing else may borrow them.", "section": "colors" },
+      { "name": "The No-Bold-Display Rule", "body": "Display type is always light or medium weight; bold display is the signature of the templates this system rejects. Weight contrast comes from mono vs sans, not black display type.", "section": "typography" },
+      { "name": "The Readout Rule", "body": "If it's a fact a recruiter scans for (dates, metrics, tech, roles), it's Geist Mono. If it's a sentence, it's Inter.", "section": "typography" },
+      { "name": "The Glow-Means-Live Rule", "body": "A glow on the page is always a status signal — pulsing availability, an active node, a hover state. Decorative glow that isn't a signal is rejected (see: no neon soup).", "section": "elevation" },
+      { "name": "The Black Shadow Rule", "body": "Shadows are pure black on alpha. A colored shadow is a different design system; don't introduce one.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do build surfaces in the void → tarmac → cockpit-glass family with 0.5px hairlines; seams, not borders.",
+      "Do keep the home conversation inside the 760px centered column.",
+      "Do set every fact a recruiter scans for (dates, metrics, tech, roles) in Geist Mono.",
+      "Do reserve Aurora Gauge Blue for interactive and live states — small doses only.",
+      "Do use the signature easing cubic-bezier(0.16, 1, 0.3, 1) and 150ms state transitions; 400–600ms for entrances.",
+      "Do honor prefers-reduced-motion — the system already carries reduced-motion rules for every animation.",
+      "Do let gold mean first place and green mean 'available'."
+    ],
+    "donts": [
+      "Don't use neon fills, rainbow gradients, or saturated glow on large surfaces — the neon-soup look is the system's anti-reference.",
+      "Don't set display type in bold or heavier than medium; light-weight Geist is the identity.",
+      "Don't use pure #ffffff; Instrument White is #f2f2f3.",
+      "Don't bring the serif editorial faces (Libre Baskerville, cream, ink) outside the landing sequence — the night console speaks sans and mono.",
+      "Don't give shadows color; black-on-alpha shadows only.",
+      "Don't use green or gold for decoration — they are status lights.",
+      "Don't widen the chat column, move the rail, or drop the 48px content margin on desktop; the runway geometry is fixed."
+    ]
+  }
+}

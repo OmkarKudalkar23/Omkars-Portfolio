@@ -61,7 +61,7 @@ export function WhyHireMe() {
               className="rounded-xl border border-border-subtle bg-surface p-4 text-center"
               style={{ borderWidth: "0.5px" }}
             >
-              <div className="text-[28px] font-medium text-accent-blue">
+              <div className={s.label === "Hackathon Wins" ? "text-[28px] font-medium text-gold" : "text-[28px] font-medium text-text-primary"}>
                 <Counter to={s.to} decimals={s.decimals} />
               </div>
               <div className="mt-1 text-[12px] text-text-muted">{s.label}</div>
@@ -83,7 +83,7 @@ export function WhyHireMe() {
                 className="rounded-xl border border-border-subtle bg-surface p-5"
                 style={{ borderWidth: "0.5px" }}
               >
-                <Icon className="h-4 w-4 text-accent-blue" />
+                <Icon className={d.title.includes("Wins") ? "h-4 w-4 text-gold" : "h-4 w-4 text-text-muted"} />
                 <h3 className="mt-3 text-[15px] font-medium text-text-primary">{d.title}</h3>
                 <p className="mt-1 text-[14px] leading-relaxed text-text-secondary">{d.proof}</p>
               </motion.div>

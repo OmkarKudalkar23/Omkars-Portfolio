@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { omkar } from "@/lib/data";
+import { canHover } from "@/lib/pointer";
 
 /* ─── Types ─────────────────────────────────────────────── */
 type NavId = "projects" | "experience" | "hackathons" | "skills" | "contact";
@@ -47,7 +48,7 @@ function Toast({ visible }: { visible: boolean }) {
           transition={{ duration: 0.2 }}
           style={{
             position: "fixed",
-            bottom: 100,
+            bottom: "max(100px, calc(var(--safe-bottom) + 100px))",
             left: "50%",
             transform: "translateX(-50%)",
             background: "rgba(15,15,16,0.96)",
@@ -116,11 +117,13 @@ function ProjectsPanel({
             transition: "all 0.15s ease",
           }}
           onMouseEnter={(e) => {
+            if (!canHover) return;
             e.currentTarget.style.background = "rgba(255,255,255,0.06)";
             e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
             e.currentTarget.style.transform = "translateX(3px)";
           }}
           onMouseLeave={(e) => {
+            if (!canHover) return;
             e.currentTarget.style.background = "rgba(255,255,255,0.03)";
             e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)";
             e.currentTarget.style.transform = "translateX(0)";
@@ -199,9 +202,11 @@ function ExperiencePanel({
               closePanel();
             }}
             onMouseEnter={(e) => {
+              if (!canHover) return;
               e.currentTarget.style.opacity = "0.8";
             }}
             onMouseLeave={(e) => {
+              if (!canHover) return;
               e.currentTarget.style.opacity = "1";
             }}
           >
@@ -266,10 +271,12 @@ function HackathonsPanel({
             transition: "all 0.15s ease",
           }}
           onMouseEnter={(e) => {
+            if (!canHover) return;
             e.currentTarget.style.background = "rgba(255,255,255,0.055)";
             e.currentTarget.style.transform = "translateX(3px)";
           }}
           onMouseLeave={(e) => {
+            if (!canHover) return;
             e.currentTarget.style.background = "rgba(255,255,255,0.03)";
             e.currentTarget.style.transform = "translateX(0)";
           }}
@@ -347,11 +354,13 @@ function SkillsPanel({
                   transition: "all 0.15s ease",
                 }}
                 onMouseEnter={(e) => {
+                  if (!canHover) return;
                   e.currentTarget.style.color = "#4f8ef7";
                   e.currentTarget.style.background = "rgba(79,142,247,0.08)";
                   e.currentTarget.style.borderColor = "rgba(79,142,247,0.3)";
                 }}
                 onMouseLeave={(e) => {
+                  if (!canHover) return;
                   e.currentTarget.style.color = "#a0a0a8";
                   e.currentTarget.style.background = "rgba(255,255,255,0.04)";
                   e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
@@ -409,10 +418,12 @@ function ActionButtons({ onCopy }: { onCopy: () => void }) {
             width: "100%",
           }}
           onMouseEnter={(e) => {
+            if (!canHover) return;
             e.currentTarget.style.background = "rgba(255,255,255,0.07)";
             e.currentTarget.style.color = "#f2f2f3";
           }}
           onMouseLeave={(e) => {
+            if (!canHover) return;
             e.currentTarget.style.background = "rgba(255,255,255,0.03)";
             e.currentTarget.style.color = "#a0a0a8";
           }}
@@ -600,10 +611,12 @@ export function Sidebar({ sendPrompt }: SidebarProps) {
             position: "relative",
           }}
           onMouseEnter={(e) => {
+            if (!canHover) return;
             e.currentTarget.style.color = "#4f8ef7";
             e.currentTarget.style.background = "rgba(79,142,247,0.08)";
           }}
           onMouseLeave={(e) => {
+            if (!canHover) return;
             e.currentTarget.style.color = isHomePage ? "#4f8ef7" : "rgba(255,255,255,0.25)";
             e.currentTarget.style.background = "transparent";
           }}
@@ -665,6 +678,7 @@ export function Sidebar({ sendPrompt }: SidebarProps) {
                 position: "relative",
               }}
               onMouseEnter={(e) => {
+                if (!canHover) return;
                 if (!isActive) {
                   e.currentTarget.style.color = "#4f8ef7";
                   e.currentTarget.style.background = "rgba(79,142,247,0.10)";
@@ -676,6 +690,7 @@ export function Sidebar({ sendPrompt }: SidebarProps) {
                 }
               }}
               onMouseLeave={(e) => {
+                if (!canHover) return;
                 if (!isActive) {
                   e.currentTarget.style.color = "rgba(255,255,255,0.35)";
                   e.currentTarget.style.background = "transparent";
@@ -774,10 +789,12 @@ export function Sidebar({ sendPrompt }: SidebarProps) {
                   transition: "all 0.15s ease",
                 }}
                 onMouseEnter={(e) => {
+                  if (!canHover) return;
                   e.currentTarget.style.color = "#f2f2f3";
                   e.currentTarget.style.background = "rgba(255,255,255,0.08)";
                 }}
                 onMouseLeave={(e) => {
+                  if (!canHover) return;
                   e.currentTarget.style.color = "#505058";
                   e.currentTarget.style.background = "rgba(255,255,255,0.04)";
                 }}
@@ -801,24 +818,24 @@ export function Sidebar({ sendPrompt }: SidebarProps) {
         aria-label="Open navigation"
         onClick={() => setMobileOpen(true)}
         className="mobile-menu-btn"
-        style={{
-          position: "fixed",
-          bottom: 90,
-          right: 16,
-          width: 44,
-          height: 44,
-          borderRadius: "50%",
-          background: "rgba(79,142,247,0.12)",
-          border: "0.5px solid rgba(79,142,247,0.3)",
-          display: "none",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          zIndex: 120,
-          backdropFilter: "blur(12px)",
-          color: "#4f8ef7",
-          transition: "all 0.15s ease",
-        }}
+          style={{
+            position: "fixed",
+            bottom: "max(90px, calc(var(--safe-bottom) + 90px))",
+            right: 16,
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            background: "rgba(79,142,247,0.12)",
+            border: "0.5px solid rgba(79,142,247,0.3)",
+            display: "none",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            zIndex: 120,
+            backdropFilter: "blur(12px)",
+            color: "#4f8ef7",
+            transition: "all 0.15s ease",
+          }}
       >
         <Menu size={18} />
       </button>
@@ -873,6 +890,8 @@ export function Sidebar({ sendPrompt }: SidebarProps) {
                   padding: "12px 12px 0",
                   flexShrink: 0,
                   scrollbarWidth: "none",
+                  WebkitMaskImage: "linear-gradient(to right, black calc(100% - 28px), transparent 100%)",
+                  maskImage: "linear-gradient(to right, black calc(100% - 28px), transparent 100%)",
                 }}
               >
                 {NAV.map(({ id, icon: Icon, label }) => {
@@ -915,7 +934,7 @@ export function Sidebar({ sendPrompt }: SidebarProps) {
                 }}
               />
               {/* Panel content (links) */}
-              <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 32px" }}>
+              <div style={{ flex: 1, overflowY: "auto", padding: `16px 16px max(32px, var(--safe-bottom))` }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {NAV.map(({ id, icon: Icon, label, path }) => (
                     <button

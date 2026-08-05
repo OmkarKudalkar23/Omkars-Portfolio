@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { motion, useInView } from 'framer-motion';
 import { Github, ArrowLeft, ArrowRight } from 'lucide-react';
 import { PageShell } from '@/components/layout/PageShell';
+import { canHover } from '@/lib/pointer';
 import { useRef } from 'react';
 
 export const Route = createFileRoute('/projects_/nolan-studio')({
@@ -164,21 +165,21 @@ function AnimatedPipelineSVG() {
 function NolanStudioPage() {
   return (
     <PageShell path="/projects/nolan-studio">
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 32px 100px' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 clamp(16px, 4vw, 32px) 100px' }}>
         
         {/* ── Hero Section ── */}
         <motion.div 
           initial="hidden" 
           animate="visible" 
           variants={staggerContainer}
-          style={{ paddingTop: 80, paddingBottom: 64 }}
+          style={{ paddingTop: 'clamp(48px, 8vw, 80px)', paddingBottom: 64 }}
         >
           <motion.div variants={fadeInUp} style={{ marginBottom: 40 }}>
             <Link 
               to="/projects"
               style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#a0a0a8', textDecoration: 'none', fontSize: 14, transition: 'color 0.2s' }}
-              onMouseEnter={e => e.currentTarget.style.color = '#c084fc'}
-              onMouseLeave={e => e.currentTarget.style.color = '#a0a0a8'}
+              onMouseEnter={e => { if (!canHover) return; e.currentTarget.style.color = '#c084fc'; }}
+              onMouseLeave={e => { if (!canHover) return; e.currentTarget.style.color = '#a0a0a8'; }}
             >
               <ArrowLeft size={16} /> Projects
             </Link>
@@ -186,7 +187,7 @@ function NolanStudioPage() {
 
           <motion.div variants={fadeInUp} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
             <div style={{ width: 12, height: 12, borderRadius: '50%', background: '#c084fc' }} />
-            <h1 style={{ fontSize: 48, fontWeight: 300, color: '#f2f2f3', fontFamily: "'Geist', sans-serif", letterSpacing: '-0.02em', margin: 0 }}>
+            <h1 style={{ fontSize: 'clamp(36px, 8vw, 48px)', fontWeight: 300, color: '#f2f2f3', fontFamily: "'Geist', sans-serif", letterSpacing: '-0.02em', margin: 0 }}>
               Nolan AI Studio
             </h1>
           </motion.div>
@@ -226,7 +227,7 @@ function NolanStudioPage() {
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           variants={staggerContainer}
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 48, marginBottom: 80 }}
+          style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: 48, marginBottom: 80 }}
         >
           <motion.div variants={fadeInUp}>
             <h3 style={{ fontSize: 12, color: '#505058', letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 700, margin: '0 0 16px', fontFamily: "'Geist Mono', monospace" }}>
@@ -369,21 +370,21 @@ function NolanStudioPage() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeInUp}
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 32 }}
+          style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 16, borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 32 }}
         >
           <Link 
             to="/projects"
             style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#f2f2f3', textDecoration: 'none', fontSize: 15, transition: 'opacity 0.2s' }}
-            onMouseEnter={e => e.currentTarget.style.opacity = '0.7'}
-            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+            onMouseEnter={e => { if (!canHover) return; e.currentTarget.style.opacity = '0.7'; }}
+            onMouseLeave={e => { if (!canHover) return; e.currentTarget.style.opacity = '1'; }}
           >
             <ArrowLeft size={16} /> Back to all projects
           </Link>
           <Link 
             to="/projects"
             style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#a0a0a8', textDecoration: 'none', fontSize: 15, transition: 'color 0.2s' }}
-            onMouseEnter={e => e.currentTarget.style.color = '#f2f2f3'}
-            onMouseLeave={e => e.currentTarget.style.color = '#a0a0a8'}
+            onMouseEnter={e => { if (!canHover) return; e.currentTarget.style.color = '#f2f2f3'; }}
+            onMouseLeave={e => { if (!canHover) return; e.currentTarget.style.color = '#a0a0a8'; }}
           >
             Next project <ArrowRight size={16} />
           </Link>

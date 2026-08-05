@@ -6,6 +6,7 @@ import gsap from 'gsap';
 import { Copy, ExternalLink, Github, Check, ChevronDown, Mail } from 'lucide-react';
 import { PageShell } from '@/components/layout/PageShell';
 import { omkar } from '@/lib/data';
+import { canHover } from '@/lib/pointer';
 
 function getAngle(x: number, y: number) {
   let angle = (Math.atan2(y, x) * 180 / Math.PI) + 90;
@@ -216,7 +217,7 @@ function ContactPage() {
           .atc-layout { display: flex; flex-direction: column; height: 100%; min-height: 100vh; }
           .atc-left { flex: 1 1 100%; border-right: none; border-bottom: 1px solid rgba(59,130,246,0.2); }
           .atc-right { flex: 1 1 100%; }
-          @media (min-width: 768px) {
+          @media (min-width: 1024px) {
             .atc-layout { flex-direction: row; }
             .atc-left { flex: 1 1 45%; border-right: 1px solid rgba(59,130,246,0); border-bottom: none; min-height: 100vh; }
             .atc-right { flex: 1 1 55%; min-height: 100vh; overflow-y: auto; }
@@ -323,8 +324,8 @@ function ContactPage() {
                 { label: 'CLEARANCE', value: 'AVAILABLE FOR INTERNSHIP / FREELANCE' },
                 { label: 'VISIBILITY', value: '10KM — CONDITIONS CLEAR' }
               ].map((line, i) => (
-                <div key={i} ref={el => { typewritersRef.current[i] = el; }} style={{ display: 'flex', gap: 16 }}>
-                  <span style={{ width: 90, opacity: 0.6 }}>{line.label}</span>
+                <div key={i} ref={el => { typewritersRef.current[i] = el; }} className="flex flex-col sm:flex-row gap-1 sm:gap-4">
+                  <span style={{ width: 90, opacity: 0.6, flexShrink: 0 }}>{line.label}</span>
                   <span style={{ flex: 1, opacity: 0.9 }}>{line.value}</span>
                 </div>
               ))}
@@ -419,8 +420,14 @@ function ContactPage() {
                             key={opt}
                             onClick={() => { setContactType(opt); setTypeOpen(false); }}
                             style={{ padding: '12px 16px', fontSize: 13, color: opt === contactType ? '#00ff64' : 'rgba(255,255,255,0.6)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
-                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,255,100,0.1)')}
-                            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                            onMouseEnter={e => {
+                              if (!canHover) return;
+                              e.currentTarget.style.background = 'rgba(0,255,100,0.1)';
+                            }}
+                            onMouseLeave={e => {
+                              if (!canHover) return;
+                              e.currentTarget.style.background = 'transparent';
+                            }}
                           >
                             {opt === contactType && <div style={{ width: 6, height: 6, background: '#00ff64', borderRadius: '50%' }} />}
                             <span style={{ marginLeft: opt === contactType ? 0 : 14 }}>{opt}</span>
@@ -473,8 +480,14 @@ function ContactPage() {
                       position: 'relative', overflow: 'hidden', boxShadow: '0 0 16px rgba(0,255,100,0.1)',
                       transition: 'all 0.3s'
                     }}
-                    onMouseEnter={e => submitState === 'idle' && (e.currentTarget.style.boxShadow = '0 0 24px rgba(0,255,100,0.3)')}
-                    onMouseLeave={e => submitState === 'idle' && (e.currentTarget.style.boxShadow = '0 0 16px rgba(0,255,100,0.1)')}
+                    onMouseEnter={e => {
+                      if (!canHover || submitState !== 'idle') return;
+                      e.currentTarget.style.boxShadow = '0 0 24px rgba(0,255,100,0.3)';
+                    }}
+                    onMouseLeave={e => {
+                      if (!canHover || submitState !== 'idle') return;
+                      e.currentTarget.style.boxShadow = '0 0 16px rgba(0,255,100,0.1)';
+                    }}
                   >
                     {submitState === 'transmitting' && (
                       <motion.div 
@@ -509,10 +522,10 @@ function ContactPage() {
                     {copied ? 'COPIED TO FREQUENCY LOG' : omkar.email}
                     {!copied && <Copy size={12} style={{ opacity: 0.5 }} />}
                   </div>
-                  <a href={omkar.linkedin} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', border: '1px solid rgba(0,255,100,0.2)', color: '#a0a0a8', fontSize: 12, textDecoration: 'none', background: 'rgba(255,255,255,0.02)', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(0,255,100,0.6)'} onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(0,255,100,0.2)'}>
+                  <a href={omkar.linkedin} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', border: '1px solid rgba(0,255,100,0.2)', color: '#a0a0a8', fontSize: 12, textDecoration: 'none', background: 'rgba(255,255,255,0.02)', transition: 'all 0.2s' }} onMouseEnter={e => { if (!canHover) return; e.currentTarget.style.borderColor = 'rgba(0,255,100,0.6)'; }} onMouseLeave={e => { if (!canHover) return; e.currentTarget.style.borderColor = 'rgba(0,255,100,0.2)'; }}>
                     LinkedIn <ExternalLink size={12} />
                   </a>
-                  <a href={omkar.github} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', border: '1px solid rgba(0,255,100,0.2)', color: '#a0a0a8', fontSize: 12, textDecoration: 'none', background: 'rgba(255,255,255,0.02)', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(0,255,100,0.6)'} onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(0,255,100,0.2)'}>
+                  <a href={omkar.github} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 12px', border: '1px solid rgba(0,255,100,0.2)', color: '#a0a0a8', fontSize: 12, textDecoration: 'none', background: 'rgba(255,255,255,0.02)', transition: 'all 0.2s' }} onMouseEnter={e => { if (!canHover) return; e.currentTarget.style.borderColor = 'rgba(0,255,100,0.6)'; }} onMouseLeave={e => { if (!canHover) return; e.currentTarget.style.borderColor = 'rgba(0,255,100,0.2)'; }}>
                     GitHub <ExternalLink size={12} />
                   </a>
                 </div>

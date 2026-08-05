@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { MessageCircle, X, ArrowUp } from "lucide-react";
+import { canHover } from "@/lib/pointer";
 
 /* ─── Types ──────────────────────────────────────────────── */
 type Msg = {
@@ -176,8 +177,8 @@ export function ContextualChat({ path }: { path: string }) {
         whileTap={{ scale: 0.95 }}
         style={{
           position: "fixed",
-          bottom: 24,
-          right: 24,
+          bottom: "max(24px, calc(var(--safe-bottom) + 24px))",
+          right: 16,
           width: 52,
           height: 52,
           borderRadius: "50%",
@@ -188,7 +189,7 @@ export function ContextualChat({ path }: { path: string }) {
           justifyContent: "center",
           cursor: "pointer",
           border: "none",
-          zIndex: 200,
+          zIndex: 120,
         }}
       >
         <AnimatePresence mode="wait" initial={false}>
@@ -228,10 +229,10 @@ export function ContextualChat({ path }: { path: string }) {
             transition={{ type: "spring", stiffness: 360, damping: 30 }}
             style={{
               position: "fixed",
-              bottom: 92,
-              right: 24,
-              width: 380,
-              height: 480,
+              bottom: "max(92px, calc(var(--safe-bottom) + 92px))",
+              right: 16,
+              width: "min(380px, calc(100vw - 32px))",
+              height: "min(480px, calc(100dvh - 128px))",
               background: "rgba(8,8,9,0.97)",
               backdropFilter: "blur(28px)",
               WebkitBackdropFilter: "blur(28px)",
@@ -241,7 +242,7 @@ export function ContextualChat({ path }: { path: string }) {
               flexDirection: "column",
               overflow: "hidden",
               boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
-              zIndex: 190,
+              zIndex: 110,
             }}
           >
             {/* Header */}
@@ -255,7 +256,7 @@ export function ContextualChat({ path }: { path: string }) {
                 flexShrink: 0,
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
                 <div
                   className="dot-pulse-green"
                   style={{
@@ -263,6 +264,7 @@ export function ContextualChat({ path }: { path: string }) {
                     height: 8,
                     borderRadius: "50%",
                     background: "#3ecf8e",
+                    flexShrink: 0,
                   }}
                 />
                 <span
@@ -270,11 +272,22 @@ export function ContextualChat({ path }: { path: string }) {
                     fontSize: 13,
                     fontWeight: 500,
                     color: "#f2f2f3",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   Omkar AI
                 </span>
-                <span style={{ fontSize: 11, color: "#505058" }}>· Ask about {sectionLabel}</span>
+                <span
+                  style={{
+                    fontSize: 11,
+                    color: "#505058",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  · Ask about {sectionLabel}
+                </span>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -290,8 +303,14 @@ export function ContextualChat({ path }: { path: string }) {
                   borderRadius: 6,
                   transition: "color 0.15s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#f2f2f3")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "#505058")}
+                onMouseEnter={(e) => {
+                  if (!canHover) return;
+                  e.currentTarget.style.color = "#f2f2f3";
+                }}
+                onMouseLeave={(e) => {
+                  if (!canHover) return;
+                  e.currentTarget.style.color = "#505058";
+                }}
               >
                 <X size={14} />
               </button>
@@ -417,28 +436,47 @@ export function ContextualChat({ path }: { path: string }) {
                   maxHeight: 80,
                 }}
               />
-              <button
-                onClick={() => send(value)}
-                disabled={busy || !value.trim()}
-                aria-label="Send message"
+              <div
                 style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: "50%",
-                  background: "#4f8ef7",
-                  border: "none",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  cursor: "pointer",
                   flexShrink: 0,
-                  opacity: busy || !value.trim() ? 0.3 : 1,
-                  transition: "opacity 0.15s",
-                  marginBottom: 1,
                 }}
               >
-                <ArrowUp size={14} color="#080809" strokeWidth={2.5} />
-              </button>
+                <button
+                  onClick={() => send(value)}
+                  disabled={busy || !value.trim()}
+                  aria-label="Send message"
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: "50%",
+                    background: "transparent",
+                    border: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    opacity: busy || !value.trim() ? 0.3 : 1,
+                    transition: "opacity 0.15s",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      background: "#4f8ef7",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <ArrowUp size={14} color="#080809" strokeWidth={2.5} />
+                  </span>
+                </button>
+              </div>
             </div>
           </motion.div>
         )}

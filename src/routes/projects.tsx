@@ -238,7 +238,7 @@ function ProjectsPage() {
   const [isPointerFine, setIsPointerFine] = useState(true);
 
   useEffect(() => {
-    setIsPointerFine(window.matchMedia("(hover: hover) and (pointer: fine)").matches && !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    setIsPointerFine(window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 1024px)").matches && !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -258,7 +258,7 @@ function ProjectsPage() {
       style={{
         minHeight: '100vh',
         background: '#0a0a0a',
-        color: '#e5e5e5',
+        color: '#f2f2f3',
         position: 'relative',
         overflow: 'hidden',
         cursor: 'auto'
@@ -270,12 +270,12 @@ function ProjectsPage() {
       <Sidebar />
 
       {/* Sidebar Email */}
-      <div style={{ position: 'fixed', left: 24, top: '50%', transform: 'translateY(-50%) rotate(-90deg)', transformOrigin: 'left center', fontSize: 11, fontFamily: "'Geist Mono', monospace", color: '#505058', letterSpacing: '0.1em', pointerEvents: 'none', zIndex: 10 }}>
+      <div className="sidebar-email-indicator" style={{ position: 'fixed', left: 24, top: '50%', transform: 'translateY(-50%) rotate(-90deg)', transformOrigin: 'left center', fontSize: 11, fontFamily: "'Geist Mono', monospace", color: '#505058', letterSpacing: '0.1em', pointerEvents: 'none', zIndex: 10 }}>
         omkarkudalkar23@gmail.com
       </div>
 
       {/* Header */}
-      <header style={{ display: 'flex', justifyContent: 'space-between', padding: '32px 48px', position: 'relative', zIndex: 10 }}>
+      <header className="flex justify-between px-6 py-6 md:px-12 md:py-8 relative z-10">
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <motion.div
             animate={{ rotate: 360 }}
@@ -290,7 +290,7 @@ function ProjectsPage() {
       </header>
 
       {/* Main List */}
-      <main style={{ maxWidth: 1000, margin: '80px auto 0', padding: '0 48px 100px', position: 'relative', zIndex: 10 }}>
+      <main className="max-w-[1000px] mx-auto mt-12 md:mt-20 px-6 md:px-12 pb-24 relative z-10">
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
           {omkar.projects.map((p) => {
             const isHovered = hoveredProjectId === p.id;
@@ -305,16 +305,10 @@ function ProjectsPage() {
                 onFocus={() => setHoveredProjectId(p.id)}
                 onBlur={() => setHoveredProjectId(null)}
                 onClick={() => navigate({ to: p.id === 'nolan' ? '/projects/nolan-studio' : p.id === 'finverse' ? '/projects/finverse' : '/projects' })}
+                className="py-8 md:py-12 flex items-center w-full relative outline-none border-b border-[rgba(255,255,255,0.1)] transition-opacity duration-300"
                 style={{
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '48px 0',
-                  borderBottom: '1px solid rgba(255,255,255,0.1)',
                   cursor: isPointerFine ? 'none' : 'pointer',
                   opacity: isAnyHovered ? (isHovered ? 1 : 0.3) : 1,
-                  transition: 'opacity 0.3s ease',
-                  outline: 'none'
                 }}
               >
                 {/* Top Highlight Border */}
@@ -341,7 +335,7 @@ function ProjectsPage() {
                   transition: 'opacity 0.3s ease',
                   zIndex: 2,
                 }} />
-                <div style={{ width: 80, fontSize: 14, fontFamily: "'Geist Mono', monospace", color: '#505058' }}>
+                <div className="w-12 md:w-20 text-xs md:text-sm text-[#505058] font-mono flex-shrink-0">
                   _{p.index}.
                 </div>
                 <div>

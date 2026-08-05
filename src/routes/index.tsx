@@ -81,7 +81,7 @@ function Index() {
       <Sidebar sendPrompt={send} />
 
       <main className="relative z-10 mx-auto flex min-h-screen w-full max-w-[760px] flex-col px-5">
-        <div className="flex-1 pt-[14vh]">
+        <div className="flex-1 pt-[clamp(64px,14vh,140px)]">
           <Greeting />
           {messages.length === 0 && <SuggestedPrompts onPick={send} />}
 

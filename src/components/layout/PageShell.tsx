@@ -44,11 +44,7 @@ export function PageShell({ children, path }: PageShellProps) {
         initial="initial"
         animate="animate"
         exit="exit"
-        style={{
-          marginLeft: 48,
-          minHeight: "100vh",
-          overflowX: "hidden",
-        }}
+        className="page-shell-main"
       >
         {children}
       </motion.main>

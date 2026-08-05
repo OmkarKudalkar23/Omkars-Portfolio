@@ -35,7 +35,13 @@ export function ChatInput({
   };
 
   return (
-    <div className="sticky bottom-0 z-20 pb-6 pt-4" style={{ background: "linear-gradient(to top, #080809 62%, transparent)" }}>
+    <div
+      className="sticky bottom-0 z-20 pt-4"
+      style={{
+        paddingBottom: "max(24px, var(--safe-bottom))",
+        background: "linear-gradient(to top, #080809 62%, transparent)",
+      }}
+    >
       <div
         onMouseMove={onMouseMove}
         onMouseLeave={onMouseLeave}
@@ -68,18 +74,20 @@ export function ChatInput({
           }}
           className="max-h-40 w-full resize-none bg-transparent pr-10 text-[15px] leading-relaxed text-text-primary outline-none placeholder:text-text-muted"
         />
-        <button
-          ref={magnet.ref}
-          type="button"
-          onClick={submit}
-          onMouseMove={magnet.onMouseMove}
-          onMouseLeave={magnet.onMouseLeave}
-          disabled={disabled || !value.trim()}
-          aria-label="Send message"
-          className="absolute bottom-2.5 right-2.5 flex h-8 w-8 items-center justify-center rounded-full bg-accent-blue text-[#080809] transition-[opacity,background] duration-200 disabled:opacity-30"
-        >
-          <ArrowUp className="h-4 w-4" strokeWidth={2.5} />
-        </button>
+        <div className="absolute bottom-1.5 right-1.5 flex h-11 w-11 items-center justify-center">
+          <button
+            ref={magnet.ref}
+            type="button"
+            onClick={submit}
+            onMouseMove={magnet.onMouseMove}
+            onMouseLeave={magnet.onMouseLeave}
+            disabled={disabled || !value.trim()}
+            aria-label="Send message"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-blue text-[#080809] transition-[opacity,background] duration-200 disabled:opacity-30"
+          >
+            <ArrowUp className="h-4 w-4" strokeWidth={2.5} />
+          </button>
+        </div>
       </div>
     </div>
   );
