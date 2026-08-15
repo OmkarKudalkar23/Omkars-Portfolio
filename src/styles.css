@@ -701,15 +701,15 @@
   overflow: hidden;
 }
 
-.airplane-landing-viewport .content .sunset::before {
-  content: '';
+.airplane-landing-viewport .content .sunset .sunset-video {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: url("/sunset_eng.jpg") no-repeat top center;
-  background-size: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   z-index: 1;
   pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%);

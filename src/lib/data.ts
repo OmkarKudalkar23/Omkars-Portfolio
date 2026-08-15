@@ -148,6 +148,27 @@ export const omkar = {
       github: "https://github.com/OmkarKudalkar23",
       demo: null,
     },
+    {
+      id: "healthsync",
+      index: "04",
+      name: "HealthSync",
+      tagline: "Smart hospital operations & decision support system",
+      accent: "#22c55e",
+      date: "March 2026",
+      problem:
+        "Hospital staff juggle scattered dashboards — bed availability, patient vitals, staff schedules — forcing slow, reactive decisions during critical moments.",
+      solution:
+        "An agentic decision-support system unifying real-time hospital operations on the MERN stack: live bed tracking, patient-flow analytics, and AI agents that surface bottlenecks and recommend next best actions. IndexedDB keeps core operations alive during network outages.",
+      tech: ["MERN", "Agentic AI", "IndexedDB", "Real-time Dashboards"],
+      architecture: ["Hospital Data Layer", "Live Bed + Patient Flow", "Agent Orchestrator", "Decision Support Alerts", "Offline Sync (IndexedDB)"],
+      metrics: [
+        { value: "Top 10", label: "Rubix 2026" },
+        { value: "Real-time", label: "bed & patient-flow tracking" },
+        { value: "Offline-first", label: "IndexedDB continuity" },
+      ],
+      github: "https://github.com/OmkarKudalkar23",
+      demo: null,
+    },
   ],
 
   hackathons: [

@@ -1,5 +1,50 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { gsap } from "gsap";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useGLTF } from "@react-three/drei";
+import * as THREE from "three";
+
+// Pre-load the same low-poly jet GLB used by the landing page
+useGLTF.preload("/Jet.glb");
+
+// Camera constants matching the landing page flight stage
+const CAM_Z = 300;
+const FOV = 45;
+const DEPTH = 35;
+
+interface OrbitPlaneState {
+  x: number;
+  y: number;
+  scale: number;
+  rotation: number;
+  depth: number;
+}
+
+// 3D Low-poly Jet model driven by the GSAP orbit state
+function OrbitJet({ state }: { state: React.MutableRefObject<OrbitPlaneState> }) {
+  const { scene } = useGLTF("/Jet.glb");
+  const modelRef = useRef<THREE.Group>(null);
+
+  useFrame(() => {
+    const model = modelRef.current;
+    if (!model) return;
+    const s = state.current;
+
+    // Convert screen-space pixels (driven by GSAP) into world units
+    const vh = window.innerHeight;
+    const pxPerUnit = vh / (2 * CAM_Z * Math.tan((FOV * Math.PI) / 360));
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+
+    model.position.set((s.x - cx) / pxPerUnit, -(s.y - cy) / pxPerUnit, (s.depth * 2 - 1) * DEPTH);
+    // Base ry = +90deg points the nose right (+x) like the old SVG,
+    // rz banks it along the ellipse tangent (screen-plane rotation).
+    model.rotation.set(0, Math.PI / 2, (s.rotation * Math.PI) / 180);
+    model.scale.setScalar(s.scale);
+  });
+
+  return <primitive ref={modelRef} object={scene} />;
+}
 
 export function IntroAnimation() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -7,12 +52,13 @@ export function IntroAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const blocksRef = useRef<(HTMLDivElement | null)[]>([]);
-  const planeRef = useRef<SVGSVGElement>(null);
+  const planeState = useRef<OrbitPlaneState>({ x: 0, y: 0, scale: 0.15, rotation: 0, depth: 0 });
+  const planeWrapRef = useRef<HTMLDivElement>(null);
   const trailRefs = useRef<(SVGCircleElement | null)[]>([]);
   const bracketLeftRef = useRef<HTMLDivElement>(null);
   const bracketRightRef = useRef<HTMLDivElement>(null);
   const nameTextRef = useRef<HTMLHeadingElement>(null);
-  
+
   const numColumns = 8;
   const trailPositions = useRef<{ x: number; y: number }[]>([]);
 
@@ -59,15 +105,21 @@ export function IntroAnimation() {
         const a = isMobileView ? 180 : 320;
         const b = isMobileView ? 50 : 80;
 
+        // Keep the 3D jet a consistent on-screen size across viewports
+        const sizeScale = Math.max(window.innerHeight / 1080, 0.5);
+        const orbitScale = 4 * sizeScale;
+
         // Hide plane initially
-        gsap.set(planeRef.current, {
+        gsap.set(planeState.current, {
           x: centerX,
           y: centerY,
-          scale: 0.15,
+          scale: orbitScale * 0.15,
+          rotation: 0,
+          depth: 0,
+        });
+        gsap.set(planeWrapRef.current, {
           opacity: 0,
           zIndex: 5,
-          transformOrigin: "center center",
-          position: "absolute",
         });
 
         // Initialize trail dots
@@ -79,8 +131,16 @@ export function IntroAnimation() {
 
         // 1. Draw SVG bracket outlines
         tl.to(".intro-mark-path.p1", { strokeDashoffset: 0, duration: 0.4, ease: "power2.inOut" })
-          .to(".intro-mark-path.p2", { strokeDashoffset: 0, duration: 0.4, ease: "power2.inOut" }, "-=0.25")
-          .to(".intro-mark-path.p3", { strokeDashoffset: 0, duration: 0.4, ease: "power2.inOut" }, "-=0.25");
+          .to(
+            ".intro-mark-path.p2",
+            { strokeDashoffset: 0, duration: 0.4, ease: "power2.inOut" },
+            "-=0.25",
+          )
+          .to(
+            ".intro-mark-path.p3",
+            { strokeDashoffset: 0, duration: 0.4, ease: "power2.inOut" },
+            "-=0.25",
+          );
 
         // Pause briefly
         tl.to({}, { duration: 0.2 });
@@ -89,19 +149,23 @@ export function IntroAnimation() {
         tl.fromTo(
           ".intro-letter",
           { opacity: 0, y: 20, scale: 0.9 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.5)", stagger: 0.08 }
+          { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.5)", stagger: 0.08 },
         );
 
         // Hold the name on screen so it registers before plane enters
         tl.to({}, { duration: 0.6 });
 
         // 3. Stage 1.5A — Plane enters from behind (depth illusion)
-        tl.to(planeRef.current, {
-          scale: 0.6,
-          opacity: 0.7,
+        tl.to(planeState.current, {
+          scale: orbitScale,
           // Position it to start at the leftmost point of the ellipse (-a, 0)
           x: centerX - a,
           y: centerY,
+          duration: 0.6,
+          ease: "power2.out",
+        });
+        tl.to(planeWrapRef.current, {
+          opacity: 0.7,
           duration: 0.6,
           ease: "power2.out",
         });
@@ -126,47 +190,48 @@ export function IntroAnimation() {
         };
 
         // 4. Stage 1.5B — Orbit 1.5 times (use GSAP ticker / onUpdate)
-        tl.to({ progress: 0 }, {
-          progress: 1.5,
-          duration: 1.8,
-          ease: "none",
-          onUpdate: function () {
-            const p = this.targets()[0].progress;
-            // Ellipse path centered on "OMKAR" text
-            // Counterclockwise: starts at Math.PI (leftmost point) and goes Pi -> 3Pi -> 4Pi
-            const angle = Math.PI + p * Math.PI * 2;
-            const x = centerX + Math.cos(angle) * a;
-            const y = centerY + Math.sin(angle) * b;
+        tl.to(
+          { progress: 0 },
+          {
+            progress: 1.5,
+            duration: 1.8,
+            ease: "none",
+            onUpdate: function () {
+              const p = this.targets()[0].progress;
+              // Ellipse path centered on "OMKAR" text
+              // Counterclockwise: starts at Math.PI (leftmost point) and goes Pi -> 3Pi -> 4Pi
+              const angle = Math.PI + p * Math.PI * 2;
+              const x = centerX + Math.cos(angle) * a;
+              const y = centerY + Math.sin(angle) * b;
 
-            // Rotation = tangent angle of ellipse at current point
-            // dx = -a * sin(angle), dy = b * cos(angle)
-            const tangentAngle = Math.atan2(
-              b * Math.cos(angle),
-              -a * Math.sin(angle)
-            );
+              // Rotation = tangent angle of ellipse at current point
+              // dx = -a * sin(angle), dy = b * cos(angle)
+              const tangentAngle = Math.atan2(b * Math.cos(angle), -a * Math.sin(angle));
 
-            const depth = (Math.sin(angle) + 1) / 2; // 0 (top/behind) to 1 (bottom/front)
+              const depth = (Math.sin(angle) + 1) / 2; // 0 (top/behind) to 1 (bottom/front)
 
-            gsap.set(planeRef.current, {
-              x,
-              y,
-              rotation: tangentAngle * (180 / Math.PI),
-              scale: 0.5 + depth * 0.3,
-              opacity: 0.6 + depth * 0.4,
-              zIndex: depth > 0.5 ? 20 : 5, // Swap z-index to create behind/front depth
-            });
+              gsap.set(planeState.current, {
+                x,
+                y,
+                rotation: tangentAngle * (180 / Math.PI),
+                depth,
+              });
+              gsap.set(planeWrapRef.current, {
+                opacity: 0.6 + depth * 0.4,
+                zIndex: depth > 0.5 ? 20 : 5, // Swap z-index to create behind/front depth
+              });
 
-            updateTrail(x, y);
-          }
-        });
+              updateTrail(x, y);
+            },
+          },
+        );
 
         // 5. Stage 1.5C — Takeoff breakout (accelerates right)
-        tl.to(planeRef.current, {
+        tl.to(planeState.current, {
           x: window.innerWidth + 120,
           y: centerY - 45,
           rotation: -8,
-          scale: 0.35,
-          opacity: 0,
+          scale: orbitScale * 0.6,
           duration: isMobileView ? 0.3 : 0.5,
           ease: "power3.in",
           onUpdate: function () {
@@ -174,7 +239,12 @@ export function IntroAnimation() {
             trailRefs.current.forEach((dot) => {
               if (dot) gsap.set(dot, { opacity: 0 });
             });
-          }
+          },
+        });
+        tl.to(planeWrapRef.current, {
+          opacity: 0,
+          duration: isMobileView ? 0.3 : 0.5,
+          ease: "power3.in",
         });
 
         // Bracket close + name fade out simultaneously
@@ -187,15 +257,12 @@ export function IntroAnimation() {
       }
 
       // Stage 2: Shutter transition - grid of vertical blocks drop down out of view
-      tl.to(
-        blocksRef.current,
-        {
-          yPercent: 100, // Move down 100% of their height
-          duration: 0.6,
-          ease: "expo.inOut",
-          stagger: isReducedMotion ? 0 : 0.08,
-        }
-      );
+      tl.to(blocksRef.current, {
+        yPercent: 100, // Move down 100% of their height
+        duration: 0.6,
+        ease: "expo.inOut",
+        stagger: isReducedMotion ? 0 : 0.08,
+      });
 
       // Final fail-safe fade out of the container at the very end
       tl.to(containerRef.current, { opacity: 0, duration: 0.2 }, "-=0.1");
@@ -255,7 +322,10 @@ export function IntroAnimation() {
         }}
       >
         {/* SVG < */}
-        <div ref={bracketLeftRef} style={{ display: "flex", alignItems: "center", zIndex: 10, willChange: "transform" }}>
+        <div
+          ref={bracketLeftRef}
+          style={{ display: "flex", alignItems: "center", zIndex: 10, willChange: "transform" }}
+        >
           <svg viewBox="0 0 40 40" style={{ height: "clamp(3rem, 10vw, 8rem)", width: "auto" }}>
             <path
               className="intro-mark-path p1"
@@ -289,14 +359,21 @@ export function IntroAnimation() {
           }}
         >
           {"OMKAR".split("").map((letter, i) => (
-            <span key={i} className="intro-letter" style={{ display: "inline-block", opacity: isReducedMotion ? 1 : 0 }}>
+            <span
+              key={i}
+              className="intro-letter"
+              style={{ display: "inline-block", opacity: isReducedMotion ? 1 : 0 }}
+            >
               {letter}
             </span>
           ))}
         </h1>
 
         {/* SVG /> */}
-        <div ref={bracketRightRef} style={{ display: "flex", alignItems: "center", zIndex: 10, willChange: "transform" }}>
+        <div
+          ref={bracketRightRef}
+          style={{ display: "flex", alignItems: "center", zIndex: 10, willChange: "transform" }}
+        >
           <svg viewBox="0 0 60 40" style={{ height: "clamp(3rem, 10vw, 8rem)", width: "auto" }}>
             <path
               className="intro-mark-path p2"
@@ -336,43 +413,57 @@ export function IntroAnimation() {
             zIndex: 6, // Renders along with the plane depth
           }}
         >
-          <circle ref={(el) => { trailRefs.current[0] = el; }} r="3" fill="#4f8ef7" />
-          <circle ref={(el) => { trailRefs.current[1] = el; }} r="2" fill="#4f8ef7" />
-          <circle ref={(el) => { trailRefs.current[2] = el; }} r="1" fill="#4f8ef7" />
+          <circle
+            ref={(el) => {
+              trailRefs.current[0] = el;
+            }}
+            r="3"
+            fill="#4f8ef7"
+          />
+          <circle
+            ref={(el) => {
+              trailRefs.current[1] = el;
+            }}
+            r="2"
+            fill="#4f8ef7"
+          />
+          <circle
+            ref={(el) => {
+              trailRefs.current[2] = el;
+            }}
+            r="1"
+            fill="#4f8ef7"
+          />
         </svg>
       )}
 
-      {/* SVG Plane Asset */}
+      {/* 3D Low-poly Jet Asset (same GLB as the landing page) */}
       {!isReducedMotion && (
-        <svg
-          ref={planeRef}
-          viewBox="0 0 60 24"
+        <div
+          ref={planeWrapRef}
           style={{
-            width: "80px",
-            height: "32px",
+            position: "absolute",
+            inset: 0,
+            zIndex: 5,
+            opacity: 0,
             pointerEvents: "none",
             willChange: "transform, opacity",
           }}
         >
-          {/* Engine nacelle */}
-          <ellipse cx="26" cy="20" rx="6" ry="3" fill="#888c94" />
-          {/* Wing */}
-          <polygon points="20,12 36,12 32,20 16,20" fill="#b0b4bc" />
-          {/* Tail fin */}
-          <polygon points="2,12 2,4 10,12" fill="#b8bcc4" />
-          {/* Fuselage */}
-          <ellipse cx="30" cy="12" rx="28" ry="8" fill="#c8ccd4" />
-          {/* Blue stripe */}
-          <rect x="4" y="10" width="52" height="3" fill="#4f8ef7" rx="1" />
-          {/* Windows */}
-          <circle cx="18" cy="10" r="2.5" fill="#2a2d35" />
-          <circle cx="26" cy="10" r="2.5" fill="#2a2d35" />
-          <circle cx="34" cy="10" r="2.5" fill="#2a2d35" />
-          {/* Nose */}
-          <ellipse cx="57" cy="12" rx="5" ry="6" fill="#c8ccd4" />
-          {/* Engine shimmer */}
-          <ellipse cx="26" cy="20" rx="4" ry="2" fill="rgba(79,142,247,0.3)" />
-        </svg>
+          <Canvas
+            camera={{ position: [0, 0, CAM_Z], fov: FOV }}
+            style={{ pointerEvents: "none" }}
+            gl={{ antialias: true, alpha: true }}
+          >
+            <ambientLight intensity={2.2} />
+            <directionalLight position={[0, 100, 150]} intensity={2.0} />
+            <directionalLight position={[0, -100, 150]} intensity={1.0} />
+            <directionalLight position={[-150, 0, 50]} intensity={1.0} />
+            <Suspense fallback={null}>
+              <OrbitJet state={planeState} />
+            </Suspense>
+          </Canvas>
+        </div>
       )}
     </div>
   );

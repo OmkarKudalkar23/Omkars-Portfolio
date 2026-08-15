@@ -177,6 +177,93 @@ function FinverseVisual() {
   );
 }
 
+function HealthSyncVisual() {
+  // Hospital ops dashboard: ECG pulse, bed occupancy bars, live agent alert
+  return (
+    <svg
+      viewBox="0 0 300 250"
+      style={{ width: '100%', height: '100%' }}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <radialGradient id="healthsync-bg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#0a1f1a" />
+          <stop offset="100%" stopColor="#080809" />
+        </radialGradient>
+        <linearGradient id="ecg-glow" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#22c55e" stopOpacity="0" />
+          <stop offset="50%" stopColor="#22c55e" />
+          <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <rect width="300" height="250" fill="url(#healthsync-bg)" />
+
+      {/* Grid backdrop */}
+      <g stroke="rgba(34,197,94,0.07)" strokeWidth="1">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <line key={`v${i}`} x1={30 + i * 40} y1="40" x2={30 + i * 40} y2="210" />
+        ))}
+        {Array.from({ length: 5 }).map((_, i) => (
+          <line key={`h${i}`} x1="30" y1={40 + i * 42.5} x2="270" y2={40 + i * 42.5} />
+        ))}
+      </g>
+
+      {/* Bed occupancy bars */}
+      {[
+        { x: 70, h: 60, label: 'ICU' },
+        { x: 115, h: 85, label: 'ER' },
+        { x: 160, h: 45, label: 'GEN' },
+        { x: 205, h: 95, label: 'OBS' },
+      ].map((bar, i) => (
+        <g key={i}>
+          <rect
+            x={bar.x}
+            y={215 - bar.h}
+            width="22"
+            height={bar.h}
+            rx="3"
+            fill="rgba(34,197,94,0.16)"
+            stroke="#22c55e"
+            strokeWidth="1"
+          >
+            <animate attributeName="opacity" values="0.5;1;0.5" dur="2.4s" begin={`${i * 0.4}s`} repeatCount="indefinite" />
+          </rect>
+          <text x={bar.x + 11} y="232" textAnchor="middle" fill="rgba(34,197,94,0.7)" fontSize="8" fontFamily="'Geist Mono', monospace">
+            {bar.label}
+          </text>
+        </g>
+      ))}
+
+      {/* ECG heartbeat line */}
+      <polyline
+        points="30,125 60,125 70,125 78,98 86,150 94,125 120,125 128,105 136,142 144,125 175,125 183,100 191,148 199,125 270,125"
+        fill="none"
+        stroke="url(#ecg-glow)"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+      >
+        <animate attributeName="stroke-dashoffset" from="0" to="-480" dur="2.2s" repeatCount="indefinite" />
+        <animate attributeName="stroke-dasharray" values="240 480;240 480" dur="2.2s" repeatCount="indefinite" />
+      </polyline>
+
+      {/* Live pulse dot */}
+      <circle cx="150" cy="125" r="3" fill="#22c55e">
+        <animate attributeName="r" values="2;4;2" dur="1.6s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="1;0.4;1" dur="1.6s" repeatCount="indefinite" />
+      </circle>
+
+      {/* Agent alert chip */}
+      <g>
+        <rect x="105" y="22" width="90" height="16" rx="8" fill="rgba(34,197,94,0.12)" stroke="rgba(34,197,94,0.35)" strokeWidth="1" />
+        <text x="150" y="33" textAnchor="middle" fill="#22c55e" fontSize="8" fontFamily="'Geist Mono', monospace" letterSpacing="0.05em">
+          AGENT: BED 214 FREE
+        </text>
+      </g>
+    </svg>
+  );
+}
+
 function SignSyncVisual() {
   const [activeGif, setActiveGif] = useState(0);
   const gifs = ['/sign1.gif', '/sign2.gif'];
@@ -222,6 +309,7 @@ const PROJECT_VISUALS: Record<string, () => ReactElement> = {
   nolan: NolanVisual,
   finverse: FinverseVisual,
   signsync: SignSyncVisual,
+  healthsync: HealthSyncVisual,
 };
 
 function ProjectsPage() {

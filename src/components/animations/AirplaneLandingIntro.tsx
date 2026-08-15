@@ -412,6 +412,18 @@ export function AirplaneLandingIntro({ onFinish }: AirplaneLandingIntroProps) {
 
           {/* ── Sunset Outro & Credits ── */}
           <div className="sunset">
+            <video
+              className="sunset-video"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              aria-hidden="true"
+              tabIndex={-1}
+            >
+              <source src="/ocean_waves.mp4" type="video/mp4" />
+            </video>
             <div className="section">
               {/* Spacer */}
             </div>
