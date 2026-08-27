@@ -332,6 +332,17 @@ export function AirplaneLandingIntro({ onFinish }: AirplaneLandingIntroProps) {
 
           {/* ── Section 1: Intro ── */}
           <div className="section hero">
+            <video
+              className="hero-bg-video"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              aria-hidden="true"
+            >
+              <source src="/hero_bg_video.mp4" type="video/mp4" />
+            </video>
             <div className="hero-content-wrapper">
               <div className="hero-vertical-line" />
               <div className="hero-text-block">
