@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
 function isTouchDevice() {
@@ -10,6 +10,7 @@ function prefersReducedMotion() {
 }
 
 export function PlaneCursor() {
+  const [cursorEnabled, setCursorEnabled] = useState(true);
   const cursorRef = useRef<HTMLDivElement>(null);
   const posRef = useRef({ x: 0, y: 0 });
   const prevPosRef = useRef({ x: 0, y: 0 });
@@ -18,7 +19,10 @@ export function PlaneCursor() {
   const trailRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
-    if (isTouchDevice() || prefersReducedMotion()) return;
+    if (isTouchDevice() || prefersReducedMotion()) {
+      setCursorEnabled(false);
+      return;
+    }
 
     document.body.style.cursor = "none";
 
@@ -169,9 +173,7 @@ export function PlaneCursor() {
     };
   }, []);
 
-  if (typeof window !== "undefined" && (isTouchDevice() || prefersReducedMotion())) {
-    return null;
-  }
+  if (!cursorEnabled) return null;
 
   return (
     <div
