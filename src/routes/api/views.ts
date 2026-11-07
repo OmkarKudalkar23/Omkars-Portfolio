@@ -1,39 +1,80 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { MongoClient } from "mongodb";
 
-const COUNTER_NAME = "portfolio-views";
+const COUNTER_ID = "portfolio-views";
+const DATABASE_NAME = process.env.MONGODB_DB_NAME || "portfolio";
 
-function getCounterConfig() {
-  const workspace = process.env.COUNTERAPI_WORKSPACE;
-  const token = process.env.COUNTERAPI_TOKEN;
-  return workspace && token ? { workspace, token } : null;
+declare global {
+  // Reuse the connection pool across warm serverless invocations.
+  var portfolioMongoClient: MongoClient | undefined;
 }
 
-async function counterRequest(action: "up" | "") {
-  const config = getCounterConfig();
-  if (!config) {
-    return Response.json({ error: "Counter service is not configured" }, { status: 503 });
+function getMongoClient() {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) return null;
+
+  globalThis.portfolioMongoClient ??= new MongoClient(uri, {
+    maxPoolSize: 5,
+    serverSelectionTimeoutMS: 5000,
+  });
+  return globalThis.portfolioMongoClient;
+}
+
+async function getCount() {
+  const client = getMongoClient();
+  if (!client) {
+    return Response.json({ error: "MONGODB_URI is not configured" }, { status: 503 });
   }
 
   try {
-    const response = await fetch(
-      `https://api.counterapi.dev/v2/${encodeURIComponent(config.workspace)}/${COUNTER_NAME}/${action}`,
-      { headers: { Authorization: `Bearer ${config.token}` } },
+    const counters = client.db(DATABASE_NAME).collection<{ count: number }>("counters");
+    const counter = await counters.findOne({ _id: COUNTER_ID });
+    return Response.json(
+      { value: counter?.count ?? 0 },
+      { headers: { "cache-control": "no-store" } },
     );
-    const body = await response.json();
-    if (!response.ok) {
-      return Response.json({ error: "Counter service request failed" }, { status: 502 });
+  } catch (error) {
+    console.error("[api/views] MongoDB read failed:", error);
+    return Response.json({ error: "Unable to read view count" }, { status: 502 });
+  }
+}
+
+async function incrementCount() {
+  const client = getMongoClient();
+  if (!client) {
+    return Response.json({ error: "MONGODB_URI is not configured" }, { status: 503 });
+  }
+
+  try {
+    const counters = client.db(DATABASE_NAME).collection<{ count: number }>("counters");
+    const filter = { _id: COUNTER_ID };
+    try {
+      await counters.updateOne(filter, { $inc: { count: 1 } }, { upsert: true });
+    } catch (error) {
+      // Concurrent first visits can race to insert this unique _id. If another
+      // request created it first, apply this visit as a normal increment.
+      if (!(error && typeof error === "object" && "code" in error && error.code === 11000)) {
+        throw error;
+      }
+      await counters.updateOne(filter, { $inc: { count: 1 } });
     }
-    return Response.json(body, { headers: { "cache-control": "no-store" } });
-  } catch {
-    return Response.json({ error: "Counter service is unavailable" }, { status: 502 });
+
+    const counter = await counters.findOne(filter);
+    return Response.json(
+      { value: counter?.count ?? 0 },
+      { headers: { "cache-control": "no-store" } },
+    );
+  } catch (error) {
+    console.error("[api/views] MongoDB increment failed:", error);
+    return Response.json({ error: "Unable to increment view count" }, { status: 502 });
   }
 }
 
 export const Route = createFileRoute("/api/views")({
   server: {
     handlers: {
-      GET: async () => counterRequest(""),
-      POST: async () => counterRequest("up"),
+      GET: async () => getCount(),
+      POST: async () => incrementCount(),
     },
   },
 });

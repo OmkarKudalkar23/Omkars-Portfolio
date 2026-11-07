@@ -52,7 +52,7 @@ function ViewsPage() {
           <span className="views-status-dot" />
           {status === "ready" && "Counter is up to date"}
           {status === "loading" && "Connecting to counter"}
-          {status === "setup" && "Counter setup required — configure COUNTERAPI_WORKSPACE and COUNTERAPI_TOKEN on the server."}
+          {status === "setup" && "Database setup required — configure MONGODB_URI on the server."}
           {status === "error" && "Could not reach the counter. Try refreshing."}
         </div>
         <button className="views-refresh" onClick={() => void loadCount()} disabled={status === "loading"}>

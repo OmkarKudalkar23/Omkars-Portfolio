@@ -9,47 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ViewsRouteImport } from './routes/views'
-import { Route as SkillsRouteImport } from './routes/skills'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as ProjectsRouteImport } from './routes/projects'
-import { Route as HackathonsRouteImport } from './routes/hackathons'
-import { Route as ExperienceRouteImport } from './routes/experience'
-import { Route as ContactRouteImport } from './routes/contact'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProjectsNolanStudioRouteImport } from './routes/projects_.nolan-studio'
-import { Route as ProjectsFinverseRouteImport } from './routes/projects_.finverse'
-import { Route as ApiViewsRouteImport } from './routes/api/views'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ExperienceRouteImport } from './routes/experience'
+import { Route as HackathonsRouteImport } from './routes/hackathons'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SkillsRouteImport } from './routes/skills'
+import { Route as ViewsRouteImport } from './routes/views'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiViewsRouteImport } from './routes/api/views'
+import { Route as ProjectsFinverseRouteImport } from './routes/projects_.finverse'
+import { Route as ProjectsNolanStudioRouteImport } from './routes/projects_.nolan-studio'
 
-const ViewsRoute = ViewsRouteImport.update({
-  id: '/views',
-  path: '/views',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SkillsRoute = SkillsRouteImport.update({
-  id: '/skills',
-  path: '/skills',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProjectsRoute = ProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HackathonsRoute = HackathonsRouteImport.update({
-  id: '/hackathons',
-  path: '/hackathons',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExperienceRoute = ExperienceRouteImport.update({
-  id: '/experience',
-  path: '/experience',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -57,19 +32,39 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ExperienceRoute = ExperienceRouteImport.update({
+  id: '/experience',
+  path: '/experience',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProjectsNolanStudioRoute = ProjectsNolanStudioRouteImport.update({
-  id: '/projects_/nolan-studio',
-  path: '/projects/nolan-studio',
+const HackathonsRoute = HackathonsRouteImport.update({
+  id: '/hackathons',
+  path: '/hackathons',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProjectsFinverseRoute = ProjectsFinverseRouteImport.update({
-  id: '/projects_/finverse',
-  path: '/projects/finverse',
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SkillsRoute = SkillsRouteImport.update({
+  id: '/skills',
+  path: '/skills',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ViewsRoute = ViewsRouteImport.update({
+  id: '/views',
+  path: '/views',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiViewsRoute = ApiViewsRouteImport.update({
@@ -77,9 +72,14 @@ const ApiViewsRoute = ApiViewsRouteImport.update({
   path: '/api/views',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiChatRoute = ApiChatRouteImport.update({
-  id: '/api/chat',
-  path: '/api/chat',
+const ProjectsFinverseRoute = ProjectsFinverseRouteImport.update({
+  id: '/projects_/finverse',
+  path: '/projects/finverse',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsNolanStudioRoute = ProjectsNolanStudioRouteImport.update({
+  id: '/projects_/nolan-studio',
+  path: '/projects/nolan-studio',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -188,46 +188,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/views': {
-      id: '/views'
-      path: '/views'
-      fullPath: '/views'
-      preLoaderRoute: typeof ViewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/skills': {
-      id: '/skills'
-      path: '/skills'
-      fullPath: '/skills'
-      preLoaderRoute: typeof SkillsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/projects': {
-      id: '/projects'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof ProjectsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/hackathons': {
-      id: '/hackathons'
-      path: '/hackathons'
-      fullPath: '/hackathons'
-      preLoaderRoute: typeof HackathonsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/experience': {
-      id: '/experience'
-      path: '/experience'
-      fullPath: '/experience'
-      preLoaderRoute: typeof ExperienceRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -237,25 +202,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/experience': {
+      id: '/experience'
+      path: '/experience'
+      fullPath: '/experience'
+      preLoaderRoute: typeof ExperienceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/projects_/nolan-studio': {
-      id: '/projects_/nolan-studio'
-      path: '/projects/nolan-studio'
-      fullPath: '/projects/nolan-studio'
-      preLoaderRoute: typeof ProjectsNolanStudioRouteImport
+    '/hackathons': {
+      id: '/hackathons'
+      path: '/hackathons'
+      fullPath: '/hackathons'
+      preLoaderRoute: typeof HackathonsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/projects_/finverse': {
-      id: '/projects_/finverse'
-      path: '/projects/finverse'
-      fullPath: '/projects/finverse'
-      preLoaderRoute: typeof ProjectsFinverseRouteImport
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/skills': {
+      id: '/skills'
+      path: '/skills'
+      fullPath: '/skills'
+      preLoaderRoute: typeof SkillsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/views': {
+      id: '/views'
+      path: '/views'
+      fullPath: '/views'
+      preLoaderRoute: typeof ViewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/views': {
@@ -265,11 +258,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiViewsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/chat': {
-      id: '/api/chat'
-      path: '/api/chat'
-      fullPath: '/api/chat'
-      preLoaderRoute: typeof ApiChatRouteImport
+    '/projects_/finverse': {
+      id: '/projects_/finverse'
+      path: '/projects/finverse'
+      fullPath: '/projects/finverse'
+      preLoaderRoute: typeof ProjectsFinverseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects_/nolan-studio': {
+      id: '/projects_/nolan-studio'
+      path: '/projects/nolan-studio'
+      fullPath: '/projects/nolan-studio'
+      preLoaderRoute: typeof ProjectsNolanStudioRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
