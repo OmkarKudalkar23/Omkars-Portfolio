@@ -887,3 +887,44 @@
     display: none !important;
   }
 }
+/* Views counter page */
+.views-page {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  overflow: hidden;
+  place-items: center;
+  padding: 32px 20px;
+  background: #080809;
+  color: #f2f2f3;
+  font-family: var(--font-body);
+}
+.views-panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 520px);
+  padding: clamp(28px, 7vw, 56px);
+  border: 1px solid rgba(255,255,255,.1);
+  background: linear-gradient(145deg, rgba(20,20,23,.96), rgba(10,10,12,.97));
+  box-shadow: 0 32px 100px rgba(0,0,0,.5), 0 0 80px rgba(79,142,247,.06);
+}
+.views-back, .views-mark, .views-footer, .views-status, .views-refresh { display: flex; align-items: center; }
+.views-back { gap: 8px; color: #a0a0a8; font-size: 12px; text-decoration: none; transition: color .2s; }
+.views-back:hover, .views-refresh:hover { color: #f2f2f3; }
+.views-mark { gap: 9px; margin-top: 64px; color: #78a8ff; font: 11px var(--font-mono); letter-spacing: .16em; }
+.views-kicker { margin: 22px 0 12px; color: #777780; font: 10px var(--font-mono); letter-spacing: .12em; }
+.views-panel h1 { margin: 0; font: 400 clamp(36px, 8vw, 54px)/1.08 "Libre Baskerville", Georgia, serif; letter-spacing: -.05em; }
+.views-description { margin: 17px 0 30px; color: #a0a0a8; font-size: 14px; line-height: 1.7; }
+.views-count { color: #f2f2f3; font: 400 clamp(56px, 14vw, 88px)/1 var(--font-mono); letter-spacing: -.09em; font-variant-numeric: tabular-nums; }
+.views-caption { margin: 12px 0 24px; color: #777780; font: 10px var(--font-mono); letter-spacing: .18em; }
+.views-status { min-height: 37px; gap: 9px; border-top: 1px solid rgba(255,255,255,.08); color: #8d8d96; font-size: 11px; line-height: 1.6; }
+.views-status-dot { width: 6px; height: 6px; flex: 0 0 6px; border-radius: 50%; background: #777780; }
+.views-status-ready .views-status-dot { background: #3ecf8e; box-shadow: 0 0 12px rgba(62,207,142,.55); }
+.views-status-error .views-status-dot, .views-status-setup .views-status-dot { background: #c9a96e; }
+.views-refresh { gap: 8px; margin-top: 13px; padding: 8px 0; border: 0; background: transparent; color: #a0a0a8; font: 11px var(--font-mono); cursor: pointer; }
+.views-refresh:disabled { opacity: .5; cursor: wait; }
+.views-footer { justify-content: space-between; margin-top: 52px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,.07); color: #55555e; font: 9px var(--font-mono); letter-spacing: .12em; }
+.views-orbit { position: absolute; width: 540px; height: 540px; border: 1px solid rgba(79,142,247,.08); border-radius: 50%; pointer-events: none; }
+.views-orbit-one { transform: translate(45%, -28%); }
+.views-orbit-two { width: 760px; height: 760px; transform: translate(45%, -28%); }
+@media (max-width: 480px) { .views-mark { margin-top: 48px; } .views-footer { margin-top: 38px; } }

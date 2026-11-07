@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { PlaneCursor } from "@/components/PlaneCursor";
 import { motion } from "framer-motion";
+import { fetchPortfolioViews } from "@/lib/views";
 
 function CubeLoader() {
   return (
@@ -203,6 +204,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    void fetchPortfolioViews();
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
